@@ -1,1 +1,1 @@
-from .register import RegisterSerializer, GoogleSocialAuthSerializer
+from .register import RegisterSerializer

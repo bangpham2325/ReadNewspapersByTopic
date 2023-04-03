@@ -16,15 +16,6 @@ class AuthenticationService extends BaseService{
     }
   }
 
-  async login_with_google(data: any) {
-    try {
-      const response: any = await this.request().post(`${this.entity}/google/`, data);
-      return response;
-    } catch (error) {
-      return false;
-    }
-  }
-
   async register(data: RegisterItem){
     try {
       let payload = data as any

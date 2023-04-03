@@ -41,7 +41,7 @@
           Login
         </el-button>
       </p>
-      <GoogleLogin :callback="googleLogin"/>
+
       <p class="subtitle mt-3 is-flex is-justify-content-center" style="font-size: 1rem">
         New to V-Volunteer?
         <router-link class="ml-1" to="/register">Sign up!</router-link>
@@ -58,8 +58,6 @@ import LoginItem from "@/types/login/LoginItem";
 import {mapActions, mapState} from "vuex";
 import {ActionTypes} from "@/types/store/ActionTypes";
 import {ElNotification} from 'element-plus'
-import axios from 'axios'
-declare const gapi: any;
 
 @Options({
   data() {
@@ -85,9 +83,7 @@ declare const gapi: any;
   },
   methods: {
     ...mapActions("authentication", [ActionTypes.LOGIN]),
-    ...mapActions("authentication", [ActionTypes.LOGIN_WITH_GOOGLE]),
     ...mapActions("user", [ActionTypes.GET_USER_INFO]),
-    ...mapActions(['googleLogin']),
     async onLogin(formEl: FormInstance | undefined) {
       if (!formEl) return
       await formEl.validate(async (valid, fields) => {
@@ -111,33 +107,10 @@ declare const gapi: any;
         }
       })
       this.is_freeze = false
-    },
-    async  googleLogin(response: any) {
-      console.log(response)
-      this.is_freeze = true
-      const response_data: any = await this.LOGIN_WITH_GOOGLE({ auth_token: response['credential'] })
-      if (response_data.status == 200) {
-            const user_info: any = await this.GET_USER_INFO(this.tokenInfo.user_id)
-            console.log(user_info)
-            if (user_info.status == 200) {
-              this.$router.push("/")
-              return
-            }
-          } else {
-            ElNotification({
-              title: 'Error',
-              message: 'Username/Password is not correct.',
-              type: 'error',
-            })
-          }
-
-      }
+    }
   },
   computed: {
     ...mapState("authentication", ["tokenInfo"])
-  },
-  mounted() {
-    const script = document.createElement('script');
   }
 })
 
