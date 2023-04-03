@@ -43,11 +43,14 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework_simplejwt',
+    'rest_framework.authtoken',
     "corsheaders",
     "django.contrib.sites",
-    'storages',
-    # Add the following django-allauth apps
-    'allauth',
+    # Auth & social auth
+    "rest_framework_simplejwt.token_blacklist",
+    # Auth & social auth
+    "dj_rest_auth",
+    "allauth",
     # modules
     'api_base',
     'api_auth',
@@ -61,6 +64,26 @@ ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_UNIQUE_EMAIL = True
+
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        }
+    }
+}
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ],
+}
 
 REST_USE_JWT = True
 

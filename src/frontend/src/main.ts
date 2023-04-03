@@ -19,6 +19,7 @@ import { fab } from '@fortawesome/free-brands-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import Antd from "ant-design-vue";
 import "ant-design-vue/dist/antd.css";
+import vue3GoogleLogin from 'vue3-google-login'
 library.add(fas, far, fab)
 
 import axios from "axios";
@@ -30,21 +31,9 @@ const app = createApp(App)
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
   app.component(key, component)
 }
-Sentry.init({
-  app,
-  dsn: "https://bc31b87a55dd4716aad65dbba4d1387a@o4504201565503488.ingest.sentry.io/4504333484228608",
-  integrations: [
-    new BrowserTracing({
-      tracingOrigins: ["*"],
-      routingInstrumentation: Sentry.vueRouterInstrumentation(router),
-      tracePropagationTargets: ["localhost", "my-site-url.com", /^\//],
-    }),
-  ],
-  // Set tracesSampleRate to 1.0 to capture 100%
-  // of transactions for performance monitoring.
-  // We recommend adjusting this value in production
-  tracesSampleRate: 1.0,
-});
+app.use(vue3GoogleLogin, {
+  clientId: '284448553155-14qt653a7h2f3233uloeq9tfr2jl76lp.apps.googleusercontent.com'
+})
 app.use(store).use(router).use(ElementPlus).use(Antd)
 app.component('font-awesome-icon', FontAwesomeIcon)
 app.component('QuillEditor', QuillEditor)
