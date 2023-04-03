@@ -36,6 +36,12 @@ export interface Actions {
     payload: LoginItem
   ): any,
 
+  [ActionTypes.LOGIN_WITH_GOOGLE](
+    { commit }: AugmentedActionContext,
+    payload: LoginItem
+  ): any,
+
+
   [ActionTypes.REGISTER](
     { commit }: AugmentedActionContext,
     payload: RegisterItem
@@ -57,6 +63,18 @@ export const actions: ActionTree<State, State> & Actions = {
 
   async [ActionTypes.LOGIN]({ commit }, payload) {
     const response: any = await AuthenticationService.login(payload)
+    if (response.status == 200) {
+      commit(MutationTypes.SET_TOKEN_INFO, {
+          access_token: response.data.access_token as string,
+          refresh_token: response.data.refresh_token as string,
+          user_id: response.data.user_id as string
+      });
+    } 
+    return response;
+  },
+
+  async [ActionTypes.LOGIN_WITH_GOOGLE]({ commit }, payload) {
+    const response: any = await AuthenticationService.login_with_google(payload)
     if (response.status == 200) {
       commit(MutationTypes.SET_TOKEN_INFO, {
           access_token: response.data.access_token as string,

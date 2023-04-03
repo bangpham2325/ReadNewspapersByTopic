@@ -8,6 +8,7 @@ class UserService(BaseService):
     @classmethod
     def create_user(cls, validated_data):
         account = dict({
+            'username': validated_data.pop('username'),
             'password': validated_data.pop('password'),
             'email': validated_data.pop('email')
         })
