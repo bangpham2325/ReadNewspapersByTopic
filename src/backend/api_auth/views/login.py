@@ -1,13 +1,10 @@
 from django.db.models import Q
 from drf_yasg.utils import swagger_auto_schema
+from rest_framework import status
 from drf_yasg import openapi
-from django.contrib.auth.hashers import check_password
-from google.oauth2 import id_token
-from google.auth.transport import requests
-from rest_framework import views, status
-from rest_framework.generics import GenericAPIView
-from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
+from django.contrib.auth.hashers import check_password
+
 from api_auth.services import AccountService
 from api_user.models import Account, User
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -16,7 +13,6 @@ from rest_framework.decorators import (
     authentication_classes,
     permission_classes,
 )
-from api_auth.serializers import GoogleSocialAuthSerializer
 
 
 @swagger_auto_schema(method='POST', request_body=openapi.Schema(
@@ -82,21 +78,3 @@ def login_google_view(request):
             return Response(response)
     except Exception as e:
         return Response({"error": f"{e}"}, status=status.HTTP_400_BAD_REQUEST)
-
-
-class GoogleSocialAuthView(GenericAPIView):
-
-    serializer_class = GoogleSocialAuthSerializer
-    permission_classes = [AllowAny]
-
-    def post(self, request):
-        """
-        POST with "auth_token"
-        Send an idtoken as from google to get user information
-        """
-
-        serializer = self.serializer_class(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        data = ((serializer.validated_data)['auth_token'])
-        return Response(self.serializer_class(data).data, status=status.HTTP_200_OK)
-
