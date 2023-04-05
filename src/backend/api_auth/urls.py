@@ -9,7 +9,6 @@ router = DefaultRouter()
 
 _urlpatterns = [
     path("login/", csrf_exempt(login_view), name="login"),
-    path(r"login/google", csrf_exempt(login_google_view), name="login_google"),
     path(r"registers", csrf_exempt(register_user), name="register_user"),
     path(r"google/", csrf_exempt(GoogleSocialAuthView.as_view())),
 ]

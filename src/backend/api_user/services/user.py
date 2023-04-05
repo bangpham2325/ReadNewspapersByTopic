@@ -8,13 +8,13 @@ class UserService(BaseService):
     @classmethod
     def create_user(cls, validated_data):
         account = dict({
-            'username': validated_data.pop('username'),
+            # 'username': validated_data.pop('username'),
             'password': validated_data.pop('password'),
             'email': validated_data.pop('email')
         })
         if validated_data.get('role') is Roles.ADMIN.value:
             account = Account.objects.create_superuser(**account)
-        elif validated_data.get('role') is Roles.ADMIN.value:
+        elif validated_data.get('role') is Roles.USER.value:
             account = Account.objects.create_staff(**account)
         else:
             account = Account.objects.create_user(**account)

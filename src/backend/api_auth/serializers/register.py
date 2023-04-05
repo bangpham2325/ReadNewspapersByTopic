@@ -4,7 +4,7 @@ from api_user.constants import Roles
 from api_user.models import Account, User
 from rest_framework.exceptions import AuthenticationFailed
 import os
-from rest_framework.fields import UUIDField
+
 
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(max_length=255)
@@ -22,7 +22,7 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     def to_internal_value(self, data):
         context = self.context.get('view')
-        if context and context.action in ['admin'] or context and context.action in ['create']:
+        if context and context.action in ['admin'] and context.action in ['create']:
             data['password'] = '1345'
         return super().to_internal_value(data)
 

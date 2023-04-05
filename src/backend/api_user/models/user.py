@@ -20,7 +20,6 @@ class User(TimeStampedModel):
     full_name = models.CharField(max_length=50)
     avatar = models.FileField(blank=True, null=True, upload_to=upload_path)
     role = models.CharField(choices=Roles.choices(), default=Roles.USER.value, max_length=50)
-    bio = models.TextField(null=True)
     address = models.TextField(null=True, blank=True)
     phone = models.CharField(max_length=20, null=True, blank=True)
     birthday = models.DateField(null=True, blank=True)
