@@ -4,6 +4,7 @@ export enum MutationTypes {
   SET_TOKEN_INFO = 'SET_TOKEN_INFO',
   LOGIN = 'LOGIN',
   LOGOUT = 'LOGOUT',
+  LOGIN_WITH_GOOGLE = 'LOGIN_WITH_GOOGLE',
 
   // User
   SET_USER_INFO = 'SET_USER_INFO',
