@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework_swagger',
     'rest_framework',
     'rest_framework_simplejwt',
     'rest_framework.authtoken',
@@ -55,7 +56,10 @@ INSTALLED_APPS = [
     'api_base',
     'api_auth',
     'api_user',
-
+    'api_post',
+    'api_interaction',
+    # swagger
+    'drf_yasg',
 
 ]
 

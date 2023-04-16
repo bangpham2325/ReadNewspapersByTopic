@@ -25,7 +25,8 @@ class Account(AbstractUser):
         null=False, default=AUTH_PROVIDERS.get('email'))
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['']
+    REQUIRED_FIELDS = []
+
     objects = UserManager()
 
     class Meta:
