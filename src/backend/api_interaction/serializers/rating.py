@@ -30,3 +30,8 @@ class RatingSerializer(serializers.ModelSerializer):
             data.update({'user_id': context.request.user.user.id})
         data_res = super().to_internal_value(data)
         return data_res
+
+    def to_representation(self, instance):
+        instance = super().to_representation(instance)
+        instance['user'] = UserShortSerializer(instance['user']).data
+        return instance

@@ -11,7 +11,7 @@ class Rating(TimeStampedModel):
     content = models.CharField(max_length=255, null=True, blank=True)
     star_rating = models.IntegerField(choices=StarRating.choices(), default=StarRating.FIVE.value)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_rating")
-    post = models.OneToOneField(Posts, null=True, blank=True, on_delete=models.SET_NULL, related_name="post_rating")
+    post = models.ForeignKey(Posts, on_delete=models.CASCADE, related_name="post_rating")
 
     class Meta:
         db_table = "rating"

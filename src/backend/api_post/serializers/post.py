@@ -34,7 +34,8 @@ class PostSerializer(serializers.ModelSerializer):
             "summary",
             "author",
             "publish_date",
-            "status"
+            "status",
+            "likes"
         ]
         extra_kwargs = {
             'thumbnail': {'required': False},
@@ -58,7 +59,6 @@ class PostShortSerializer(serializers.ModelSerializer):
             "id",
             "title",
             "slug",
-            "content",
             "thumbnail",
             "category",
             "source",
@@ -66,5 +66,6 @@ class PostShortSerializer(serializers.ModelSerializer):
             "summary",
             "author",
             "publish_date",
-            "status"
+            "status",
+            "likes"
         ]
