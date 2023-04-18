@@ -6,6 +6,7 @@ from api_post.models import Category, Source
 from django.utils.text import slugify
 from api_post.constants import PostStatus
 from django.utils import timezone
+from api_user.models import User
 
 
 def upload_path(instance, filename):
@@ -30,6 +31,7 @@ class Posts(TimeStampedModel):
         Source, related_name="posts", on_delete=models.SET_NULL, null=True, blank=True
     )
     likes = models.IntegerField(default=0)
+    liked_by = models.ManyToManyField(User, related_name="liked_by", null=True, blank=True)
     publish_date = models.DateTimeField(default=timezone.now)
     author = models.CharField(max_length=255, blank=True)
     summary = models.CharField(max_length=255, blank=True)

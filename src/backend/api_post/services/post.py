@@ -17,6 +17,9 @@ class PostService(BaseService):
         post_obj.category.set(categories) if categories else None
         return post_obj
 
+    # @classmethod
+    # def update_like_in_post(cls, data):
+
     @classmethod
     def get_list_post_by_category(cls, params=None):
         ft = Q(status=PostStatus.PUBLISHED.value)
