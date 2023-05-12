@@ -7,8 +7,10 @@ from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
 from django.db.models import Q
 from rest_framework import status
 from rest_framework.decorators import action
+
+from api_user.constants import Roles
 from common.constants.api_constants import HttpMethod
-from api_post.services import PostService
+from api_post.services import PostService, CrawlService
 from api_interaction.models import Bookmark
 
 
@@ -34,6 +36,19 @@ class PostViewSet(BaseViewSet):
 
         serializer = self.get_serializer(res_data, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+    @action(methods=[HttpMethod.GET], detail=False, url_path="management", serializer_class=PostShortSerializer)
+    def get_post_management(self, request, *args, **kwargs):
+        user_obj = request.user.user
+        params = request.query_params
+        if user_obj.role == Roles.USER.value:
+            res_data = PostService.get_post_management(params)
+            page = self.paginate_queryset(res_data)
+
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        return Response(data=None, status=status.HTTP_200_OK)
 
     @action(methods=[HttpMethod.GET], detail=False, url_path="post_filter_list", serializer_class=PostShortSerializer)
     def post_filter_list(self, request, *args, **kwargs):
@@ -67,3 +82,8 @@ class PostViewSet(BaseViewSet):
         post = Posts.objects.filter(id__in=post_ids)
         serializer = self.get_serializer(post, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+    @action(methods=[HttpMethod.GET], detail=False, url_path="create_post", serializer_class=PostShortSerializer)
+    def create_post(self, request, *args, **kwargs):
+        bookmark = CrawlService.thread_crawl()
+        return Response(bookmark, status=status.HTTP_200_OK)
