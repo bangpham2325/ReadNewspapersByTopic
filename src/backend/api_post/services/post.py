@@ -4,7 +4,8 @@ from django.utils.text import slugify
 from api_base.services import BaseService
 from django.db.models.functions import Lower
 from api_post.constants import PostStatus
-from api_post.models import Posts
+from api_post.models import Posts, Category, Source
+from api_user.constants import Roles
 
 
 class PostService(BaseService):
@@ -17,8 +18,28 @@ class PostService(BaseService):
         post_obj.category.set(categories) if categories else None
         return post_obj
 
-    # @classmethod
-    # def update_like_in_post(cls, data):
+    @classmethod
+    def create_list_news(cls, arr_posts, topic):
+        category = Category.objects
+        in_db_sources = Source.objects.values_list("domain", flat=True)
+        source_crawl = list(
+            filter(lambda x: x.get("source") not in in_db_sources, arr_posts)
+        )
+        objs = []
+        sources = []
+        if source_crawl:
+            for index, post in enumerate(source_crawl):
+                source = Source(title=post.get("title"), domain=post.get("source"))
+                sources.append(source)
+                objs.append(Posts(
+                    title=post.get("title"),
+                    thumbnail=post.get("thumbnail"),
+                    category=category.filter(title=topic[index]).first(),
+                    source=source,
+                    author=post.get("author"),
+                    summary=post.get("excerpt"),
+                ))
+        return source_crawl, objs, sources
 
     @classmethod
     def get_list_post_by_category(cls, params=None):
@@ -47,8 +68,20 @@ class PostService(BaseService):
         if params.get('start_date') and params.get('end_date'):
             ft.update({'publish_date__range': (params.get('start_date', params.get('end_date')))})
 
-        courses = Posts.objects.filter(**ft)
-        # process_ids = [item[0] for item in list(process_courses.values_list('course_id'))]
-        # courses = courses.filter(id__in=process_ids)
+        posts = Posts.objects.filter(**ft)
 
-        return courses
+        return posts
+
+    @classmethod
+    def get_post_management(cls, params=None):
+        ft = Q()
+        if params.get('title'):
+            ft &= Q(title__contains=params.get('title'))
+        if params.get('author'):
+            ft &= Q(author=params.get('author'))
+        if params.get('category_ids'):
+            ft &= Q(category__id__in=params.getlist('category_ids'))
+
+        posts = Posts.objects.filter(ft)
+
+        return posts
