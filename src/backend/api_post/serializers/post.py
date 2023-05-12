@@ -1,8 +1,8 @@
 from rest_framework import serializers
 from api_post.models import Posts
-from api_post.serializers import CategorySerializer, SourceSerializer, ContentSerializer
+from api_post.serializers import CategorySerializer, SourceSerializer
 from api_post.models import Category, Source
-from api_post.serializers import KeywordSerializer
+# from api_post.serializers import KeywordSerializer
 from rest_framework.fields import UUIDField
 from api_post.services import PostService
 
@@ -16,10 +16,7 @@ class PostSerializer(serializers.ModelSerializer):
                                                         queryset=Source.objects.all(),
                                                         pk_field=UUIDField(format='hex'),
                                                         source='source')
-    source = SourceSerializer(required=False)
-    category = CategorySerializer(read_only=True, required=False)
-    contents = ContentSerializer(many=True, required=False)
-    keywords = KeywordSerializer(many=True, required=False)
+    category = CategorySerializer(many=True,  read_only=True, required=False)
 
     class Meta:
         model = Posts
@@ -27,6 +24,7 @@ class PostSerializer(serializers.ModelSerializer):
             "id",
             "title",
             "slug",
+            "content",
             "thumbnail",
             "category_ids",
             "source_id",
@@ -37,9 +35,7 @@ class PostSerializer(serializers.ModelSerializer):
             "author",
             "publish_date",
             "status",
-            "likes",
-            "contents",
-            "keywords"
+            "likes"
         ]
         extra_kwargs = {
             'thumbnail': {'required': False},
@@ -52,16 +48,9 @@ class PostSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         return PostService.create_post(validated_data)
 
-    def to_representation(self, instance):
-        contents = instance.contents.order_by('index')
-        # Serialize post và danh sách content đã được sắp xếp
-        data = super().to_representation(instance)
-        data['contents'] = ContentSerializer(contents, many=True).data
-        return data
-
 
 class PostShortSerializer(serializers.ModelSerializer):
-    category = CategorySerializer(required=True)
+    category = CategorySerializer(many=True, required=True)
     source = SourceSerializer(required=True)
 
     class Meta:
