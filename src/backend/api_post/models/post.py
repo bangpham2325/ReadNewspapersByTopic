@@ -22,10 +22,9 @@ class Posts(TimeStampedModel):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     title = models.TextField(max_length=255, blank=True)
     slug = models.SlugField(unique=True, null=True)
-    content = models.TextField()
     thumbnail = models.FileField(blank=True, null=True, upload_to=upload_path)
-    category = models.ManyToManyField(
-        Category, related_name="posts", null=True, blank=True
+    category = models.ForeignKey(
+        Category, related_name="posts", null=True, blank=True, on_delete=models.SET_NULL
     )
     source = models.OneToOneField(
         Source, related_name="posts", on_delete=models.SET_NULL, null=True, blank=True
