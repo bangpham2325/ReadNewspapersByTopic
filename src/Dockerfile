@@ -24,8 +24,8 @@ RUN ln -s /usr/bin/python3 /usr/bin/python & \
 
 
 # COPY /src/backend/requirements.txt /code/
-COPY /src/backend/manage.py /django/
-COPY /src/backend /django/
+COPY /manage.py /django/
+COPY / /django/
 RUN set -ex \
     && BUILD_DEPS=" \
     build-essential \
