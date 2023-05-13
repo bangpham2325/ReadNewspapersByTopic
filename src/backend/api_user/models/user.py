@@ -7,18 +7,9 @@ from api_user.models import Account
 from api_base.models import TimeStampedModel
 
 
-def upload_path(instance, filename):
-    fpath = pathlib.Path(filename)
-    new_name = instance.avatar.name + str(uuid.uuid1())
-    final_path = "/".join(
-        ['avatars', slugify(f"{instance.full_name} {instance.id}")])
-
-    return f"{final_path}/{new_name}{fpath.suffix}"
-
-
 class User(TimeStampedModel):
     full_name = models.CharField(max_length=50)
-    avatar = models.FileField(blank=True, null=True, upload_to=upload_path)
+    avatar = models.CharField(max_length=200, null=True, blank=True)
     role = models.CharField(choices=Roles.choices(), default=Roles.USER.value, max_length=50)
     address = models.TextField(null=True, blank=True)
     phone = models.CharField(max_length=20, null=True, blank=True)

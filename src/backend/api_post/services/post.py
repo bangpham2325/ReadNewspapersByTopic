@@ -19,7 +19,7 @@ class PostService(BaseService):
         return post_obj
 
     @classmethod
-    def create_list_news(cls, arr_posts, topic):
+    def create_list_posts(cls, arr_posts, topic):
         category = Category.objects
         in_db_sources = Source.objects.values_list("domain", flat=True)
         source_crawl = list(
@@ -85,3 +85,12 @@ class PostService(BaseService):
         posts = Posts.objects.filter(ft)
 
         return posts
+
+    @classmethod
+    def update_status_post(cls, instance):
+        posts = Posts.objects.filter(id__in=instance)
+        post_update = []
+        for post in posts:
+            post.status = PostStatus.PUBLISHED.value
+            post_update.append(post)
+        Posts.objects.bulk_update(post_update, ["status"])

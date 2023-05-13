@@ -2,7 +2,7 @@ from django.db.models import Q
 
 from api_base.views import BaseViewSet
 from api_interaction.models import Bookmark
-from api_interaction.serializers import BookmarkSerializer
+from api_interaction.serializers.bookmark import BookmarkSerializer
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated

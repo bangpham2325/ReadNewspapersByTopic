@@ -14,12 +14,12 @@ class RatingViewSet(BaseViewSet):
     permission_classes = [IsAuthenticated]
 
     def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        bookmark = Rating.objects.filter(user_id=request.user.user.id, post_id=kwargs['post_pk'])
-        if bookmark.exists():
+        rating = Rating.objects.filter(Q(user_id=request.user.user.id) & Q(post_id=kwargs.get('post_pk')))
+        if rating.exists():
             return Response({"detail": "you have created rating "}, status=status.HTTP_400_BAD_REQUEST)
         else:
+            serializer = self.get_serializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
             self.perform_create(serializer)
             headers = self.get_success_headers(serializer.data)
             return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)

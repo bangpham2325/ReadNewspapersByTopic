@@ -15,6 +15,7 @@ import os
 # from dotenv import load_dotenv
 from datetime import timedelta
 from dotenv import load_dotenv
+import cloudinary.api
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -60,6 +61,7 @@ INSTALLED_APPS = [
     'api_interaction',
     # swagger
     'drf_yasg',
+    "debug_toolbar",
 
 ]
 
@@ -94,6 +96,7 @@ REST_USE_JWT = True
 SITE_ID = 1
 
 MIDDLEWARE = [
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
     "corsheaders.middleware.CorsMiddleware",
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -161,12 +164,11 @@ DATABASES = {
     }
 }
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
+CRONJOBS = [
+    ('*/59 17 * * *', 'api_report.cron_tab.lecturer_report_daily'),
+    ('*/59 10 * * *', 'api_report.cron_tab.reminder_after_three_day'),
+    ('*/59 23 28 * *', 'api_report.cron_tab.admin_report_monthly'),
+]
 
 
 # Password validation
@@ -187,11 +189,9 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-# cloudinary
-# cloudinary.config(cloud_name=os.getenv('CLOUDINARY_NAME'),
-#                   api_key=os.getenv('CLOUDINARY_API_KEY'),
-#                   api_secret=os.getenv('CLOUDINARY_API_SECRET'))
-
+cloudinary.config(cloud_name=os.getenv('CLOUDINARY_NAME'),
+                  api_key=os.getenv('CLOUDINARY_API_KEY'),
+                  api_secret=os.getenv('CLOUDINARY_API_SECRET'))
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
@@ -206,6 +206,9 @@ USE_L10N = True
 
 USE_TZ = True
 
+INTERNAL_IPS = [
+    "127.0.0.1"
+]
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
@@ -246,3 +249,4 @@ STATIC_ROOT = join(BASE_DIR, "static")
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'api_user.Account'
+

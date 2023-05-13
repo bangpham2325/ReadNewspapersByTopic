@@ -68,6 +68,6 @@ class CommentPostSerializer(serializers.ModelSerializer):
         instance = super().to_representation(instance)
         # if context.get('view') and context.get('view').action in ['retrieve', 'list']:
         if len(instance['child_comments']) != 0:
-            instance['child_comments'] = sorted(instance['child_comments'], key=lambda d: d['created_at'])
+            instance['child_comments'] = sorted(instance['child_comments'], key=lambda d: d['created_at'], reverse=True)
         instance['time_comment'] = timesince(datetime.strptime(instance['created_at'], '%Y-%m-%dT%H:%M:%S.%f%z'))
         return instance

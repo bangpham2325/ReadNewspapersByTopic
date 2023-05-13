@@ -20,6 +20,7 @@ from django.urls import path, re_path
 from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
+import debug_toolbar
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -34,6 +35,7 @@ schema_view = get_schema_view(
         path(r"api/v1/auth/", include("api_auth.urls")),
         path(r"api/v1/users/", include("api_user.urls")),
         url(r"api/v1/newspaper/", include('api_post.urls')),
+        # path("__debug__/", include(debug_toolbar.urls)),
     ]
 )
 
@@ -43,5 +45,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     url(r"api/v1/auth/", include('api_auth.urls')),
     url(r"api/v1/users/", include('api_user.urls')),
-    url(r"api/v1/newspaper/", include('api_post.urls'))
+    url(r"api/v1/newspaper/", include('api_post.urls')),
+    path('__debug__/', include(debug_toolbar.urls)),
 ]

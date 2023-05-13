@@ -9,20 +9,11 @@ from django.utils import timezone
 from api_user.models import User
 
 
-def upload_path(instance, filename):
-    fpath = pathlib.Path(filename)
-    new_name = str(uuid.uuid1())
-    final_path = "/".join(
-        ['posts', slugify(f"{instance.title} {instance.author}"), 'thumbnail'])
-
-    return f"{final_path}/{new_name}{fpath.suffix}"
-
-
 class Posts(TimeStampedModel):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     title = models.TextField(max_length=255, blank=True)
     slug = models.SlugField(unique=True, null=True)
-    thumbnail = models.FileField(blank=True, null=True, upload_to=upload_path)
+    thumbnail = models.CharField(max_length=255, blank=True, null=True)
     category = models.ForeignKey(
         Category, related_name="posts", null=True, blank=True, on_delete=models.SET_NULL
     )

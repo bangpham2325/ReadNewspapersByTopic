@@ -5,6 +5,8 @@ from api_post.models import Category, Source
 from api_post.serializers import KeywordSerializer
 from rest_framework.fields import UUIDField
 from api_post.services import PostService
+from api_interaction.models import Rating, Comment
+from api_interaction.serializers import CommentPostSerializer, RatingPostSerializer
 
 
 class PostSerializer(serializers.ModelSerializer):
@@ -20,6 +22,8 @@ class PostSerializer(serializers.ModelSerializer):
     category = CategorySerializer(read_only=True, required=False)
     contents = ContentSerializer(many=True, required=False)
     keywords = KeywordSerializer(many=True, required=False)
+    post_comment = CommentPostSerializer(many=True, required=False)
+    post_rating = RatingPostSerializer(many=True, required=False)
 
     class Meta:
         model = Posts
@@ -39,7 +43,9 @@ class PostSerializer(serializers.ModelSerializer):
             "status",
             "likes",
             "contents",
-            "keywords"
+            "keywords",
+            "post_comment",
+            "post_rating"
         ]
         extra_kwargs = {
             'thumbnail': {'required': False},
@@ -57,6 +63,14 @@ class PostSerializer(serializers.ModelSerializer):
         # Serialize post và danh sách content đã được sắp xếp
         data = super().to_representation(instance)
         data['contents'] = ContentSerializer(contents, many=True).data
+        comment = data['post_comment']
+        rating = data['post_rating']
+        data['total_comment'] = len(comment)
+        if len(comment) != 0:
+            result = list(filter(lambda kq: kq['parent_comment'] is None, comment))
+            data['post_comment'] = result
+        if len(rating) != 0:
+            data['post_rating'] = sorted(rating, key=lambda d: d['created_at'], reverse=True)
         return data
 
 

@@ -2,6 +2,7 @@ from api_base.services import BaseService
 from api_user.constants import Roles
 from api_user.models import Account, User
 from itertools import groupby
+from api_base.services import CloudinaryService
 
 
 class UserService(BaseService):
@@ -28,3 +29,8 @@ class UserService(BaseService):
         for role, profile in groupby(profiles, lambda x: x.role):
             res_data.append((role, [i for i in profile]))
         return res_data
+
+    @classmethod
+    def upload_avatar(cls, image):
+        upload_data = CloudinaryService.upload_avatar_user_image(image)
+        return upload_data.get("url")

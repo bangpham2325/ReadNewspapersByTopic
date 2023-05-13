@@ -6,6 +6,8 @@ from api_post.models import Posts
 from api_user.serializers import UserShortSerializer
 from rest_framework.fields import UUIDField
 from api_user.models import User
+from django.utils.timesince import timesince
+from datetime import datetime
 
 
 class RatingSerializer(serializers.ModelSerializer):
@@ -14,7 +16,8 @@ class RatingSerializer(serializers.ModelSerializer):
                                                  pk_field=UUIDField(format='hex'),
                                                  source='user')
     user = UserShortSerializer(read_only=True, required=False)
-
+    post_id = serializers.PrimaryKeyRelatedField(required=False, write_only=True,
+                                                 queryset=Posts.objects.all(), source='post')
     class Meta:
         model = Rating
         fields = ['id', 'title', 'content', 'star_rating', 'created_at', 'user_id', 'user', 'post_id']
@@ -33,5 +36,26 @@ class RatingSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         instance = super().to_representation(instance)
-        instance['user'] = UserShortSerializer(instance['user']).data
+        instance['time_rating'] = timesince(datetime.strptime(instance['created_at'], '%Y-%m-%dT%H:%M:%S.%f%z'))
+        return instance
+
+
+class RatingPostSerializer(serializers.ModelSerializer):
+    user_id = serializers.PrimaryKeyRelatedField(required=False, write_only=True,
+                                                 queryset=User.objects.all(),
+                                                 pk_field=UUIDField(format='hex'),
+                                                 source='user')
+    user = UserShortSerializer(read_only=True, required=False)
+
+    class Meta:
+        model = Rating
+        fields = ['id', 'title', 'content', 'star_rating', 'created_at', 'user_id', 'user']
+        extra_kwargs = {
+            'title': {'required': False},
+            'user': {'required': False},
+        }
+
+    def to_representation(self, instance):
+        instance = super().to_representation(instance)
+        instance['time_rating'] = timesince(datetime.strptime(instance['created_at'], '%Y-%m-%dT%H:%M:%S.%f%z'))
         return instance

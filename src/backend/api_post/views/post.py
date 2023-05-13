@@ -87,3 +87,9 @@ class PostViewSet(BaseViewSet):
     def create_post(self, request, *args, **kwargs):
         bookmark = CrawlService.thread_crawl()
         return Response(bookmark, status=status.HTTP_200_OK)
+
+    @action(methods=[HttpMethod.PATCH], detail=False, url_path="publish_post", serializer_class=PostShortSerializer)
+    def update_list_status_post(self, request, *args, **kwargs):
+        post_ids = request.data.get('post_ids', [])
+        PostService.update_status_post(post_ids)
+        return Response({'message': 'Your changes have been saved.'}, status=status.HTTP_200_OK)

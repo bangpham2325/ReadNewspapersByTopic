@@ -105,7 +105,7 @@ class CrawlService(BaseService):
         print(category)
         try:
             with transaction.atomic():
-                data, news_data, source = PostService.create_list_news(data, category)
+                data, news_data, source = PostService.create_list_posts(data, category)
                 Source.objects.bulk_create(
                     source, ignore_conflicts=True
                 )
