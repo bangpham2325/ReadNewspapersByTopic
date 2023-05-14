@@ -92,5 +92,18 @@ class PostShortSerializer(serializers.ModelSerializer):
             "author",
             "publish_date",
             "status",
-            "likes"
+            "likes",
+            "post_rating"
         ]
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        rating = Rating.objects.filter(post_id=data['id'])
+        list_star_rating = []
+        if rating:
+            list_star_rating = list(rating.values_list('star_rating', flat=True).order_by())
+        try:
+            data['avg_rating'] = round(sum(list_star_rating) / len(rating),2)
+        except ZeroDivisionError:
+            data['avg_rating'] = 0
+        return data
