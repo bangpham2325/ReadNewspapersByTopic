@@ -37,6 +37,18 @@ class PostViewSet(BaseViewSet):
         serializer = self.get_serializer(res_data, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+    @action(methods=[HttpMethod.GET], detail=False, url_path="library", serializer_class=PostShortSerializer)
+    def get_post_library(self, request, *args, **kwargs):
+        user_obj = request.user.user
+        params = request.query_params
+        res_data = PostService.get_list_post_by_favourite()
+        serializer = {"post_favourite": self.get_serializer(res_data, many=True).data}
+        res_data = PostService.get_list_post_by_views()
+        serializer.update({"post_views": self.get_serializer(res_data, many=True).data})
+        res_data = PostService.get_list_post_proposed(params)
+        serializer.update({"post_proposed": self.get_serializer(res_data, many=True).data})
+        return Response(serializer, status=status.HTTP_200_OK)
+
     @action(methods=[HttpMethod.GET], detail=False, url_path="management", serializer_class=PostShortSerializer)
     def get_post_management(self, request, *args, **kwargs):
         user_obj = request.user.user

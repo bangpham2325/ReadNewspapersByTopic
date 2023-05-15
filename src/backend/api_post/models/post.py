@@ -26,6 +26,7 @@ class Posts(TimeStampedModel):
     author = models.CharField(max_length=255, blank=True)
     summary = models.CharField(max_length=255, blank=True)
     status = models.CharField(choices=PostStatus.choices(), default=PostStatus.DRAFT.value, max_length=50)
+    views = models.IntegerField(default=0)
 
     def __str__(self):
         return self.title

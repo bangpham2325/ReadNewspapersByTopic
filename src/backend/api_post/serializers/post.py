@@ -1,3 +1,4 @@
+from django.db.models import Q
 from rest_framework import serializers
 from api_post.models import Posts
 from api_post.serializers import CategorySerializer, SourceSerializer, ContentSerializer
@@ -5,7 +6,7 @@ from api_post.models import Category, Source
 from api_post.serializers import KeywordSerializer
 from rest_framework.fields import UUIDField
 from api_post.services import PostService
-from api_interaction.models import Rating, Comment
+from api_interaction.models import Rating, Comment, Bookmark
 from api_interaction.serializers import CommentPostSerializer, RatingPostSerializer
 
 
@@ -45,7 +46,8 @@ class PostSerializer(serializers.ModelSerializer):
             "contents",
             "keywords",
             "post_comment",
-            "post_rating"
+            "post_rating",
+            "views"
         ]
         extra_kwargs = {
             'thumbnail': {'required': False},
@@ -60,7 +62,10 @@ class PostSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         contents = instance.contents.order_by('index')
-        # Serialize post và danh sách content đã được sắp xếp
+        context = self.context.get('view')
+        if context.action == 'retrieve':
+            instance.views += 1
+            instance.save()
         data = super().to_representation(instance)
         data['contents'] = ContentSerializer(contents, many=True).data
         comment = data['post_comment']
@@ -71,12 +76,14 @@ class PostSerializer(serializers.ModelSerializer):
             data['post_comment'] = result
         if len(rating) != 0:
             data['post_rating'] = sorted(rating, key=lambda d: d['created_at'], reverse=True)
+        data['has_bookmarked'] = True if Bookmark.objects.filter(Q(post_id=data['id']) & Q(user_id=context.request.user.user.id)) else False
         return data
 
 
 class PostShortSerializer(serializers.ModelSerializer):
     category = CategorySerializer(required=True)
     source = SourceSerializer(required=True)
+    avg_rating = serializers.SerializerMethodField()  # Add SerializerMethodField for average rating
 
     class Meta:
         model = Posts
@@ -93,17 +100,21 @@ class PostShortSerializer(serializers.ModelSerializer):
             "publish_date",
             "status",
             "likes",
-            "post_rating"
+            "post_rating",
+            "views",
+            "avg_rating"
         ]
+
+    def get_avg_rating(self, instance):
+        rating = Rating.objects.filter(post_id=instance.id)
+        list_star_rating = rating.values_list('star_rating', flat=True).order_by()
+        try:
+            avg_rating = round(sum(list_star_rating) / len(rating), 2)
+        except ZeroDivisionError:
+            avg_rating = 0
+        return avg_rating
 
     def to_representation(self, instance):
         data = super().to_representation(instance)
-        rating = Rating.objects.filter(post_id=data['id'])
-        list_star_rating = []
-        if rating:
-            list_star_rating = list(rating.values_list('star_rating', flat=True).order_by())
-        try:
-            data['avg_rating'] = round(sum(list_star_rating) / len(rating),2)
-        except ZeroDivisionError:
-            data['avg_rating'] = 0
+        data['avg_rating'] = self.get_avg_rating(instance)
         return data
