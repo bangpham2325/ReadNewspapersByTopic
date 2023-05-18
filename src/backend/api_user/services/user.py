@@ -3,6 +3,7 @@ from api_user.constants import Roles
 from api_user.models import Account, User
 from itertools import groupby
 from api_base.services import CloudinaryService
+from api_post.models import Category
 
 
 class UserService(BaseService):
@@ -34,3 +35,9 @@ class UserService(BaseService):
     def upload_avatar(cls, image):
         upload_data = CloudinaryService.upload_avatar_user_image(image)
         return upload_data.get("url")
+
+    @classmethod
+    def add_categories(cls, data, category_id):
+        categories = Category.objects.filter(id__in=category_id)
+        data.categories.set(categories)
+        return data

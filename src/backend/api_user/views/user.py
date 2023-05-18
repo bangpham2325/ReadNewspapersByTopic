@@ -17,7 +17,9 @@ class UserViewSet(BaseViewSet):
     permission_classes = [AllowAny]
     serializer_class = UserSerializer
     permission_map = {
-        "retrieve": [IsAuthenticated]
+        "retrieve": [IsAuthenticated],
+        "add_category": [IsAuthenticated],
+        "update_avatar": [IsAuthenticated]
     }
 
     def create(self, request, *args, **kwargs):
@@ -50,4 +52,12 @@ class UserViewSet(BaseViewSet):
         serializer = self.serializer_class(instance, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
         self.perform_update(serializer)
+        return Response({'message': 'Your changes have been saved.'}, status=status.HTTP_200_OK)
+
+    @action(methods=[HttpMethod.PATCH], detail=False, url_path="update_category", serializer_class=UserSerializer)
+    def add_category(self, request, *args, **kwargs):
+        account = request.user
+        instance = User.objects.filter(account=account).first()
+        category_ids = request.data.get('category_ids', [])
+        UserService.add_categories(instance, category_ids)
         return Response({'message': 'Your changes have been saved.'}, status=status.HTTP_200_OK)
