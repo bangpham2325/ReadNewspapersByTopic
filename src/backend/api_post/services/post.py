@@ -64,8 +64,10 @@ class PostService(BaseService):
         return posts
 
     @classmethod
-    def get_list_post_proposed(cls, params=None):
-        return []
+    def get_list_post_by_likes(cls, params=None):
+        ft = Q(status=PostStatus.PUBLISHED.value)
+        posts = Posts.objects.filter(ft).order_by('-likes')[:10]
+        return posts
 
     @classmethod
     def get_list_post(cls, params=None):

@@ -14,8 +14,9 @@ class User(TimeStampedModel):
     address = models.TextField(null=True, blank=True)
     phone = models.CharField(max_length=20, null=True, blank=True)
     birthday = models.DateField(null=True, blank=True)
+    categories = models.ManyToManyField(blank=True, null=True, related_name='user', to='api_post.Category')
     account = models.OneToOneField(Account, on_delete=models.CASCADE, related_name="user")
 
     class Meta:
-            db_table = "users"
-            ordering = ('-created_at',)
+        db_table = "users"
+        ordering = ('-created_at',)

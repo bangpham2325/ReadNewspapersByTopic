@@ -11,8 +11,3 @@ class CategorySerializer(serializers.ModelSerializer):
             'description': {'required': False},
         }
 
-
-class CategoryShortSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Category
-        fields = ['id', 'title']
