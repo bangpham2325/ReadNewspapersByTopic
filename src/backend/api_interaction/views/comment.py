@@ -14,6 +14,7 @@ class CommentViewSet(BaseViewSet):
         "list": CommentPostSerializer,
         "retrieve": CommentPostSerializer,
     }
+    permission_classes = [IsAuthenticated]
 
     def create(self, request, *args, **kwargs):
         comment = self.get_serializer(data=request.data)

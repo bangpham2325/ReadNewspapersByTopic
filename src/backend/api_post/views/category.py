@@ -1,16 +1,20 @@
 from api_base.views import BaseViewSet
 from api_post.models import Category
-from api_post.serializers import CategorySerializer, CategoryShortSerializer
+from api_post.serializers import CategorySerializer
 from rest_framework import status
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import AllowAny
 from django.db.models import Q
+from api_auth.permissions import AdminPermission
 
 
 class CategoryViewSet(BaseViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
-    permission_classes = []
+    permission_classes = [AllowAny]
+    permission_map = {
+        "Create": [AdminPermission]
+    }
 
     def list(self, request, *args, **kwargs):
         params = request.query_params
