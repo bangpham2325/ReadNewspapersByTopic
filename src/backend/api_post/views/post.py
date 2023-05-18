@@ -20,6 +20,7 @@ class PostViewSet(BaseViewSet):
     permission_class = [AllowAny]
     permission_classes = [AllowAny]
     serializer_class = PostSerializer
+
     permission_map = {
         "Create": [IsAdminUser],
         "get_post_management": [AdminPermission],
