@@ -17,8 +17,10 @@ from api_interaction.models import Bookmark
 
 class PostViewSet(BaseViewSet):
     queryset = Posts.objects.all()
+    permission_class = [AllowAny]
+    permission_classes = [AllowAny]
     serializer_class = PostSerializer
-    permission_class = AllowAny
+
     permission_map = {
         "Create": [IsAdminUser],
         "get_post_management": [AdminPermission],
