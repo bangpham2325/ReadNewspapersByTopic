@@ -62,6 +62,7 @@ INSTALLED_APPS = [
     # swagger
     'drf_yasg',
     "debug_toolbar",
+    'django_crontab',
 
 ]
 
@@ -170,7 +171,7 @@ DATABASES = {
 }
 
 CRONJOBS = [
-    ('*/59 17 * * *', 'api_report.cron_tab.lecturer_report_daily'),
+    ('59 5 * * *', 'api_post.services.craw.thread_crawl_vietcetera'),
 ]
 
 
@@ -207,7 +208,7 @@ USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = False
+USE_TZ = True
 
 INTERNAL_IPS = [
     "127.0.0.1"

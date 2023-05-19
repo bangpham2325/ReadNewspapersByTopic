@@ -60,19 +60,19 @@ class PostService(BaseService):
     @classmethod
     def get_list_post_by_favourite(cls):
         ft = Q(status=PostStatus.PUBLISHED.value)
-        posts = Posts.objects.annotate(avg_rating=Avg('post_rating__star_rating')).filter(ft).order_by('-avg_rating')[:2]
+        posts = Posts.objects.annotate(avg_rating=Avg('post_rating__star_rating')).filter(ft).order_by('-avg_rating')[:8]
         return posts
 
     @classmethod
     def get_list_post_by_views(cls, params=None):
         ft = Q(status=PostStatus.PUBLISHED.value)
-        posts = Posts.objects.filter(ft).order_by('-views')[:10]
+        posts = Posts.objects.filter(ft).order_by('-views')[:8]
         return posts
 
     @classmethod
     def get_list_post_by_likes(cls, params=None):
         ft = Q(status=PostStatus.PUBLISHED.value)
-        posts = Posts.objects.filter(ft).order_by('-likes')[:10]
+        posts = Posts.objects.filter(ft).order_by('-likes')[:8]
         return posts
 
     @classmethod

@@ -84,7 +84,10 @@ class PostSerializer(serializers.ModelSerializer):
             data['post_comment'] = result
         if len(rating) != 0:
             data['post_rating'] = sorted(rating, key=lambda d: d['created_at'], reverse=True)
-        data['has_bookmarked'] = True if Bookmark.objects.filter(Q(post_id=data['id']) & Q(user_id=context.request.user.user.id)) else False
+        try:
+            data['has_bookmarked'] = True if Bookmark.objects.filter(Q(post_id=data['id']) & Q(user_id=context.request.user.user.id)) else False
+        except:
+            data['has_bookmarked'] = False
         return data
 
 
