@@ -6,8 +6,8 @@ services:
 #    build: .
     ports:
       - 8000:8000
-    image:  bangpham2325/backend_image:latest
-    container_name: django_container3
+    image:  bangpham2325/backend-image:latest
+    container_name: django_container5
     restart: always
     env_file:
       - ./docker.env

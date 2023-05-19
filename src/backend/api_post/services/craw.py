@@ -31,10 +31,9 @@ class CrawlService(BaseService):
     def crawl_from_url(
             cls, url="https://vietcetera.com"
     ):
-
         page = requests.get(url)
         soup = BeautifulSoup(page.content, "html.parser")
-        cards = soup.select('[class*="styles_s-horizontal-card"]')[10:15]
+        cards = soup.select('[class*="styles_s-horizontal-card"]')[0:20]
         thumbnails = soup.select('[class*="styles_s-image"] img')
         arr_news = []
         for idx, item in enumerate(cards):
@@ -92,31 +91,30 @@ class CrawlService(BaseService):
             arr_news.append(news)
         return arr_news
 
-    @classmethod
-    def thread_crawl(cls):
-        data = CrawlService.crawl_from_url()
-        try:
-            data_class = Data_Process(data)
-            input_data = data_class.convert_data()
-        except Exception as e:
-            print("Exception: " + e)
-        scores = model.predict(input_data).argmax(axis=-1)
-        category = encoder.inverse_transform(scores)
-        print(category)
-        try:
-            with transaction.atomic():
-                data, news_data, source = PostService.create_list_posts(data, category)
-                Source.objects.bulk_create(
-                    source, ignore_conflicts=True
-                )
-                news_objs = Posts.objects.bulk_create(
-                    news_data, ignore_conflicts=True
-                )
-                keyword_data = KeywordService.create_list_keyword(data, news_objs)
-                Keyword.objects.bulk_create(keyword_data, ignore_conflicts=True)
-                content_data = ContentService.create_list_content(data, news_objs)
-                Contents.objects.bulk_create(content_data, ignore_conflicts=True)
-        except Exception as e:
-            print("Error: ", e)
-        return data
 
+def thread_crawl_vietcetera():
+    data = CrawlService.crawl_from_url()
+    try:
+        data_class = Data_Process(data)
+        input_data = data_class.convert_data()
+    except Exception as e:
+        print("Exception: " + e)
+    scores = model.predict(input_data).argmax(axis=-1)
+    category = encoder.inverse_transform(scores)
+    print(category)
+    try:
+        with transaction.atomic():
+            data, news_data, source = PostService.create_list_posts(data, category)
+            Source.objects.bulk_create(
+                source, ignore_conflicts=True
+            )
+            news_objs = Posts.objects.bulk_create(
+                news_data, ignore_conflicts=True
+            )
+            keyword_data = KeywordService.create_list_keyword(data, news_objs)
+            Keyword.objects.bulk_create(keyword_data, ignore_conflicts=True)
+            content_data = ContentService.create_list_content(data, news_objs)
+            Contents.objects.bulk_create(content_data, ignore_conflicts=True)
+    except Exception as e:
+        print("Error: ", e)
+    return data
