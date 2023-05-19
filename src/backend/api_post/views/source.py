@@ -3,14 +3,14 @@ from api_post.models import Source
 from api_post.serializers import SourceSerializer
 from rest_framework import status
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import AllowAny
 from django.db.models import Q
 
 
 class SourceViewSet(BaseViewSet):
     queryset = Source.objects.all()
     serializer_class = SourceSerializer
-    permission_classes = []
+    permission_classes = [AllowAny]
 
     def list(self, request, *args, **kwargs):
         params = request.query_params
