@@ -45,6 +45,12 @@ class PostService(BaseService):
     @classmethod
     def get_list_post_by_category(cls, params=None):
         ft = Q(status=PostStatus.PUBLISHED.value)
+        if params.get('title'):
+            ft &= Q(title_lower__contains=str(params.get('title')).strip().lower())
+        if params.get('author'):
+            ft &= Q(author=params.get('author'))
+        if params.get('start_date') and params.get('end_date'):
+            ft &= Q(publish_date__range=[params.get('start_date'), params.get('end_date')])
         posts = Posts.objects.annotate(title_lower=Lower('title')).filter(ft).prefetch_related('category')
         if params.getlist('categories'):
             topic_ids = params.getlist('categories')
@@ -67,21 +73,6 @@ class PostService(BaseService):
     def get_list_post_by_likes(cls, params=None):
         ft = Q(status=PostStatus.PUBLISHED.value)
         posts = Posts.objects.filter(ft).order_by('-likes')[:10]
-        return posts
-
-    @classmethod
-    def get_list_post(cls, params=None):
-        ft = Q(status=PostStatus.PUBLISHED.value)
-        if params.get('title'):
-            ft &= Q(title_lower__contains=str(params.get('title')).strip().lower())
-        if params.get('author'):
-            ft &= Q(author=params.get('author'))
-        if params.get('start_date') and params.get('end_date'):
-            ft &= Q(publish_date__range=[params.get('start_date'), params.get('end_date')])
-        posts = Posts.objects.annotate(title_lower=Lower('title')).filter(ft).prefetch_related('category')
-        if params.getlist('categories'):
-            topic_ids = params.getlist('categories')
-            posts = posts.filter(category__id__in=topic_ids)
         return posts
 
     @classmethod

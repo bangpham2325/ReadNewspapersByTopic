@@ -20,7 +20,6 @@ class PostViewSet(BaseViewSet):
     permission_class = [AllowAny]
     permission_classes = [AllowAny]
     serializer_class = PostSerializer
-
     permission_map = {
         "Create": [IsAdminUser],
         "get_post_management": [AdminPermission],
@@ -59,7 +58,7 @@ class PostViewSet(BaseViewSet):
     def get_post_management(self, request, *args, **kwargs):
         user_obj = request.user.user
         params = request.query_params
-        if user_obj.role == Roles.USER.value:
+        if user_obj.role == Roles.ADMIN.value:
             res_data = PostService.get_post_management(params)
             page = self.paginate_queryset(res_data)
 
@@ -67,19 +66,6 @@ class PostViewSet(BaseViewSet):
             return self.get_paginated_response(serializer.data)
 
         return Response(data=None, status=status.HTTP_200_OK)
-
-    @action(methods=[HttpMethod.GET], detail=False, url_path="post_filter_list", serializer_class=PostShortSerializer)
-    def post_filter_list(self, request, *args, **kwargs):
-        params = request.query_params
-        res_data = PostService.get_list_post(params)
-        page = self.paginate_queryset(res_data)
-
-        if page is not None:
-            serializer = self.get_serializer(page, many=True)
-            return self.get_paginated_response(serializer.data)
-
-        serializer = self.get_serializer(res_data, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
 
     @action(methods=[HttpMethod.GET], detail=True, url_path="like_post", serializer_class=PostShortSerializer, permission_class=[IsAuthenticated])
     def like_post(self, request, *args, **kwargs):

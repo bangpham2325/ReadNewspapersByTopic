@@ -1,4 +1,5 @@
 from django.db.models import Q
+from django.utils import timezone
 from rest_framework import serializers
 from api_post.models import Posts
 from api_post.serializers import CategorySerializer, SourceSerializer, ContentSerializer
@@ -8,6 +9,12 @@ from rest_framework.fields import UUIDField
 from api_post.services import PostService
 from api_interaction.models import Rating, Comment, Bookmark
 from api_interaction.serializers import CommentPostSerializer, RatingPostSerializer
+from django.utils.timesince import timesince
+
+
+class PublishDateField(serializers.Field):
+    def to_representation(self, value):
+        return timesince(value, timezone.now())
 
 
 class PostSerializer(serializers.ModelSerializer):
@@ -25,6 +32,7 @@ class PostSerializer(serializers.ModelSerializer):
     keywords = KeywordSerializer(many=True, required=False)
     post_comment = CommentPostSerializer(many=True, required=False)
     post_rating = RatingPostSerializer(many=True, required=False)
+    publish_date = PublishDateField()
 
     class Meta:
         model = Posts
@@ -84,6 +92,7 @@ class PostShortSerializer(serializers.ModelSerializer):
     category = CategorySerializer(required=True)
     source = SourceSerializer(required=True)
     avg_rating = serializers.SerializerMethodField()  # Add SerializerMethodField for average rating
+    publish_date = PublishDateField()
 
     class Meta:
         model = Posts

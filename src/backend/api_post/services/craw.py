@@ -47,7 +47,7 @@ class CrawlService(BaseService):
                     soup_detail.select('[class*="articleTitle"]')[0].text
                 ),
                 "excerpt": Util.remove_space(soup_detail.select('[class*="articleExcerpt"]')[0].text),
-                "thumbnail": root_url + thumbnails[idx].get("src"),
+                "thumbnail": thumbnails[idx].get("src"),
                 "content": [],
                 "author": soup_detail.select('[class*="articleAuthorInfo"] span')[0].text,
                 "keyword": list(
