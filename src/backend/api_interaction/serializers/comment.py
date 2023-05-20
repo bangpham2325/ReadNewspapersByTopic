@@ -8,6 +8,7 @@ from rest_framework import serializers
 from rest_framework.fields import UUIDField
 from api_user.serializers import UserShortSerializer
 from datetime import datetime
+from api_post.constants.timestring import TIME_STRINGS
 
 
 class NextCommentSerializer(serializers.ModelSerializer):
@@ -69,5 +70,7 @@ class CommentPostSerializer(serializers.ModelSerializer):
         # if context.get('view') and context.get('view').action in ['retrieve', 'list']:
         if len(instance['child_comments']) != 0:
             instance['child_comments'] = sorted(instance['child_comments'], key=lambda d: d['created_at'], reverse=True)
-        instance['time_comment'] = timesince(datetime.strptime(instance['created_at'], '%Y-%m-%dT%H:%M:%S.%f%z'))
+        time = timesince(datetime.strptime(instance['created_at'], '%Y-%m-%dT%H:%M:%S.%f%z'), time_strings=TIME_STRINGS)
+        time = time.split(",")
+        instance['time_comment'] = time[0].strip() + " trước"
         return instance

@@ -10,11 +10,15 @@ from api_post.services import PostService
 from api_interaction.models import Rating, Comment, Bookmark
 from api_interaction.serializers import CommentPostSerializer, RatingPostSerializer
 from django.utils.timesince import timesince
+from api_post.constants.timestring import TIME_STRINGS
 
 
 class PublishDateField(serializers.Field):
     def to_representation(self, value):
-        return timesince(value, timezone.now())
+        time = timesince(value, timezone.now(), time_strings=TIME_STRINGS)
+        time = time.split(",")  # Split the string at the comma
+        time = time[0].strip() + " trước"
+        return time
 
 
 class PostSerializer(serializers.ModelSerializer):
@@ -79,6 +83,7 @@ class PostSerializer(serializers.ModelSerializer):
         comment = data['post_comment']
         rating = data['post_rating']
         data['total_comment'] = len(comment)
+        data['total_rating'] = len(rating)
         if len(comment) != 0:
             result = list(filter(lambda kq: kq['parent_comment'] is None, comment))
             data['post_comment'] = result

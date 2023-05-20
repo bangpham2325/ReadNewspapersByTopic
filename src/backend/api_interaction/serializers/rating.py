@@ -8,6 +8,7 @@ from rest_framework.fields import UUIDField
 from api_user.models import User
 from django.utils.timesince import timesince
 from datetime import datetime
+from api_post.constants.timestring import TIME_STRINGS
 
 
 class RatingSerializer(serializers.ModelSerializer):
@@ -36,7 +37,9 @@ class RatingSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         instance = super().to_representation(instance)
-        instance['time_rating'] = timesince(datetime.strptime(instance['created_at'], '%Y-%m-%dT%H:%M:%S.%f%z'))
+        time = timesince(datetime.strptime(instance['created_at'], '%Y-%m-%dT%H:%M:%S.%f%z'), time_strings=TIME_STRINGS)
+        time = time.split(",")
+        instance['time_rating'] = time[0].strip() + " trước"
         return instance
 
 
@@ -57,5 +60,7 @@ class RatingPostSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         instance = super().to_representation(instance)
-        instance['time_rating'] = timesince(datetime.strptime(instance['created_at'], '%Y-%m-%dT%H:%M:%S.%f%z'))
+        time = timesince(datetime.strptime(instance['created_at'], '%Y-%m-%dT%H:%M:%S.%f%z'), time_strings=TIME_STRINGS)
+        time = time.split(",")
+        instance['time_rating'] = time[0].strip() + " trước"
         return instance
