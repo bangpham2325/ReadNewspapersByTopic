@@ -47,6 +47,7 @@ class Util:
     @staticmethod
     def remove_space(string):
         string = string.replace("\xa0", " ").strip()
+        string = string.replace("\r\n", "").strip()
         return string
 
 
