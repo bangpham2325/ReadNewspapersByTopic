@@ -27,7 +27,6 @@ RUN ln -s /usr/bin/python3 /usr/bin/python & \
 # COPY /src/backend/requirements.txt /code/
 COPY /src/backend/manage.py /django/
 COPY /src/backend /django/
-COPY /src/AI /AI/
 
 RUN set -ex \
     && BUILD_DEPS=" \
