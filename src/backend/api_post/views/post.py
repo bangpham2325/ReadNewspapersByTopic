@@ -11,7 +11,7 @@ from api_auth.permissions import AdminPermission, UserPermission
 
 from api_user.constants import Roles
 from common.constants.api_constants import HttpMethod
-from api_post.services import PostService, CrawlService
+from api_post.services import PostService
 from api_interaction.models import Bookmark
 
 
@@ -85,11 +85,6 @@ class PostViewSet(BaseViewSet):
         post = Posts.objects.filter(id__in=post_ids)
         serializer = self.get_serializer(post, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
-
-    @action(methods=[HttpMethod.GET], detail=False, url_path="create_post", serializer_class=PostShortSerializer)
-    def create_post(self, request, *args, **kwargs):
-        bookmark = CrawlService.thread_crawl()
-        return Response(bookmark, status=status.HTTP_200_OK)
 
     @action(methods=[HttpMethod.PATCH], detail=False, url_path="publish_post", serializer_class=PostShortSerializer)
     def update_list_status_post(self, request, *args, **kwargs):

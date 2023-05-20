@@ -62,7 +62,6 @@ INSTALLED_APPS = [
     # swagger
     'drf_yasg',
     "debug_toolbar",
-    'django_crontab',
 
 ]
 
@@ -169,10 +168,6 @@ DATABASES = {
         }
     }
 }
-
-CRONJOBS = [
-    ('59 5 * * *', 'api_post.services.craw.thread_crawl_vietcetera'),
-]
 
 
 # Password validation
