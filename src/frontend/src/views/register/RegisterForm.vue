@@ -6,7 +6,7 @@
     style="min-height: 520px"
     :rules="rules"
   >
-    <div class="title" style="color: #024547; font-size: 2rem;">Become a member</div>
+    <div class="title" style="color: #121221; font-size: 2rem;">Become a member</div>
 
     <el-form-item prop="full_name">
       <el-input
@@ -52,13 +52,13 @@
     <el-row>
       <label class="checkbox my-3" style="font-size: 1rem">
         <input type="checkbox" v-model="is_agree_term">
-        I agree to the <a href="#" style="color: #07B464;">terms and conditions</a>
+        I agree to the <a href="#"><strong>terms and conditions</strong></a>
       </label>
     </el-row>
     <div class="field">
       <p :class="['control', 'is-flex', 'is-justify-content-center']">
         <el-button
-          class="button is-success is-fullwidth mt-2"
+          class="button is-dark is-fullwidth mt-2"
           @click="onRegister($refs.registerFormRef)"
           size="large"
           :disabled="is_freeze"
@@ -68,7 +68,7 @@
       </p>
       <p class="subtitle mt-3 is-flex is-justify-content-center" style="font-size: 1rem">
         Already have an account?
-        <router-link to="/login" class="ml-1" style="color: #07B464;">Log in</router-link>
+        <router-link to="/login" class="ml-1">Log in</router-link>
       </p>
     </div>
   </el-form>

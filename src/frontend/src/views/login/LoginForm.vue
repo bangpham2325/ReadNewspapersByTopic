@@ -5,7 +5,7 @@
     :model="loginForm"
     :rules="rules"
   >
-    <div class="title" style="color: #024547; font-size: 2rem;">Welcome to V-Volunteer</div>
+    <div class="title" style="color: #121221; font-size: 2rem;">Welcome to N-Portal</div>
 
     <el-form-item prop="email">
       <el-input
@@ -36,14 +36,17 @@
 
     <div class="field">
       <p :class="['control', 'is-flex', 'is-justify-content-center']">
-        <el-button class="button is-success is-fullwidth mt-2" @click="onLogin($refs.loginFormRef)" size="large"
+        <el-button class="button is-dark is-fullwidth mt-2" @click="onLogin($refs.loginFormRef)" size="large"
                    :disabled="is_freeze">
           Login
         </el-button>
       </p>
-      <GoogleLogin :callback="googleLogin"/>
+      <p :class="['control', 'is-flex', 'is-justify-content-center']">
+        <GoogleLogin :callback="googleLogin"/>
+      </p>
+      
       <p class="subtitle mt-3 is-flex is-justify-content-center" style="font-size: 1rem">
-        New to V-Volunteer?
+        New to N-Portal?
         <router-link class="ml-1" to="/register">Sign up!</router-link>
       </p>
     </div>
@@ -98,7 +101,7 @@ declare const gapi: any;
           if (response.status == 200) {
             const user_info: any = await this.GET_USER_INFO(this.tokenInfo.user_id)
             if (user_info.status == 200) {
-              this.$router.push("/")
+              this.$router.push("/home")
               return
             }
           } else {

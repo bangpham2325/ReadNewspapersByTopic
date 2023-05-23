@@ -7,8 +7,8 @@
           <el-col :span="12">
             <router-link to="/home">
               <div class="logo is-flex is-justify-content-left">
-                <div class="logo__icon">v</div>
-                <div class="logo__text">volunteer</div>
+                <div class="logo__icon">N</div>
+                <div class="logo__text">Portal</div>
               </div>
             </router-link>
           </el-col>
@@ -19,9 +19,9 @@
         <RegisterForm></RegisterForm>
       </el-main>
       <footer class="footer">
-        <div class="content has-text-centered">
+        <div class="has-text-centered">
           <p>
-            <strong>Project</strong> V-Volunteer. The source code is licensed.
+            <strong>Capstone project 2023.</strong> The source code is licensed.
           </p>
         </div>
       </footer>

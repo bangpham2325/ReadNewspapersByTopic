@@ -1,14 +1,14 @@
 <template>
-      <AvatarSection 
-        :user="user"
-        @changeAvatar="user.avatar = $event"
-      ></AvatarSection>
-      <el-row
-        style="background-color: white; border-radius: 10px"
-        class="p-5 m-3"
-      >
-        <InfoSection :editForm="editForm"></InfoSection>
-      </el-row>
+  <AvatarSection 
+  :user="user"
+  @changeAvatar="user.avatar = $event"
+  style="border:1px solid #ccc!important;"></AvatarSection>
+  <el-row
+    style="background-color: white; border-radius: 10px; border:1px solid #ccc!important;"
+    class="p-5 m-3"
+  >
+    <InfoSection :editForm="editForm"></InfoSection>
+  </el-row>
 </template>
 
 <script lang="ts">
@@ -17,11 +17,15 @@ import { mapActions, mapMutations, mapGetters } from "vuex";
 import { ActionTypes } from "@/types/store/ActionTypes";
 import AvatarSection from "./AvatarSection.vue";
 import InfoSection from "./InfoSection.vue";
+import TopBar from "@/components/TopBar.vue";
+import LogoWeb from "@/components/LogoWeb.vue";
 
 @Options({
   components: {
     AvatarSection,
     InfoSection,
+    TopBar,
+    LogoWeb
   },
   data() {
     return {
@@ -59,5 +63,9 @@ import InfoSection from "./InfoSection.vue";
 export default class ProfileEdit extends Vue {}
 </script>
 
-<style>
+<style lang="scss">
+.layout {
+  background-color: #e7e7e7;
+  padding: 2.5% 10% 1% 10%;
+}
 </style>
