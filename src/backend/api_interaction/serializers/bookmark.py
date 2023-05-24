@@ -34,5 +34,8 @@ class BookmarkSerializer(serializers.ModelSerializer):
         if context and context.action in ['create']:
             data.update({'post_id': context.kwargs['post_pk']})
             data.update({'user_id': context.request.user.user.id})
+        if context and context.action in ['add_bookmark']:
+            data.update({'post_id': context.kwargs['pk']})
+            data.update({'user_id': context.request.user.user.id})
         data_res = super().to_internal_value(data)
         return data_res
