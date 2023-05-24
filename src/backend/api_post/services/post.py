@@ -45,10 +45,9 @@ class PostService(BaseService):
     @classmethod
     def get_list_post_by_category(cls, params=None):
         ft = Q(status=PostStatus.PUBLISHED.value)
-        if params.get('title'):
-            ft &= Q(title_lower__contains=str(params.get('title')).strip().lower())
-        if params.get('author'):
-            ft &= Q(author=params.get('author'))
+        if params.get('search'):
+            search_string = params.get('search')
+            ft &= (Q(author__contains=search_string) | Q(category__title__contains=search_string) | Q(title_lower__contains=str(search_string).strip().lower()))
         if params.get('start_date') and params.get('end_date'):
             ft &= Q(publish_date__range=[params.get('start_date'), params.get('end_date')])
         posts = Posts.objects.annotate(title_lower=Lower('title')).filter(ft).prefetch_related('category')
@@ -78,13 +77,12 @@ class PostService(BaseService):
     @classmethod
     def get_post_management(cls, params=None):
         ft = Q()
-        if params.get('title'):
-            ft &= Q(title__contains=params.get('title'))
-        if params.get('author'):
-            ft &= Q(author=params.get('author'))
+        if params.get('search'):
+            search_string = params.get('search')
+            ft &= (Q(author__contains=search_string) | Q(category__title__contains=search_string) | Q(title_lower__contains=str(search_string).strip().lower()))
         if params.get('start_date') and params.get('end_date'):
             ft &= Q(publish_date__range=[params.get('start_date'), params.get('end_date')])
-        posts = Posts.objects.filter(ft).prefetch_related('category')
+        posts = Posts.objects.annotate(title_lower=Lower('title')).filter(ft).prefetch_related('category')
         if params.getlist('categories'):
             topic_ids = params.getlist('categories')
             posts = posts.filter(category__id__in=topic_ids)

@@ -8,6 +8,7 @@ from django.db.models import Q
 from rest_framework import status
 from rest_framework.decorators import action
 from api_auth.permissions import AdminPermission, UserPermission
+from api_interaction.serializers.bookmark import BookmarkSerializer
 
 from api_user.constants import Roles
 from common.constants.api_constants import HttpMethod
@@ -25,7 +26,8 @@ class PostViewSet(BaseViewSet):
         "get_post_management": [AdminPermission],
         "like_post": [IsAuthenticated],
         "list_bookmark": [IsAuthenticated],
-        "update_list_status_post": [AdminPermission]
+        "update_list_status_post": [AdminPermission],
+        "add_bookmark": [IsAuthenticated],
 
     }
     serializer_map = {
@@ -67,16 +69,21 @@ class PostViewSet(BaseViewSet):
 
         return Response(data=None, status=status.HTTP_200_OK)
 
-    @action(methods=[HttpMethod.GET], detail=True, url_path="like_post", serializer_class=PostShortSerializer, permission_class=[IsAuthenticated])
+    @action(methods=[HttpMethod.GET], detail=True, url_path="like_post", serializer_class=PostShortSerializer)
     def like_post(self, request, *args, **kwargs):
         post = self.get_object()
+        status_like = False
         if request.user.user in post.liked_by.all():
-            return Response({'message': 'You have already liked this post!'}, status=status.HTTP_400_BAD_REQUEST)
-        post.likes += 1
-        post.save()
-        post.liked_by.add(request.user.user)
+            post.likes -= 1
+            post.save()
+            post.liked_by.remove(request.user.user)
+        else:
+            post.likes += 1
+            status_like = True
+            post.save()
+            post.liked_by.add(request.user.user)
         serializer = self.get_serializer(post)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response({"likes": serializer.data['likes'], "status": status_like}, status=status.HTTP_200_OK)
 
     @action(methods=[HttpMethod.GET], detail=False, url_path="list_bookmark", serializer_class=PostShortSerializer)
     def list_bookmark(self, request, *args, **kwargs):
@@ -91,3 +98,15 @@ class PostViewSet(BaseViewSet):
         post_ids = request.data.get('post_ids', [])
         PostService.update_status_post(post_ids)
         return Response({'message': 'Your changes have been saved.'}, status=status.HTTP_200_OK)
+
+    @action(methods=[HttpMethod.GET], detail=True, url_path="add_bookmark", serializer_class=BookmarkSerializer)
+    def add_bookmark(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data={})
+        bookmark = Bookmark.objects.filter(user_id=request.user.user.id, post_id=kwargs['pk'])
+        if bookmark.exists():
+            self.perform_destroy(bookmark)
+            return Response({'message': 'you have deleted bookmarks for this post!', "status": False}, status=status.HTTP_200_OK)
+        else:
+            serializer.is_valid(raise_exception=True)
+            self.perform_create(serializer)
+            return Response({'message': 'you have added bookmarks for this post!', "status": True}, status=status.HTTP_200_OK)
