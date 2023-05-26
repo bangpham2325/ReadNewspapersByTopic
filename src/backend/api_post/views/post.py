@@ -1,10 +1,10 @@
 from api_base.views import BaseViewSet
 from api_post.models import Posts
-from api_post.serializers import PostSerializer, PostShortSerializer
+from api_post.serializers import PostSerializer, PostShortSerializer, PostLikeSerializer
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
-from django.db.models import Q
+from django.db.models import Q, Avg, Prefetch
 from rest_framework import status
 from rest_framework.decorators import action
 from api_auth.permissions import AdminPermission, UserPermission
@@ -13,7 +13,7 @@ from api_interaction.serializers.bookmark import BookmarkSerializer
 from api_user.constants import Roles
 from common.constants.api_constants import HttpMethod
 from api_post.services import PostService
-from api_interaction.models import Bookmark
+from api_interaction.models import Bookmark, Comment, Rating
 
 
 class PostViewSet(BaseViewSet):
@@ -33,6 +33,18 @@ class PostViewSet(BaseViewSet):
     serializer_map = {
         "list": PostShortSerializer,
     }
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = Posts.objects.select_related('category', 'source').prefetch_related(
+                        Prefetch('post_rating', queryset=Rating.objects.select_related('user')),
+                        Prefetch('post_comment', queryset=Comment.objects.select_related('user').prefetch_related(
+                            Prefetch('child_comments', queryset=Comment.objects.select_related('user'))
+                        )),
+                        Prefetch('post_bookmark', queryset=Bookmark.objects.select_related('user'))
+                    )\
+            .prefetch_related('contents', 'keywords').get(id=kwargs['pk'])
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     def list(self, request, *args, **kwargs):
         params = request.query_params
@@ -69,7 +81,7 @@ class PostViewSet(BaseViewSet):
 
         return Response(data=None, status=status.HTTP_200_OK)
 
-    @action(methods=[HttpMethod.GET], detail=True, url_path="like_post", serializer_class=PostShortSerializer)
+    @action(methods=[HttpMethod.GET], detail=True, url_path="like_post", serializer_class=PostLikeSerializer)
     def like_post(self, request, *args, **kwargs):
         post = self.get_object()
         status_like = False
@@ -89,11 +101,12 @@ class PostViewSet(BaseViewSet):
     def list_bookmark(self, request, *args, **kwargs):
         bookmark = Bookmark.objects.filter(user_id=request.user.user.id)
         post_ids = [item[0] for item in list(bookmark.values_list('post_id'))]
-        post = Posts.objects.filter(id__in=post_ids)
+        post = Posts.objects.filter(id__in=post_ids).prefetch_related('category').prefetch_related('source').prefetch_related('post_rating'
+        ).annotate(avg_rating=Avg("post_rating__star_rating"))
         serializer = self.get_serializer(post, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-    @action(methods=[HttpMethod.PATCH], detail=False, url_path="publish_post", serializer_class=PostShortSerializer)
+    @action(methods=[HttpMethod.PATCH], detail=False, url_path="publish_post")
     def update_list_status_post(self, request, *args, **kwargs):
         post_ids = request.data.get('post_ids', [])
         PostService.update_status_post(post_ids)

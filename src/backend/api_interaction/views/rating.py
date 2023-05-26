@@ -16,7 +16,7 @@ class RatingViewSet(BaseViewSet):
     def create(self, request, *args, **kwargs):
         rating = Rating.objects.filter(Q(user_id=request.user.user.id) & Q(post_id=kwargs.get('post_pk')))
         if rating.exists():
-            return Response({"detail": "you have created rating "}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"detail": "you have created rating "}, status=status.HTTP_200_OK)
         else:
             serializer = self.get_serializer(data=request.data)
             serializer.is_valid(raise_exception=True)
