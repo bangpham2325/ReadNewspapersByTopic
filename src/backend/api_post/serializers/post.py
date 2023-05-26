@@ -79,22 +79,23 @@ class PostSerializer(serializers.ModelSerializer):
             instance.views += 1
             instance.save()
         data = super().to_representation(instance)
-        data['contents'] = ContentSerializer(contents, many=True).data
-        comment = data['post_comment']
-        rating = data['post_rating']
-        data['total_comment'] = len(comment)
-        data['total_rating'] = len(rating)
-        if len(comment) != 0:
-            result = list(filter(lambda kq: kq['parent_comment'] is None, comment))
+        data['total_comment'] = instance.post_comment.count()
+        data['total_rating'] = instance.post_rating.count()
+        if data['total_comment'] != 0 and data['total_comment'] is not None:
+            result = list(filter(lambda kq: kq['parent_comment'] is None, data['post_comment']))
             data['post_comment'] = result
-        if len(rating) != 0:
-            data['post_rating'] = sorted(rating, key=lambda d: d['created_at'], reverse=True)
+        if data['total_rating'] != 0 and data['total_rating'] is not None:
+            data['post_rating'] = sorted(data['post_rating'], key=lambda d: d['created_at'], reverse=True)
         try:
-            data['has_bookmarked'] = True if Bookmark.objects.filter(Q(post_id=data['id']) & Q(user_id=context.request.user.user.id)) else False
+            data['has_bookmarked'] = Bookmark.objects.filter(
+                post_id=data['id'], user_id=context.request.user.user.id
+            ).exists()
         except:
             data['has_bookmarked'] = False
         try:
-            data['has_liked'] = True if instance.liked_by.filter(id=context.request.user.user.id) else False
+            data['has_liked'] = instance.liked_by.filter(
+                id=context.request.user.user.id
+            ).exists()
         except:
             data['has_liked'] = False
         return data
@@ -103,7 +104,7 @@ class PostSerializer(serializers.ModelSerializer):
 class PostShortSerializer(serializers.ModelSerializer):
     category = CategorySerializer(required=True)
     source = SourceSerializer(required=True)
-    avg_rating = serializers.SerializerMethodField()  # Add SerializerMethodField for average rating
+    avg_rating = serializers.IntegerField()  # Add SerializerMethodField for average rating
     publish_date = PublishDateField()
 
     class Meta:
@@ -121,21 +122,17 @@ class PostShortSerializer(serializers.ModelSerializer):
             "publish_date",
             "status",
             "likes",
-            "post_rating",
             "views",
             "avg_rating"
         ]
 
-    def get_avg_rating(self, instance):
-        rating = Rating.objects.filter(post_id=instance.id)
-        list_star_rating = rating.values_list('star_rating', flat=True).order_by()
-        try:
-            avg_rating = round(sum(list_star_rating) / len(rating), 2)
-        except ZeroDivisionError:
-            avg_rating = 0
-        return avg_rating
 
-    def to_representation(self, instance):
-        data = super().to_representation(instance)
-        data['avg_rating'] = self.get_avg_rating(instance)
-        return data
+class PostLikeSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Posts
+        fields = [
+            "id",
+            "title",
+            "likes"
+        ]
