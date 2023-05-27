@@ -1,12 +1,14 @@
 import re
 
+import numpy as np
 import requests
 from bs4 import BeautifulSoup
 from django.db import transaction
 from api_base.services import BaseService
 from bs4.element import Tag
-from api_post.models import Keyword, Posts, Contents, Source
+from api_post.models import Keyword, Posts, Contents, Source, PostVector
 from .post import PostService
+from .post_vector import PostVectorService
 from .content import ContentService
 from .keyword import KeywordService
 from utils import Util, Data_Process
@@ -14,6 +16,8 @@ from keras import models
 import pickle
 import core
 import os
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.decomposition import TruncatedSVD
 
 import after_response
 
@@ -21,9 +25,9 @@ root_url_vietcetera = "https://vietcetera.com"
 root_url_dantri = "https://dantri.com.vn/tin-moi-nhat.htm"
 root_url_vnexpress = "https://vnexpress.net/tin-tuc-24h"
 root_url_vietnamnet = "https://vietnamnet.vn"
+file_path = 'tfidf_vectors.pkl'
 
-
-model_file = os.path.join(core.settings.BASE_DIR, '../AI/models/model_test1')
+model_file = os.path.join(core.settings.BASE_DIR, '../AI/models/model_test2')
 encoder_file = os.path.join(core.settings.BASE_DIR, '../AI/encoder.pkl')
 model = models.load_model(model_file)
 
@@ -90,7 +94,11 @@ class CrawlService(BaseService):
                             item["description_img"] = Util.remove_space(child.find("figcaption").text)
                             if type(child.find("img")) != type(None):
                                 item["image"] = child.find("img").get("data-srcset")
-                                item["paragraph"]["below_img"] = True
+                                try:
+                                    item["paragraph"][-1]["below_img"] = True
+                                except:
+                                    item["paragraph"].append(paragraph)
+                                    item["paragraph"][-1]["below_img"] = True
 
                     if item["paragraph"]:
                         news["content"].append(item)
@@ -408,8 +416,27 @@ class CrawlService(BaseService):
     @classmethod
     def craw_and_save_data_in_db(cls, data):
         try:
+            in_db_sources = Source.objects.values_list("domain", flat=True)
+            data = list(
+                filter(lambda x: x.get("source") not in in_db_sources, data)
+            )
+            if not data:
+                return
             data_class = Data_Process(data)
             input_data = data_class.convert_data()
+            if os.path.exists(file_path):
+                # Load the existing data from the file
+                with open(file_path, 'rb') as file:
+                    existing_data = pickle.load(file)
+
+                # Combine the existing data with the new data
+                combined_data = np.concatenate((existing_data, input_data), axis=0)
+            else:
+                combined_data = input_data  # No existing data, use only the new data
+
+            # Save the combined data to the file, overwriting it
+            with open(file_path, 'wb') as file:
+                pickle.dump(combined_data, file)
         except Exception as e:
             print("Exception: " + e)
         scores = model.predict(input_data).argmax(axis=-1)
@@ -424,6 +451,9 @@ class CrawlService(BaseService):
                 news_objs = Posts.objects.bulk_create(
                     news_data, ignore_conflicts=True
                 )
+                post_vector = PostVectorService.create_list_post_vector(input_data, news_objs)
+                # Bulk create the news vectors
+                PostVector.objects.bulk_create(post_vector)
                 keyword_data = KeywordService.create_list_keyword(data, news_objs)
                 Keyword.objects.bulk_create(keyword_data, ignore_conflicts=True)
                 content_data = ContentService.create_list_content(data, news_objs)

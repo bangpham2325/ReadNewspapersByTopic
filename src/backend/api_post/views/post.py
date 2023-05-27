@@ -1,3 +1,4 @@
+import api_post
 from api_base.views import BaseViewSet
 from api_post.models import Posts
 from api_post.serializers import PostSerializer, PostShortSerializer
@@ -96,3 +97,18 @@ class PostViewSet(BaseViewSet):
         post_ids = request.data.get('post_ids', [])
         PostService.update_status_post(post_ids)
         return Response({'message': 'Your changes have been saved.'}, status=status.HTTP_200_OK)
+
+
+    @action(methods=[HttpMethod.GET], detail=False, url_path="test_craw")
+    def test_craw(self, request, *args, **kwargs):
+        # data = api_post.services.craw.thread_crawl_dantri()
+        # data = api_post.services.craw.thread_crawl_vnexpress()
+        # data = api_post.services.craw.thread_crawl_vietnamnet()
+        data = api_post.services.craw.thread_crawl_vietcetera()
+        return Response({'message': data})
+
+    @action(methods=[HttpMethod.GET], detail=True, url_path="recommend", serializer_class=PostShortSerializer)
+    def recommend(self, request, *args, **kwargs):
+        data = api_post.services.recommendation.get_recommendations(kwargs['pk'])
+        serializer = self.get_serializer(data, many=True)
+        return Response({'message': serializer.data})
