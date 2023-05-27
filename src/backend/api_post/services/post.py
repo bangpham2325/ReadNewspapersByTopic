@@ -7,6 +7,8 @@ from api_post.constants import PostStatus
 from api_post.models import Posts, Category, Source
 from api_user.constants import Roles
 from django.db.models import Avg
+import secrets
+import string
 
 
 class PostService(BaseService):
@@ -32,8 +34,12 @@ class PostService(BaseService):
             for index, post in enumerate(source_crawl):
                 source = Source(title=post.get("title"), domain=post.get("source"))
                 sources.append(source)
+                title_words = post.get("title").split()
+                shortened_title = ' '.join(title_words[:5])
+                random_chars = ''.join(secrets.choice(string.ascii_letters + string.digits) for _ in range(6))
                 objs.append(Posts(
                     title=post.get("title"),
+                    slug=slugify(f"{shortened_title} {random_chars}"),
                     thumbnail=post.get("thumbnail"),
                     category=category.filter(title=topic[index]).first(),
                     source=source,

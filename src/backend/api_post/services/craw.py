@@ -468,11 +468,15 @@ class CrawlService(BaseService):
             input_data = data_class.convert_data()
             if os.path.exists(file_path):
                 # Load the existing data from the file
-                with open(file_path, 'rb') as file:
-                    existing_data = pickle.load(file)
-
+                file = default_storage.open(file_path, 'rb')
+                # Read the file content as bytes
+                file_content = file.read()
+                # Load the data from the file content
+                tfidf_vectors_svd = pickle.loads(file_content)
+                # with open(file_path, 'rb') as file:
+                #     existing_data = pickle.load(file)
                 # Combine the existing data with the new data
-                combined_data = np.concatenate((existing_data, input_data), axis=0)
+                combined_data = np.concatenate((tfidf_vectors_svd, input_data), axis=0)
             else:
                 combined_data = input_data  # No existing data, use only the new data
 
