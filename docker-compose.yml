@@ -7,8 +7,23 @@ services:
     ports:
       - 8000:8000
     image:  bangpham2325/backend-image:latest
-    container_name: django_container5
+    container_name: django_container
     restart: always
     env_file:
       - ./docker.env
     command: bash -c "python3 manage.py collectstatic --noinput && python3 manage.py migrate --noinput && gunicorn core.wsgi -b 0.0.0.0:8000"
+
+  ai:
+    ports:
+      - 8001:8001
+    image:  bangpham2325/ai-image:latest
+    container_name: ai_container
+    restart: always
+    env_file:
+      - ./docker.env
+    command: bash -c "gunicorn core.wsgi -b 0.0.0.0:8001"
+
+
+
+
+

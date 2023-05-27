@@ -1,12 +1,14 @@
 import re
 
+import numpy as np
 import requests
 from bs4 import BeautifulSoup
 from django.db import transaction
 from api_base.services import BaseService
 from bs4.element import Tag
-from api_post.models import Keyword, Posts, Contents, Source
+from api_post.models import Keyword, Posts, Contents, Source, PostVector
 from .post import PostService
+from .post_vector import PostVectorService
 from .content import ContentService
 from .keyword import KeywordService
 from utils import Util, Data_Process
@@ -14,6 +16,8 @@ from keras import models
 import pickle
 import core
 import os
+from django.core.files.storage import default_storage
+
 
 import after_response
 
@@ -21,11 +25,12 @@ root_url_vietcetera = "https://vietcetera.com"
 root_url_dantri = "https://dantri.com.vn/tin-moi-nhat.htm"
 root_url_vnexpress = "https://vnexpress.net/tin-tuc-24h"
 root_url_vietnamnet = "https://vietnamnet.vn"
+file_path = 'tfidf_vectors.pkl'
 
-
-model_file = os.path.join(core.settings.BASE_DIR, '../AI/models/model_test1')
+model_file = os.path.join(core.settings.BASE_DIR, '../AI/models/model_test2')
 encoder_file = os.path.join(core.settings.BASE_DIR, '../AI/encoder.pkl')
 model = models.load_model(model_file)
+pattern = r"(https:\S+)(?=\s?2x|,)"
 
 with open(encoder_file, 'rb') as f:
     encoder = pickle.load(f)
@@ -39,12 +44,18 @@ class CrawlService(BaseService):
     ):
         page = requests.get(url)
         soup = BeautifulSoup(page.content, "html.parser")
-        cards = soup.select('[class*="styles_s-horizontal-card"]')[0:20]
-        thumbnails = soup.select('[class*="styles_s-image"] img')
+        cards = soup.select('[class*="styles_s-horizontal-card"][class*="rounded-12pt p-16pt styles_s-card"]')[0:20]
         arr_news = []
         for idx, item in enumerate(cards):
             try:
                 link = url + item.find("a").get("href")
+
+                try:
+                    source_list = [item['source'] for item in arr_news]
+                    if link in source_list:
+                        continue
+                except:
+                    pass
                 page_detail = requests.get(link)
                 soup_detail = BeautifulSoup(page_detail.content, "html.parser")
                 news = {
@@ -53,7 +64,7 @@ class CrawlService(BaseService):
                         soup_detail.select('[class*="articleTitle"]')[0].text
                     ),
                     "excerpt": Util.remove_space(soup_detail.select('[class*="articleExcerpt"]')[0].text),
-                    "thumbnail": thumbnails[idx].get("src"),
+                    "thumbnail": item.find('figure').find('img').get("src"),
                     "content": [],
                     "author": Util.remove_space(soup_detail.select('[class*="articleAuthorInfo"] span')[0].text),
                     "keyword": list(
@@ -90,7 +101,11 @@ class CrawlService(BaseService):
                             item["description_img"] = Util.remove_space(child.find("figcaption").text)
                             if type(child.find("img")) != type(None):
                                 item["image"] = child.find("img").get("data-srcset")
-                                item["paragraph"]["below_img"] = True
+                                try:
+                                    item["paragraph"][-1]["below_img"] = True
+                                except:
+                                    item["paragraph"].append(paragraph)
+                                    item["paragraph"][-1]["below_img"] = True
 
                     if item["paragraph"]:
                         news["content"].append(item)
@@ -114,13 +129,19 @@ class CrawlService(BaseService):
                 link = url + item.find("a").get("href")
                 page_detail = requests.get(link)
                 soup_detail = BeautifulSoup(page_detail.content, "html.parser")
+                data_srcset = item.find("div", {"class": "article-thumb"}).find("img").get("srcset")
+                if data_srcset is None:
+                    thumbnails_image = item.find("div", {"class": "article-thumb"}).find("img").get("src")
+                else:
+                    thumbnails_re = re.findall(pattern, data_srcset)
+                    thumbnails_image = thumbnails_re[0]
                 news = {
                     "source": link,
                     "title":
                         Util.remove_space(soup_detail.select('[class*="title-page"]')[0].text)
                     ,
                     "excerpt": Util.remove_space(soup_detail.select('[class*="singular-sapo"]')[0].text),
-                    "thumbnail": thumbnails[idx].get("src"),
+                    "thumbnail": thumbnails_image,
                     "content": [],
                     "author": Util.remove_space(soup_detail.select('[class*="author-name"] b')[0].text),
                     "keyword": list(
@@ -178,7 +199,12 @@ class CrawlService(BaseService):
                     elif isinstance(child, Tag) and child.name == "figure":
                         item["description_img"] = Util.remove_space(child.find("figcaption").text)
                         if type(child.find("img")) != type(None):
-                            item["image"] = child.find("img").get("data-src")
+                            data_srcset = child.find("img").get("data-srcset")
+                            if data_srcset is None:
+                                item["image"] = child.find("img").get("data-src")
+                            else:
+                                thumbnails_re = re.findall(pattern, data_srcset)
+                                item["image"] = thumbnails_re[0]
                             if item["paragraph"]:
                                 item["paragraph"][-1]["below_img"] = True
                             else:
@@ -207,7 +233,7 @@ class CrawlService(BaseService):
         page = requests.get(url)
         soup = BeautifulSoup(page.content, "html.parser")
         cards = soup.select('[class*="item-news item-news-common"]')[0:20]
-        thumbnails = soup.select('[class*="thumb-art"] img')
+        # thumbnails = soup.select('[class*="thumb-art"] img')
         arr_news = []
         for idx, item in enumerate(cards):
             try:
@@ -218,14 +244,26 @@ class CrawlService(BaseService):
                     author = soup_detail.select('p[class*="Normal"][style*="text-align:right"] strong')[0].text
                 except:
                     author = soup_detail.select('p[class*="author_mail"] strong')[0].text
-
+                # Extract the value of srcset or data-srcset attribute
+                source_tag = item.find("picture").find("img").find_previous_sibling('source')
+                if 'srcset' in source_tag.attrs:
+                    data_srcset = source_tag['srcset']
+                elif 'data-srcset' in source_tag.attrs:
+                    data_srcset = source_tag['data-srcset']
+                else:
+                    data_srcset = None
+                if data_srcset is None:
+                    thumbnails_image = item.find("picture").find("img").get("src")
+                else:
+                    thumbnails_re = re.findall(pattern, data_srcset)
+                    thumbnails_image = thumbnails_re[0]
                 news = {
                     "source": link,
                     "title":
                         Util.remove_space(soup_detail.select('[class*="title-detail"]')[0].text)
                     ,
                     "excerpt": Util.remove_space(soup_detail.select('[class*="description"]')[0].text),
-                    "thumbnail": thumbnails[idx].get("src"),
+                    "thumbnail": thumbnails_image,
                     "content": [],
                     "author": Util.remove_space(author),
                     "keyword": list(
@@ -284,7 +322,18 @@ class CrawlService(BaseService):
                     elif isinstance(child, Tag) and child.name == "figure":
                         item["description_img"] = Util.remove_space(child.find("figcaption").text)
                         if type(child.find("img")) != type(None):
-                            item["image"] = child.find("img").get("src")
+                            source_tag = child.find("img").find_previous_sibling('source')
+                            if 'srcset' in source_tag.attrs:
+                                data_srcset = source_tag['srcset']
+                            elif 'data-srcset' in source_tag.attrs:
+                                data_srcset = source_tag['data-srcset']
+                            else:
+                                data_srcset = None
+                            if data_srcset is None:
+                                item["image"] = child.find("img").get("data-src")
+                            else:
+                                thumbnails_re = re.findall(pattern, data_srcset)
+                                item["image"] = thumbnails_re[0]
                             if item["paragraph"]:
                                 item["paragraph"][-1]["below_img"] = True
                             else:
@@ -320,13 +369,14 @@ class CrawlService(BaseService):
                 link = root_url_vietnamnet + item.find("a").get("href")
                 page_detail = requests.get(link)
                 soup_detail = BeautifulSoup(page_detail.content, "html.parser")
+                thumbnails_image = item.find("a").find("img").get("src")
                 news = {
                     "source": link,
                     "title":
                         Util.remove_space(soup_detail.select('[class*="content-detail-title"]')[0].text)
                     ,
                     "excerpt": Util.remove_space(soup_detail.select('[class*="content-detail-sapo"]')[0].text),
-                    "thumbnail": thumbnails[idx].get("src"),
+                    "thumbnail": thumbnails_image,
                     "content": [],
                     "author": Util.remove_space(soup_detail.select('[class*="article-detail-author__info"] a')[0].text),
                     "keyword": list(
@@ -408,8 +458,35 @@ class CrawlService(BaseService):
     @classmethod
     def craw_and_save_data_in_db(cls, data):
         try:
+            in_db_sources = Source.objects.values_list("domain", flat=True)
+            data = list(
+                filter(lambda x: x.get("source") not in in_db_sources, data)
+            )
+            if not data:
+                return
             data_class = Data_Process(data)
             input_data = data_class.convert_data()
+            if os.path.exists(file_path):
+                # Load the existing data from the file
+                with open(file_path, 'rb') as file:
+                    existing_data = pickle.load(file)
+
+                # Combine the existing data with the new data
+                combined_data = np.concatenate((existing_data, input_data), axis=0)
+            else:
+                combined_data = input_data  # No existing data, use only the new data
+
+            # Save the combined data to the file, overwriting it
+            with open(file_path, 'wb') as file:
+                pickle.dump(combined_data, file)
+
+            with open(file_path, 'rb') as file:
+                try:
+                    default_storage.save(file_path, file)
+                    print("File uploaded successfully!")
+                except Exception as e:
+                    print("An error occurred while uploading the file:", str(e))
+
         except Exception as e:
             print("Exception: " + e)
         scores = model.predict(input_data).argmax(axis=-1)
@@ -424,6 +501,9 @@ class CrawlService(BaseService):
                 news_objs = Posts.objects.bulk_create(
                     news_data, ignore_conflicts=True
                 )
+                post_vector = PostVectorService.create_list_post_vector(input_data, news_objs)
+                # Bulk create the news vectors
+                PostVector.objects.bulk_create(post_vector)
                 keyword_data = KeywordService.create_list_keyword(data, news_objs)
                 Keyword.objects.bulk_create(keyword_data, ignore_conflicts=True)
                 content_data = ContentService.create_list_content(data, news_objs)
@@ -450,4 +530,3 @@ def thread_crawl_vnexpress():
 def thread_crawl_vietnamnet():
     data_vietnamnet = CrawlService.crawl_from_url_vietnamnet()
     CrawlService.craw_and_save_data_in_db(data_vietnamnet)
-

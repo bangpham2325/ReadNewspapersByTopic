@@ -18,7 +18,7 @@ class Posts(TimeStampedModel):
         Category, related_name="posts", null=True, blank=True, on_delete=models.SET_NULL
     )
     source = models.OneToOneField(
-        Source, related_name="posts", on_delete=models.SET_NULL, null=True, blank=True
+        Source, related_name="posts", on_delete=models.CASCADE, null=True, blank=True
     )
     likes = models.IntegerField(default=0)
     liked_by = models.ManyToManyField(User, related_name="liked_by", null=True, blank=True)

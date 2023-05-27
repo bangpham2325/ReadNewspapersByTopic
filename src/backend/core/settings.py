@@ -171,10 +171,10 @@ DATABASES = {
 }
 
 CRONJOBS = [
-    ('59 5 * * *', 'api_post.services.craw.thread_crawl_vietcetera'),
-    ('59 5 * * *', 'api_post.services.craw.thread_crawl_dantri'),
-    ('59 5 * * *', 'api_post.services.craw.thread_crawl_vnexpress'),
-    ('59 5 * * *', 'api_post.services.craw.thread_crawl_vietnamnet'),
+    ('*/59 * * * *', 'api_post.services.craw.thread_crawl_vietcetera'),
+    ('*/59 * * * *', 'api_post.services.craw.thread_crawl_dantri'),
+    ('*/59 * * * *', 'api_post.services.craw.thread_crawl_vnexpress'),
+    ('*/59 * * * *', 'api_post.services.craw.thread_crawl_vietnamnet'),
 ]
 
 
