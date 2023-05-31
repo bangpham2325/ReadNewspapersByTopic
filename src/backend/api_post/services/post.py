@@ -50,7 +50,7 @@ class PostService(BaseService):
             ft &= (Q(author__contains=search_string) | Q(category__title__contains=search_string) | Q(title_lower__contains=str(search_string).strip().lower()))
         if params.get('start_date') and params.get('end_date'):
             ft &= Q(publish_date__range=[params.get('start_date'), params.get('end_date')])
-        posts = Posts.objects.annotate(title_lower=Lower('title')).filter(ft).prefetch_related('category').prefetch_related('source').prefetch_related('post_rating')
+        posts = Posts.objects.annotate(title_lower=Lower('title')).filter(ft).prefetch_related('category').prefetch_related('source').prefetch_related('post_rating').annotate(avg_rating=Avg("post_rating__star_rating"))
         if params.getlist('categories'):
             topic_ids = params.getlist('categories')
             posts = posts.filter(category__id__in=topic_ids)
