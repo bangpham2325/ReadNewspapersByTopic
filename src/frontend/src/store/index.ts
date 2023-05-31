@@ -7,6 +7,7 @@ import { campaignProcess } from '@/store/modules/campaignProcess';
 import { transaction } from './modules/transaction';
 import { rating } from './modules/rating';
 import { post } from './modules/post';
+import { discussion } from './modules/discussion';
 
 import createPersistedState from "vuex-persistedstate";
 
@@ -32,6 +33,7 @@ export default createStore({
     campaignProcess,
     transaction,
     rating,
-    post
+    post,
+    discussion
   }
 })

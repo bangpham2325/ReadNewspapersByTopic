@@ -9,6 +9,7 @@ import PostBasePage from "@/views/post/index.vue";
 import PostDetailPage from  "@/views/post/detail/index.vue";
 import PostCategoryPage from "@/views/post/category/index.vue";
 import SearchPage from "@/views/post/search/index.vue";
+import BookmarkPage from "@/views/post/bookmark/index.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -52,7 +53,12 @@ const routes: Array<RouteRecordRaw> = [
             path: ":text",
             name: "searchpage",
             component: SearchPage,
-          }
+          },
+          {
+            path: "saved",
+            name: "bookmark",
+            component: BookmarkPage,
+          },
         ]
       },
     ]

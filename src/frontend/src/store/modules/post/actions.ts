@@ -32,10 +32,20 @@ export interface Actions {
     params: any
   ): void,
 
-  // [ActionTypes.DELETE_TOPIC](
-  //   { commit }: AugmentedActionContext,
-  //   id: string
-  // ): void,
+  [ActionTypes.FETCH_POST_BY_BOOKMARK](
+    { commit }: AugmentedActionContext,
+    params: any
+  ): void,
+
+  [ActionTypes.ADD_POST_BOOKMARK](
+    { commit }: AugmentedActionContext,
+    id: string
+  ): void,
+
+  [ActionTypes.LIKE_POST](
+    { commit }: AugmentedActionContext,
+    id: string
+  ): any,
 }
 
 export const actions: ActionTree<State, State> & Actions = {
@@ -54,9 +64,18 @@ export const actions: ActionTree<State, State> & Actions = {
     return response
   },
 
-  // async [ActionTypes.DELETE_TOPIC]({ commit }, id) {
-  //   let response: any = await TopicService.delete(id)
-  //   return response
-  // },
+  async [ActionTypes.FETCH_POST_BY_BOOKMARK]({ commit }, params) {
+    let response: any = await PostService.getPostByBookmark(params)
+    return response
+  },
 
+  async [ActionTypes.ADD_POST_BOOKMARK]({ commit }, id) {
+    let response: any = await PostService.addPostBookmark(id)
+    return response
+  },
+
+  async [ActionTypes.LIKE_POST]({ commit }, id) {
+    let response: any = await PostService.likePost(id)
+    return response
+  },
 }

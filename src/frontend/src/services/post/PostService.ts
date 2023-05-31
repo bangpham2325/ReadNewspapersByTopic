@@ -33,6 +33,35 @@ class PostService extends BaseService {
       return [];
     }
   }
+
+  async getPostByBookmark(params: any = null){
+    try{
+      const res: any = await this.request().get(`${this.entity}/list_bookmark/`, {
+        params,
+      });
+      return res.data;
+    } catch(error) {
+      return [];
+    }
+  }
+
+  async addPostBookmark(id: string){
+    try{
+      const res: any = await this.request().get(`${this.entity}/${id}/add_bookmark/`)
+      return res
+    } catch(error) {
+      return null;
+    }
+  }
+
+  async likePost(id:string){
+    try{
+      const res:any = await this.request().get(`${this.entity}/${id}/like_post/`)
+      return res
+    } catch(error){
+      return null;
+    }
+  }
 }
 
 export default new PostService();

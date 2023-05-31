@@ -1,5 +1,5 @@
 <template>
-	<h1 class="title is-2">Kết quả</h1>
+	<h1 class="title is-2">Đã lưu</h1>
 
   <div class="card mb-6" v-for="post in posts">
 		<el-row @click="detailPost(post.id)">
@@ -42,16 +42,13 @@ import { ActionTypes } from '@/types/store/ActionTypes';
 
 	methods: {
 		...mapMutations(["SET_LOADING"]),
-    ...mapActions("post", [ActionTypes.FETCH_POST_BY_FILTER]),
+    ...mapActions("post", [ActionTypes.FETCH_POST_BY_BOOKMARK]),
 
-		async getPostByFilter(){
+		async getPostByBookmark(){
 			this.SET_LOADING(true)
-			const query = {
-				search: this.$route.params.text
-			}
-			let data = await this.FETCH_POST_BY_FILTER(query)
+			let data = await this.FETCH_POST_BY_BOOKMARK()
 			if(data) {
-				this.posts = data.results
+				this.posts = data
 			}
 			this.SET_LOADING(false)
 		},
@@ -61,19 +58,13 @@ import { ActionTypes } from '@/types/store/ActionTypes';
     }
 	},
 
-	watch: {
-    async $route(){
-			await this.getPostByFilter()
-		}
-	},
-
 	async created(){
-		await this.getPostByFilter()
+		await this.getPostByBookmark()
 	}
 
 })
 
-export default class SearchPage extends Vue {
+export default class BookmarkPage extends Vue {
 }
 </script>
 

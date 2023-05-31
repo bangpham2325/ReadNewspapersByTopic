@@ -15,7 +15,7 @@
 								<router-link to="/profile/edit" class="dropdown-item">
 									Profile
 								</router-link>
-								<router-link to="/profile/edit" class="dropdown-item">
+								<router-link to="/post/saved" class="dropdown-item">
 									Saved
 								</router-link>
 								<hr class="dropdown-divider">

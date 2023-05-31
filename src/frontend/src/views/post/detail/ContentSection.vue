@@ -10,7 +10,7 @@
 		</div>
 	</div>
 
-	<el-tag class="mr-4" size="large" v-for="i in 5">Tag 1</el-tag>
+	<el-tag class="mr-4" size="large" v-for="tag in keywords">{{ tag.keyword }}</el-tag>
 
 </template>
 
@@ -19,7 +19,8 @@ import {Options, Vue} from 'vue-class-component';
 
 @Options({
 	props: {
-    contents: [] as any
+    contents: [] as any,
+	keywords: [] as any
   },
 })
 

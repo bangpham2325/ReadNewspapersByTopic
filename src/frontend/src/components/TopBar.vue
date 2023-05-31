@@ -7,7 +7,7 @@
     <el-col :span="10">
       <el-row>
           <div class="sign is-flex is-justify-content-right" style="width:100%;">
-            <input class="input is-rounded mr-4" v-model="searchText" type="text" placeholder="Search" style="height:35px;">  
+            <input class="input is-rounded mr-4" v-model="searchText" @keyup.enter="searchData" type="text" placeholder="Search" style="height:35px;">  
             <el-button icon="Search" circle @click="searchData"/>
 
             <el-popover
@@ -94,10 +94,7 @@ import { ActionTypes } from '@/types/store/ActionTypes';
 
     searchData(){
       this.$router.push({name: 'searchpage', params: {text: this.searchText}})
-    },
-
-    goToHome() {
-      this.$router.push({ name: 'homepage'});
+      this.searchText = ""
     },
 
     filterByCategory(topic_name: string, topic_id: string){
@@ -105,30 +102,13 @@ import { ActionTypes } from '@/types/store/ActionTypes';
       this.popoverVisible = false
     },
 
-    logout() {
-      this.LOGOUT()
-      this.CLEAR_USER_INFO()
-      this.goToHome()
-    }
   },
   computed: {
     ...mapState(["is_loading"]),
     ...mapGetters("user", ["userInfo"]),
   },
-  beforeUpdate() {
-    if(!this.userInfo.role)
-      this.goToHome()
-    switch (this.$route.name){
-      case 'home': this.goToHome(); break;
-      case 'logout': this.logout(); break;
-    }
-  },
+  
   async created() {
-    switch (this.$route.name){
-      case 'home': this.goToHome(); break;
-      case 'logout': this.logout(); break;
-    }
-
     await this.getCategory()
   },
 })

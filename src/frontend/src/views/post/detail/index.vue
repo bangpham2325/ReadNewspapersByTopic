@@ -1,12 +1,17 @@
 <template>
-  <div style="margin-bottom:50px;">
-    <SummarySection :postDetail="postDetail"></SummarySection>
-  </div>
-  <div>
-    <ContentSection :contents="postDetail.contents"></ContentSection>
-  </div>
-  <div>
-    <RecommendationSection></RecommendationSection>
+  <div class="detail-post">
+    <div style="margin-bottom:50px;">
+      <SummarySection :postDetail="postDetail"></SummarySection>
+    </div>
+    <div>
+      <ContentSection :contents="postDetail.contents" :keywords="postDetail.keywords"></ContentSection>
+    </div>
+    <div>
+      <RecommendationSection></RecommendationSection>
+    </div>
+    <div>
+      <CommentSection></CommentSection>
+    </div>
   </div>
 </template>
 
@@ -17,13 +22,14 @@ import { ActionTypes } from '@/types/store/ActionTypes';
 import SummarySection from './SummarySection.vue';
 import ContentSection from './ContentSection.vue';
 import RecommendationSection from './RecommendationSection.vue';
-
+import CommentSection from './CommentSection.vue';
 
 @Options({
   components: {
     SummarySection,
     ContentSection,
-    RecommendationSection
+    RecommendationSection,
+    CommentSection
   },
 
   data() {
@@ -60,6 +66,8 @@ export default class PostDetailPage extends Vue {
 }
 </script>
 
-<style>
-
+<style lang="scss" scoped>
+.detail-post {
+  padding: 0% 12% 0% 12%;
+}
 </style>
