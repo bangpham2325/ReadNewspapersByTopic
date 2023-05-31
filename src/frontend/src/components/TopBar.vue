@@ -1,121 +1,131 @@
 <template>
-  <div class="top-bar">
-    <el-row class="p-3" justify="space-between">
-      <el-col :xs="8" :sm="12" :md="8" :lg="8" :xl="8" class="top-bar__greeting">
-        <p class="top-bar__greeting__name">Welcome, {{ userName }}</p>
-        <p class="top-bar__greeting__text">Have a good day!</p>
-      </el-col>
+  <el-row>
+    <el-col :span="8">
+      <LogoWeb></LogoWeb>
+    </el-col>
 
-      <el-col :xs="24" :sm="12" :md="12" :lg="12" :xl="12">
-        <div class="top-bar__right-menu columns is-vcentered is-flex is-justify-content-end p-3">
-          <button class="button is-rounded mr-3" style="border: 0" @click="$router.push({name: 'add-campaign'})">
-            <font-awesome-icon icon="fa-solid fa-plus" class="mr-2" /> Create Your Campaign
-          </button>
-          <div class="top-bar__right-menu__avatar">
-            <div class="dropdown is-hoverable">
-              <div class="dropdown-trigger">
-                <figure class="image">
-                  <img v-if="avatar" class="is-rounded" :src="avatar" alt="Avatar">
-                  <img v-else class="is-rounded" src="@/assets/vectors/default_avatar.svg" alt="Avatar">
-                </figure>
-              </div>
-              <div class="dropdown-menu" id="dropdown-menu" role="menu">
-                <div class="dropdown-content">
-                  <router-link to="/profile" class="dropdown-item">
-                    Profile
-                  </router-link>
-                  <router-link to="/profile/edit" class="dropdown-item">
-                    Edit Profile
-                  </router-link>
-                  <hr class="dropdown-divider">
-                  <router-link to="/logout" class="dropdown-item">
-                    Log Out
-                  </router-link>
+    <el-col :span="10">
+      <el-row>
+          <div class="sign is-flex is-justify-content-right" style="width:100%;">
+            <input class="input is-rounded mr-4" v-model="searchText" @keyup.enter="searchData" type="text" placeholder="Search" style="height:35px;">  
+            <el-button icon="Search" circle @click="searchData"/>
+
+            <el-popover
+              placement="bottom"
+              trigger="click"
+              width="100%"
+              v-model:visible="popoverVisible"
+            >
+              <template #default>
+                <div style="margin: 3% 6% 3% 6%;">
+                  <div class="tile is-ancestor">
+                    <div class="tile is-parent" v-for="(topic, index) in category" :key="index">
+                      <el-button type="text" class="subtitle is-6 has-text-centered" style="width: 100%;color:#00773e;" @click="filterByCategory(topic.title, topic.id)">
+                        {{ topic.title }}
+                      </el-button>
+                    </div>
+                  </div>
+
                 </div>
-              </div>
-            </div>
+              </template>
+
+              <template #reference>
+                <el-button icon="Expand" circle/>
+              </template>
+            </el-popover>
           </div>
-        </div>
-      </el-col>
-    </el-row>
-  </div>
+      </el-row>  
+    </el-col>
+
+    <el-col :span="6">
+      <div class="sign is-flex is-justify-content-right" v-if="userInfo.full_name != null">
+        <AvatarUser :avatar="userInfo.avatar"></AvatarUser>
+      </div>
+
+      <div class="sign is-flex is-justify-content-right" v-else>
+        <router-link to="/login">
+          <div class="sign__text">Login</div>
+        </router-link>
+        <router-link to="/register">
+          <div class="sign__type button is-light">Sign up</div>
+        </router-link>
+      </div>
+    </el-col>
+  </el-row>
 </template>
 
 <script lang="ts">
 import {Options, Vue} from 'vue-class-component';
-import 'element-plus/theme-chalk/display.css'
+import {mapActions, mapState, mapGetters, mapMutations} from "vuex";
+import {MutationTypes} from "@/types/store/MutationTypes"
+import LogoWeb from "@/components/LogoWeb.vue";
+import AvatarUser from "@/components/AvatarUser.vue";
+import { ActionTypes } from '@/types/store/ActionTypes';
 
 @Options({
-  props: {
-    userName: "",
-    avatar: ""
-  }
+  components: {
+    AvatarUser,
+    LogoWeb
+  },
+
+  data(){
+    return {
+      category: [],
+      popoverVisible: false,
+      searchText: ""
+    }
+  },
+
+  methods: {
+    ...mapMutations("authentication",[MutationTypes.LOGOUT]),
+    ...mapMutations("user",[MutationTypes.CLEAR_USER_INFO]),
+    ...mapMutations(["SET_LOADING"]),
+
+    ...mapActions("topic", [ActionTypes.FETCH_TOPICS]),
+
+    async getCategory(){
+      this.SET_LOADING(true)
+      let data = await this.FETCH_TOPICS()
+      if (data) {
+        this.category = data.results
+      }
+      this.SET_LOADING(false)
+    },
+
+    searchData(){
+      this.$router.push({name: 'searchpage', params: {text: this.searchText}})
+      this.searchText = ""
+    },
+
+    filterByCategory(topic_name: string, topic_id: string){
+      this.$router.push({ name: 'posts-by-category', params: {name:topic_name, id: topic_id } })
+      this.popoverVisible = false
+    },
+
+  },
+  computed: {
+    ...mapState(["is_loading"]),
+    ...mapGetters("user", ["userInfo"]),
+  },
+  
+  async created() {
+    await this.getCategory()
+  },
 })
 
 export default class TopBar extends Vue {
-  userName!: string;
-  avatar!: string
 }
+
+
 </script>
 
-<style scoped lang="scss">
-figure, p {
-  margin: 0;
+<style lang="scss" scoped>
+@import "@/views/home/style.scss";
+
+.tile.is-ancestor {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-gap: 10px;
 }
 
-.top-bar {
-
-  &__greeting {
-    min-width: 250px;
-    display: inline-block;
-
-    &__name {
-      display: block;
-      font-weight: 400;
-      text-transform: capitalize;
-    }
-
-    &__text {
-      display: block;
-      font-size: 1rem;
-    }
-  }
-
-  &__search-bar {
-    .control {
-      .input, .icon {
-        transition: all 0.3s ease-in-out;
-      }
-    }
-  }
-
-  &__right-menu {
-    &__avatar {
-      img {
-        height: 52px;
-        width: 52px;
-        cursor: pointer;
-      }
-    }
-
-    &__notification {
-      cursor: pointer;
-      font-size: 1.6rem;
-      color: #ccc;
-
-      :hover {
-        color: #024547;
-        transition: color 0.2s ease-in-out;
-      }
-    }
-
-    #dropdown-menu {
-      font-weight: 400;
-      position: absolute;
-      top: 50px;
-      left: -130px;
-      z-index: 1;
-    }
-  }
-}
 </style>

@@ -38,6 +38,7 @@ export const actions: ActionTree<State, State> & Actions = {
     let response: any = await UserService.getUserInfo(user_id)
     if (response?.status == 200) {
       let user: UserInfo = {
+        id: response.data.id,
         full_name: response.data.full_name,
         role: response.data.role,
         avatar: response.data.avatar,

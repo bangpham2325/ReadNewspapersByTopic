@@ -1,84 +1,198 @@
 <template>
-  <div class="common-layout">
-    <el-container class="is-flex">
-      <el-header>
-        <el-row>
-          <el-col :span="3"></el-col>
-          <el-col :span="12">
-            <router-link to="/home">
-              <div class="logo is-flex is-justify-content-left">
-                <div class="logo__icon">v</div>
-                <div class="logo__text">Volunteer</div>
-              </div>
-            </router-link>
-          </el-col>
-          <el-col :span="5">
-            <div class="sign is-flex is-justify-content-right">
-              <router-link to="/login">
-                <div class="sign__text">Login</div>
-              </router-link>
-              <router-link to="/register">
-                <div class="sign__type button is-light">Sign up</div>
-              </router-link>
-            </div>
-          </el-col>
-        </el-row>
-      </el-header>
-      <el-main style="margin-top: 60px">
-        <el-row>
-          <el-col :span="3"></el-col>
-          <el-col :span="12">
-            <h1 class="title is-1 is-flex">What is Volunteer World?</h1>
-            <p style="width: 80%">
-              Volunteer World is the world's leading volunteering platform. We
-              show you how to volunteer abroad! Search & compare the best
-              international volunteer programs offered by volunteer
-              organizations and local NGOs with just a few clicks.
-            </p>
-            <div
-              :class="['sign', 'is-flex', 'is-justify-content-left', 'my-5']"
-            >
-              <router-link to="/register">
-                <div class="sign__type button is-light" style="width: 150px">
-                  Get started
-                </div>
-              </router-link>
-              <router-link to="/download">
-                <div class="sign__text">Download now</div>
-              </router-link>
-            </div>
-          </el-col>
-          <el-col :span="5">
-            <img style="float: right" src="@/assets/vectors/app.svg" />
-            <p style="text-align: center">
-              <img
-                class="mt-5"
-                width="100"
-                src="@/assets/images/get-on-google-play.png"
-              />
-            </p>
-          </el-col>
-        </el-row>
-      </el-main>
-      <footer class="footer">
-        <div class="content has-text-centered">
-          <p>
-            <strong>Project</strong> V-Volunteer. The source code is licensed.
-          </p>
+  <h1 class="title is-2 is-flex">Hot News</h1>
+  <div class="tile is-ancestor">
+    <div class="tile is-parent" @click="detailPost(postHot.id)">
+      <div class="tile is-child box card">
+        <div class="card-image">
+          <figure class="image is-2by1">
+            <img :src=postHot.thumbnail alt="Placeholder image">
+          </figure>
         </div>
-      </footer>
-    </el-container>
+        <div class="card-content">
+          <p class="title is-4">{{  postHot.title }}</p>
+          <p class="subtitle is-5" style="color:#808080">{{ postHot.summary }}</p>
+          <el-row>
+            <el-col :span="12">
+              <el-row>
+                  <el-avatar :size="50">
+                    <img src="https://img.vietcetera.com/uploads/avatar-images/12-apr-2023/vu-hoang-long-1681282620604-160x160.jpg">
+                  </el-avatar>
+                  <p class="title is-5 mt-4 ml-4" style="color:#00773e;">{{ postHot.author }}</p>
+              </el-row>
+            </el-col>
+        
+            <el-col :span="12">
+              <el-row class="is-flex is-justify-content-right">
+                <p class="title is-6 mt-4">{{ postHot.publish_date }}</p>
+              </el-row>
+            </el-col>
+          </el-row>
+        </div>    
+      </div>
+    </div>
+
+    <div class="tile is-5 is-vertical is-parent">
+      <div class="tile is-child box card" v-for="post in postLikes" style="display: flex;align-items: center;">
+        <el-row @click="detailPost(post.id)">
+          <el-col :span="6" class="mr-5">
+            <figure class="image is-1by1" style="height:100%;">
+              <img :src=post.thumbnail alt="Placeholder image">
+            </figure>
+          </el-col>
+
+          <el-col :span="15">
+            <p class="title is-6">{{  post.title }}</p>
+            <p style="color:#808080; font-size: 12px;">{{ post.summary }}</p>
+            <el-row>
+              <el-col :span="16">
+                <el-row>
+                    <el-avatar :size="35" class="mt-2">
+                      <img src="https://img.vietcetera.com/uploads/avatar-images/12-apr-2023/vu-hoang-long-1681282620604-160x160.jpg">
+                    </el-avatar>
+                    <p class="title is-6 mt-4 ml-4" style="color:#00773e;">{{ post.author }}</p>
+                </el-row>
+              </el-col>
+          
+              <el-col :span="8">
+                <el-row class="is-flex is-justify-content-right">
+                  <p class="title is-6 mt-4">{{ post.publish_date }}</p>
+                </el-row>
+              </el-col>
+            </el-row>
+          </el-col>
+        </el-row>       
+      </div>
+    </div>
+  </div>
+
+  <h1 class="title is-3 is-flex mt-6">Population News</h1>
+
+
+  <div class="tile is-ancestor layout-post">
+    <template v-for="post in postByLibrary.post_views">
+      <div class="tile is-parent" @click="detailPost(post.id)">
+        <div class="tile is-child box card">
+          <div class="card-image">
+            <figure class="image is-3by2">
+              <img :src=post.thumbnail alt="Placeholder image">
+            </figure>
+          </div>
+          <div class="card-content">
+            <el-row>
+              <el-col :span="10">  
+                <el-row>
+                  <p class="title is-6 mt-4" style="color:#00773e;">{{ post.category.title }}</p>
+                </el-row>
+              </el-col>
+              <el-col :span="14">
+                <el-row class="is-flex is-justify-content-right">
+                  <p class="title is-6 mt-4">{{ post.publish_date }}</p>
+                </el-row>
+              </el-col>
+            </el-row>
+
+            <p class="title is-5">{{  post.title }}</p>
+            <p style="color:#808080; font-size: 12px;">{{ post.summary }}</p>
+          </div>
+        </div>
+      </div>
+    </template>
+  </div>  
+
+  <h1 class="title is-3 is-flex mt-6">Favorite News</h1>
+
+  <div class="tile is-ancestor layout-post">
+    <template v-for="post in postByLibrary.post_favourite">
+      <div class="tile is-parent" @click="detailPost(post.id)">
+        <div class="tile is-child box card">
+          <div class="card-image">
+            <figure class="image is-3by2">
+              <img :src=post.thumbnail alt="Placeholder image">
+            </figure>
+          </div>
+          <div class="card-content">
+            <el-row>
+              <el-col :span="8">  
+                <el-row>
+                  <p class="title is-6 mt-4" style="color:#00773e;">{{ post.category.title }}</p>
+                </el-row>
+              </el-col>
+              <el-col :span="16">
+                <el-row class="is-flex is-justify-content-right">
+                  <p class="title is-6 mt-4">{{ post.publish_date }}</p>
+                </el-row>
+              </el-col>
+            </el-row>
+            <p class="title is-5">{{  post.title }}</p>
+            <p style="color:#808080; font-size: 12px;">{{ post.summary }}</p>
+          </div>
+        </div>
+      </div>
+    </template>
   </div>
 </template>
 
-<script>
-export default {
-  created() {
-    document.title = "Home Page | E-Learning";
+<script lang="ts">
+import {Options, Vue} from 'vue-class-component';
+import {mapActions, mapState, mapGetters, mapMutations} from "vuex";
+import TopBar from "@/components/TopBar.vue";
+import {MutationTypes} from "@/types/store/MutationTypes";
+import { ActionTypes } from '@/types/store/ActionTypes';
+
+@Options({
+  components: {
+    TopBar,
   },
-};
+  data(){
+    return {
+      postByLibrary: [],
+      postLikes: [],
+      postHot: {},
+    }
+  },
+
+  methods: {
+    ...mapMutations(["SET_LOADING"]),
+    ...mapActions("post", [ActionTypes.FETCH_POST_LIBRARY]),
+
+    async getPostByLibrary(){
+      this.SET_LOADING(true)
+      let data = await this.FETCH_POST_LIBRARY()
+      if (data) {
+        this.postByLibrary = data
+        this.postHot = this.postByLibrary.post_likes[0]
+        for(let i = 1; i < 4; i++){
+          this.postLikes[i-1] = this.postByLibrary.post_likes[i]
+        }
+      }
+      this.SET_LOADING(false)
+    },
+
+    detailPost(post_id: string){
+      this.$router.push({ name: 'detail-post', params: { id: post_id } })
+    }
+  },
+
+  async created(){
+    await this.getPostByLibrary()
+  },
+
+  mounted() {
+    document.title = 'Home | New Portal'
+  }
+})
+
+export default class HomePage extends Vue {
+}
+
+
 </script>
 
 <style lang="scss">
 @import "@/views/home/style.scss";
+.tile.is-ancestor.layout-post{
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-gap: 10px;
+}
 </style>

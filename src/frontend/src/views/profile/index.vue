@@ -19,5 +19,5 @@ export default class ProfileBasePage extends Vue {
 </script>
 
 <style lang="scss" scoped>
-
+  
 </style>

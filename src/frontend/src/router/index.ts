@@ -3,18 +3,13 @@ import HomePage from '@/views/home/index.vue';
 import LoginPage from '@/views/login/index.vue';
 import RegisterPage from '@/views/register/index.vue';
 import BasePage from "@/views/base/index.vue";
-import CampaignBasePage from '@/views/campaign/index.vue';
-import DashboardPage from '@/views/campaign/dashboard/index.vue';
-import AddCampaignPage from "@/views/campaign/add/index.vue";
-import EditCampaignPage from "@/views/campaign/edit/index.vue";
-import CampaignManagementPage from "@/views/campaign/management/index.vue";
-import TopicBasePage from "@/views/topic/index.vue";
-import TopicManagementPage from "@/views/topic/management/index.vue";
-import CampaignDetail from "@/views/campaign/detail/index.vue";
 import ProfileBasePage from "@/views/profile/index.vue";
-import ProfileDetail from "@/views/profile/detail/index.vue";
 import ProfileEdit from "@/views/profile/edit/index.vue";
-import MyCampaignPage from "@/views/campaign/my/index.vue";
+import PostBasePage from "@/views/post/index.vue";
+import PostDetailPage from  "@/views/post/detail/index.vue";
+import PostCategoryPage from "@/views/post/category/index.vue";
+import SearchPage from "@/views/post/search/index.vue";
+import BookmarkPage from "@/views/post/bookmark/index.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -23,52 +18,15 @@ const routes: Array<RouteRecordRaw> = [
     component: BasePage,
     children: [
       {
-        path: "campaigns",
-        name: "campaigns",
-        component: CampaignBasePage,
-        children: [
-          {
-            path: "",
-            name: "dashboard",
-            component: DashboardPage,
-          },
-          {
-            path: "my",
-            name: "joined-campaign",
-            component: MyCampaignPage,
-          },
-          {
-            path: "add",
-            name: "add-campaign",
-            component: AddCampaignPage,
-          },
-          {
-            path: ":campaign_id/edit",
-            name: "edit-campaign",
-            component: EditCampaignPage,
-          },
-          {
-            path: "management",
-            name: "campaign-management",
-            component: CampaignManagementPage,
-          },
-          {
-            path: ":campaign_id",
-            name: "campaign-detail",
-            component: CampaignDetail,
-          },
-        ],
+        path: "home",
+        name: "homepage",
+        component: HomePage,
       },
       {
         path: "profile",
         name: "profile",
         component: ProfileBasePage,
         children: [
-          {
-            path: "",
-            name: "profile-detail",
-            component: ProfileDetail,
-          },
           {
             path: "edit",
             name: "profile-edit",
@@ -77,24 +35,33 @@ const routes: Array<RouteRecordRaw> = [
         ],
       },
       {
-        path: "categories",
-        name: "categories",
-        component: TopicBasePage,
+        path: "post",
+        name: "post",
+        component: PostBasePage,
         children: [
           {
-            path: "management",
-            name: "category-management",
-            component: TopicManagementPage,
+            path: "detail/:id",
+            name: "detail-post",
+            component: PostDetailPage,
           },
-        ],
+          {
+            path: ":name/:id",
+            name: "posts-by-category",
+            component: PostCategoryPage,
+          },
+          {
+            path: ":text",
+            name: "searchpage",
+            component: SearchPage,
+          },
+          {
+            path: "saved",
+            name: "bookmark",
+            component: BookmarkPage,
+          },
+        ]
       },
-
-  ]
-  },
-  {
-    path: "/home",
-    name: "homepage",
-    component: HomePage,
+    ]
   },
   {
     path: "/login",
