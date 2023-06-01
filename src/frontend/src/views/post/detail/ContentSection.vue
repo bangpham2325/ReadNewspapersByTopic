@@ -4,13 +4,11 @@
 
 		<div v-for="line in content.paragraph">
 			<p>{{ line.text }}</p>
-			<figure class="image is-2by1 my-6" v-if="line.above_img">
+			<figure class="image is-2by1 my-6" v-if="line.below_img">
 				<img :src=content.image>
 			</figure>
 		</div>
 	</div>
-
-	<el-tag class="mr-4" size="large" v-for="tag in keywords">{{ tag.keyword }}</el-tag>
 
 </template>
 
@@ -20,7 +18,6 @@ import {Options, Vue} from 'vue-class-component';
 @Options({
 	props: {
     contents: [] as any,
-	keywords: [] as any
   },
 })
 

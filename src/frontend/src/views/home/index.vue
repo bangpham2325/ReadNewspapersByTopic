@@ -43,22 +43,6 @@
           <el-col :span="15">
             <p class="title is-6">{{  post.title }}</p>
             <p style="color:#808080; font-size: 12px;">{{ post.summary }}</p>
-            <!-- <el-row>
-              <el-col :span="16">
-                <el-row>
-                    <el-avatar :size="35" class="mt-2">
-                      <img src="https://img.vietcetera.com/uploads/avatar-images/12-apr-2023/vu-hoang-long-1681282620604-160x160.jpg">
-                    </el-avatar>
-                    <p class="title is-6 mt-4 ml-4" style="color:#00773e;">{{ post.author }}</p>
-                </el-row>
-              </el-col>
-          
-              <el-col :span="8">
-                <el-row class="is-flex is-justify-content-right">
-                  <p class="title is-6 mt-4">{{ post.publish_date }}</p>
-                </el-row>
-              </el-col>
-            </el-row> -->
           </el-col>
         </el-row>       
       </div>
@@ -66,34 +50,44 @@
   </div>
 
   <h1 class="title is-3 is-flex mt-6">Population News</h1>
-
-
   <div class="tile is-ancestor layout-post">
     <template v-for="post in postByLibrary.post_views">
       <div class="tile is-parent" @click="detailPost(post.id)">
         <div class="tile is-child box card">
           <div class="card-image">
             <figure class="image is-3by2">
-              <!-- <span>{{ postHot.thumbnail }}</span> -->
               <img :src=post.thumbnail alt="Placeholder image">
             </figure>
           </div>
           <div class="card-content">
+            
             <el-row>
-              <el-col :span="10">  
+              <el-col :span="20">
                 <el-row>
-                  <p class="title is-6 mt-4" style="color:#00773e;">{{ post.category.title }}</p>
+                  <p class="title is-6 mt-3" style="color:#00773e;">{{ post.category.title }}</p>
+                </el-row> 
+              </el-col>
+              <el-col :span="4">
+                <el-row class="is-flex is-justify-content-right">
+                  <el-button type="text" icon="Pointer" style="color:#00773e;" size="large">{{ post.views }}</el-button>
                 </el-row>
               </el-col>
-              <el-col :span="14">
+            </el-row>
+
+            <p class="title is-5" style="min-height:90px;">{{  post.title }}</p>
+            <p style="color:#808080; font-size: 12px; min-height:120px;">{{ post.summary }}</p>
+
+            <el-row>
+              <el-col :span="12">
+                <el-button type="text" icon="Histogram" style="color:black;" size="large" class="title is-6 mt-1" v-if="post.avg_rating != null">{{ post.avg_rating }}</el-button>
+                <el-button type="text" icon="Histogram" style="color:black;" size="large" class="title is-6 mt-1" v-else>0</el-button>
+              </el-col>
+              <el-col :span="12">
                 <el-row class="is-flex is-justify-content-right">
                   <p class="title is-6 mt-4">{{ post.publish_date }}</p>
                 </el-row>
               </el-col>
             </el-row>
-
-            <p class="title is-5">{{  post.title }}</p>
-            <p style="color:#808080; font-size: 12px;">{{ post.summary }}</p>
           </div>
         </div>
       </div>
@@ -111,21 +105,37 @@
               <img :src=post.thumbnail alt="Placeholder image">
             </figure>
           </div>
+
           <div class="card-content">
+
             <el-row>
-              <el-col :span="8">  
+              <el-col :span="20">
                 <el-row>
-                  <p class="title is-6 mt-4" style="color:#00773e;">{{ post.category.title }}</p>
+                  <p class="title is-6 mt-3" style="color:#00773e;">{{ post.category.title }}</p>
+                </el-row> 
+              </el-col>
+              <el-col :span="4">
+                <el-row class="is-flex is-justify-content-right">
+                  <el-button type="text" icon="StarFilled" style="color:#00773e;" size="large">{{ post.likes }}</el-button>
                 </el-row>
               </el-col>
-              <el-col :span="16">
+            </el-row>
+
+            <p class="title is-5" style="min-height:90px;">{{  post.title }}</p>
+            <p style="color:#808080; font-size: 12px;min-height:120px;">{{ post.summary }}</p>
+
+            <el-row>
+              <el-col :span="12">
+                <el-button type="text" icon="Histogram" style="color:black;" size="large" class="title is-6 mt-1" v-if="post.avg_rating != null">{{ post.avg_rating }}</el-button>
+                <el-button type="text" icon="Histogram" style="color:black;" size="large" class="title is-6 mt-1" v-else>0</el-button>
+              </el-col>
+              <el-col :span="12">
                 <el-row class="is-flex is-justify-content-right">
                   <p class="title is-6 mt-4">{{ post.publish_date }}</p>
                 </el-row>
               </el-col>
             </el-row>
-            <p class="title is-5">{{  post.title }}</p>
-            <p style="color:#808080; font-size: 12px;">{{ post.summary }}</p>
+
           </div>
         </div>
       </div>

@@ -4,7 +4,10 @@
       <SummarySection :postDetail="postDetail"></SummarySection>
     </div>
     <div>
-      <ContentSection :contents="postDetail.contents" :keywords="postDetail.keywords"></ContentSection>
+      <ContentSection :contents="postDetail.contents"></ContentSection>
+    </div>
+    <div>
+      <FooterSection :postDetail="postDetail"></FooterSection>
     </div>
     <div>
       <RecommendationSection></RecommendationSection>
@@ -23,13 +26,15 @@ import SummarySection from './SummarySection.vue';
 import ContentSection from './ContentSection.vue';
 import RecommendationSection from './RecommendationSection.vue';
 import CommentSection from './CommentSection.vue';
+import FooterSection from './FooterSection.vue';
 
 @Options({
   components: {
     SummarySection,
     ContentSection,
     RecommendationSection,
-    CommentSection
+    CommentSection,
+    FooterSection
   },
 
   data() {

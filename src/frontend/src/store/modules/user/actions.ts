@@ -31,6 +31,11 @@ export interface Actions {
     { commit }: AugmentedActionContext,
     payload: any,
   ): any,
+
+  [ActionTypes.UPDATE_USER_AVATAR](
+    { commit }: AugmentedActionContext,
+    payload: any,
+  ): any,
 }
 
 export const actions: ActionTree<State, State> & Actions = {
@@ -57,6 +62,11 @@ export const actions: ActionTree<State, State> & Actions = {
 
   async [ActionTypes.UPDATE_USER_PROFILE]({ commit }, payload) {
     let response: any = await UserService.updateUserInfo(payload.user_id, payload.data)
+    return response
+  },
+
+  async [ActionTypes.UPDATE_USER_AVATAR]({ commit }, payload) {
+    let response: any = await UserService.updateUserAvatar(payload.data)
     return response
   },
 }
