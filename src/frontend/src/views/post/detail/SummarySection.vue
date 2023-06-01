@@ -33,29 +33,33 @@
 		<el-dialog v-model="ratingSection">
 			<form>
 				<div class="field">
-					<label class="label">Rate your satisfaction:</label>
-					<div class="control">
+					<label class="title is-4">Đánh giá sự hài lòng của bạn về bài viết:</label>
+					<div class="control mt-5">
 						<div class="rating-stars">
 							<el-rate
 								v-model="rating"
 								:max="5"
 								:colors="['#99A9BF', '#F7BA2A', '#FF9900']"
-								class="custom-rate"
 							></el-rate>
 						</div>
 					</div>
 				</div>
-		
+				
 				<div class="field">
-					<label class="label">Feedback:</label>
 					<div class="control">
-						<textarea class="textarea" v-model="feedback"></textarea>
+						<input class="input" type="text" v-model="title" placeholder="Chủ đề">
+					</div>
+				</div>
+
+				<div class="field">
+					<div class="control">
+						<textarea class="textarea" v-model="feedback" placeholder="Viết nhận xét của bạn tại đây"></textarea>
 					</div>
 				</div>
 		
 				<div class="field">
 					<div class="control">
-						<button class="button is-primary" @click="submitForm">Submit</button>
+						<button class="button is-black" @click="submitRatingForm">Submit</button>
 					</div>
 				</div>
 			</form>
@@ -85,13 +89,15 @@ import {ElMessage} from "element-plus";
 			bookmark_id: "",
 			ratingSection: false,
 			rating: 0,
-			feedback: ""
+			feedback: "",
+			title: "",
+			has_rating: false,
 		}
 	},
 
 	methods: {
 		...mapMutations(["SET_LOADING"]),
-    ...mapActions("post", [ActionTypes.ADD_POST_BOOKMARK, ActionTypes.LIKE_POST]),
+    ...mapActions("post", [ActionTypes.ADD_POST_BOOKMARK, ActionTypes.LIKE_POST, ActionTypes.RATE_POST]),
 
 		async actionPost(action: String){
 			if(this.userInfo.id){
@@ -144,12 +150,23 @@ import {ElMessage} from "element-plus";
 			}
 		},
 
-		submitForm(){
-			console.log('Rating:', this.rating);
-      console.log('Feedback:', this.feedback);
+		async submitRatingForm(){
+			let res = await this.RATE_POST({
+				id: this.postDetail.id,
+				feedback: {
+					title: this.title,
+					content: this.feedback,
+					star_rating: this.rating
+				}
+			})
 		}
 	},
-
+	created(){
+		for ( let rate in this.postDetail.post_rating){
+			if(this.postDetail.post_rating[rate].id == this.userInfo.id)
+				this.has_rating = true
+		}
+	}
 })
 
 export default class SummarySection extends Vue {
@@ -160,11 +177,10 @@ export default class SummarySection extends Vue {
 .rating-stars {
   display: inline-block;
   margin-bottom: 0.5rem;
+  width: 100%;
+}
+.el-rate {
+	--el-rate-icon-size: 60px;
 }
 
-.custom-rate .el-rate__icon {
-  font-size: 100px;
-	line-height: 1;
-  height: 30px;
-}
 </style>

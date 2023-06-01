@@ -62,6 +62,14 @@ class PostService extends BaseService {
       return null;
     }
   }
+
+  async ratePost(id:string, content:any){
+    try {
+      const res:any = await this.request().post(`${this.entity}/${id}/ratings/`, content)
+    } catch(error){
+      return null
+    }
+  }
 }
 
 export default new PostService();

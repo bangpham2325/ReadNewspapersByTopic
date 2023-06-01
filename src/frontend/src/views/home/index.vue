@@ -4,7 +4,7 @@
     <div class="tile is-parent" @click="detailPost(postHot.id)">
       <div class="tile is-child box card">
         <div class="card-image">
-          <figure class="image is-2by1">
+          <figure class="image is-2by1" style="height:auto">
             <img :src=postHot.thumbnail alt="Placeholder image">
           </figure>
         </div>
@@ -35,7 +35,7 @@
       <div class="tile is-child box card" v-for="post in postLikes" style="display: flex;align-items: center;">
         <el-row @click="detailPost(post.id)">
           <el-col :span="6" class="mr-5">
-            <figure class="image is-1by1" style="height:100%;">
+            <figure class="image is-1by1" >
               <img :src=post.thumbnail alt="Placeholder image">
             </figure>
           </el-col>
@@ -43,7 +43,7 @@
           <el-col :span="15">
             <p class="title is-6">{{  post.title }}</p>
             <p style="color:#808080; font-size: 12px;">{{ post.summary }}</p>
-            <el-row>
+            <!-- <el-row>
               <el-col :span="16">
                 <el-row>
                     <el-avatar :size="35" class="mt-2">
@@ -58,7 +58,7 @@
                   <p class="title is-6 mt-4">{{ post.publish_date }}</p>
                 </el-row>
               </el-col>
-            </el-row>
+            </el-row> -->
           </el-col>
         </el-row>       
       </div>
@@ -74,6 +74,7 @@
         <div class="tile is-child box card">
           <div class="card-image">
             <figure class="image is-3by2">
+              <!-- <span>{{ postHot.thumbnail }}</span> -->
               <img :src=post.thumbnail alt="Placeholder image">
             </figure>
           </div>
