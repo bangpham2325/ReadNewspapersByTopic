@@ -46,6 +46,11 @@ export interface Actions {
     { commit }: AugmentedActionContext,
     id: string
   ): any,
+
+  [ActionTypes.RATE_POST](
+    { commit }: AugmentedActionContext,
+    data: any
+  ): any,
 }
 
 export const actions: ActionTree<State, State> & Actions = {
@@ -76,6 +81,11 @@ export const actions: ActionTree<State, State> & Actions = {
 
   async [ActionTypes.LIKE_POST]({ commit }, id) {
     let response: any = await PostService.likePost(id)
+    return response
+  },
+
+  async [ActionTypes.RATE_POST]({ commit }, data) {
+    let response: any = await PostService.ratePost(data.id, data.feedback)
     return response
   },
 }

@@ -35,7 +35,7 @@ import { ElNotification } from 'element-plus'
     }
   },
   methods: {
-    ...mapActions("user", [ActionTypes.UPDATE_USER_PROFILE, ActionTypes.GET_USER_INFO]),
+    ...mapActions("user", [ActionTypes.UPDATE_USER_AVATAR, ActionTypes.GET_USER_INFO]),
 
     changeFile(file: any, fileList: any) {
       this.avatar = file;
@@ -69,8 +69,7 @@ import { ElNotification } from 'element-plus'
 
       formData.append("avatar", this.avatar.raw);
 
-      const response = await this.UPDATE_USER_PROFILE({
-        user_id: this.user.id,
+      const response = await this.UPDATE_USER_AVATAR({
         data: formData
       })
 

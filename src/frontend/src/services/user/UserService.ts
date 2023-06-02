@@ -24,6 +24,15 @@ class UserService extends BaseService{
     }
   }
 
+  async updateUserAvatar(data: UserProfile){
+    try {
+      const response= await this.request().patch(`${this.entity}/update_avatar/`, data);
+      return response;
+    } catch (error) {
+      return null;
+    }
+  }
+
 }
 
 export default new UserService();
