@@ -81,6 +81,7 @@ class PostSerializer(serializers.ModelSerializer):
         data = super().to_representation(instance)
         data['total_comment'] = instance.post_comment.count()
         data['total_rating'] = instance.post_rating.count()
+        data["contents"].sort(key=lambda x: x["index"])
         if data['total_comment'] != 0 and data['total_comment'] is not None:
             result = list(filter(lambda kq: kq['parent_comment'] is None, data['post_comment']))
             data['post_comment'] = result
