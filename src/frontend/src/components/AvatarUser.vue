@@ -12,6 +12,9 @@
 						</div>
 						<div class="dropdown-menu" id="dropdown-menu" role="menu">
 							<div class="dropdown-content">
+								<router-link to="/post/management" class="dropdown-item ml-3" v-if="this.userInfo.role == 'ADMIN'">
+									Dashboard
+								</router-link>
 								<router-link to="/profile/edit" class="dropdown-item">
 									Profile
 								</router-link>
@@ -33,12 +36,17 @@
 
 <script lang="ts">
 import {Options, Vue} from 'vue-class-component';
-import 'element-plus/theme-chalk/display.css'
+import 'element-plus/theme-chalk/display.css';
+import {mapState, mapGetters} from "vuex";
 
 @Options({
-props: {
-	avatar: ""
-}
+	props: {
+		avatar: ""
+	},
+	computed: {
+    ...mapState(["is_loading"]),
+    ...mapGetters("user", ["userInfo"]),
+  },
 })
 
 export default class TopBar extends Vue {

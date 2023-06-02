@@ -17,6 +17,11 @@ type AugmentedActionContext = {
 } & Omit<ActionContext<State, State>, 'commit'>
 
 export interface Actions {
+  [ActionTypes.FETCH_POSTS](
+    { commit }: AugmentedActionContext,
+    params: any
+  ): void,
+
   [ActionTypes.FETCH_POST_LIBRARY](
     { commit }: AugmentedActionContext,
     params: any
@@ -51,9 +56,19 @@ export interface Actions {
     { commit }: AugmentedActionContext,
     data: any
   ): any,
+
+  [ActionTypes.UPDATE_STATUS_POST](
+    { commit }: AugmentedActionContext,
+    params: any
+  ): void,
 }
 
 export const actions: ActionTree<State, State> & Actions = {
+  async [ActionTypes.FETCH_POSTS]({ commit}, params) {
+    let data: any = await PostService.getAllPosts(params)
+    return data
+  },
+
   async [ActionTypes.FETCH_POST_LIBRARY]({ commit }, params) {
     let data: any = await PostService.getPostByLibrary(params)
     return data
@@ -86,6 +101,11 @@ export const actions: ActionTree<State, State> & Actions = {
 
   async [ActionTypes.RATE_POST]({ commit }, data) {
     let response: any = await PostService.ratePost(data.id, data.feedback)
+    return response
+  },
+
+  async [ActionTypes.UPDATE_STATUS_POST]({ commit }, data) {
+    let response: any = await PostService.updateStatusPost(data.id, data.status)
     return response
   },
 }

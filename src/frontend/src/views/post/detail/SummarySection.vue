@@ -1,7 +1,18 @@
 <template>
-	<el-tooltip :content=postDetail.publish_date placement="top-start">
-		<p class="title is-6" style="color:#808080">{{ postDetail.publish_date }}</p>
-	</el-tooltip>
+	<el-row>
+		<el-col :span="12">
+			<el-tooltip :content=postDetail.publish_date placement="top-start">
+				<p class="title is-6" style="color:#808080">{{ postDetail.publish_date }}</p>
+			</el-tooltip>
+		</el-col>
+		<el-col :span="12">
+			<el-row class="is-flex is-justify-content-right" v-if="this.userInfo.role== 'ADMIN'">
+				<el-tag v-if="postDetail.status=='DRAFT'" type="info" effect="dark" size="large">{{ postDetail.status }}</el-tag>
+				<el-tag v-else type="success" effect="dark" size="large">{{ postDetail.status }}</el-tag>
+			</el-row>
+		</el-col>
+	</el-row>
+	
 
 	<p class="title is-5" style="color:#00773e">{{ postDetail.category.title }}</p>
 	<h1 class="title is-2">{{ postDetail?.title }}</h1>
@@ -29,9 +40,7 @@
 
 <script lang="ts">
 import {Options, Vue} from 'vue-class-component';
-import {mapActions, mapState, mapGetters, mapMutations} from "vuex";
-import { ActionTypes } from '@/types/store/ActionTypes';
-import {ElMessage} from "element-plus";
+import {mapState, mapGetters} from "vuex";
 
 @Options({
 	props: {
@@ -43,6 +52,10 @@ import {ElMessage} from "element-plus";
 			window.open(this.postDetail.source.domain, '_blank');
 		}
 	},
+	computed: {
+    ...mapState(["is_loading"]),
+    ...mapGetters("user", ["userInfo"]),
+  },
 })
 
 export default class SummarySection extends Vue {

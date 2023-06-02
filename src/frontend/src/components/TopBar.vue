@@ -7,7 +7,7 @@
     <el-col :span="10">
       <el-row>
           <div class="sign is-flex is-justify-content-right" style="width:100%;">
-            <input class="input is-rounded mr-4" v-model="searchText" @keyup.enter="searchData" type="text" placeholder="Search" style="height:35px;">  
+            <input class="input is-rounded mr-4" v-model="searchText" @keyup.enter="searchData" type="text" placeholder="Tìm kiếm" style="height:35px;">  
             <el-button icon="Search" circle @click="searchData"/>
 
             <el-popover
