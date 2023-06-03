@@ -5,6 +5,17 @@ class PostService extends BaseService {
     return "newspaper/post"
   }
 
+  async getAllPosts(params: any = null){
+    try{
+      const res = await this.request().get(`${this.entity}/management/`, {
+        params,
+      })
+      return res.data;
+    } catch (error){
+      return [];
+    }
+  }
+
   async getPostByLibrary(params: any = null) {
     try {
       const response: any = await this.request().get(`${this.entity}/library/`);
@@ -66,7 +77,17 @@ class PostService extends BaseService {
   async ratePost(id:string, content:any){
     try {
       const res:any = await this.request().post(`${this.entity}/${id}/ratings/`, content)
+      return res
     } catch(error){
+      return null
+    }
+  }
+
+  async updateStatusPost(id:string, status:any){
+    try{
+      const res:any = await this.request().patch(`${this.entity}/${id}/`, status)
+      return res
+    }catch(error){
       return null
     }
   }

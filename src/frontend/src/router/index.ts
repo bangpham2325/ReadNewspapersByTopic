@@ -10,6 +10,7 @@ import PostDetailPage from  "@/views/post/detail/index.vue";
 import PostCategoryPage from "@/views/post/category/index.vue";
 import SearchPage from "@/views/post/search/index.vue";
 import BookmarkPage from "@/views/post/bookmark/index.vue";
+import ManagementPage from "@/views/post/management/index.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -39,6 +40,11 @@ const routes: Array<RouteRecordRaw> = [
         name: "post",
         component: PostBasePage,
         children: [
+          {
+            path: "management",
+            name: "management-post",
+            component: ManagementPage,
+          },
           {
             path: "detail/:id",
             name: "detail-post",

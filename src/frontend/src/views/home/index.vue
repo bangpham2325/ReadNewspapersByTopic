@@ -1,5 +1,5 @@
 <template>
-  <h1 class="title is-2 is-flex">Hot News</h1>
+  <h1 class="title is-2 is-flex">Tin tức nổi bật</h1>
   <div class="tile is-ancestor">
     <div class="tile is-parent" @click="detailPost(postHot.id)">
       <div class="tile is-child box card">
@@ -49,7 +49,7 @@
     </div>
   </div>
 
-  <h1 class="title is-3 is-flex mt-6">Population News</h1>
+  <h1 class="title is-3 is-flex mt-6">Bài viết phổ biến</h1>
   <div class="tile is-ancestor layout-post">
     <template v-for="post in postByLibrary.post_views">
       <div class="tile is-parent" @click="detailPost(post.id)">
@@ -94,7 +94,7 @@
     </template>
   </div>  
 
-  <h1 class="title is-3 is-flex mt-6">Favorite News</h1>
+  <h1 class="title is-3 is-flex mt-6">Bài viết được yêu thích</h1>
 
   <div class="tile is-ancestor layout-post">
     <template v-for="post in postByLibrary.post_favourite">

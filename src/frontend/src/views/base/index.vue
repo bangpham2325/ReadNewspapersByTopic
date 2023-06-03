@@ -23,6 +23,7 @@ import {Options, Vue} from 'vue-class-component';
 import TopBar from "@/components/TopBar.vue";
 import {mapState, mapGetters, mapMutations} from "vuex";
 import {MutationTypes} from "@/types/store/MutationTypes";
+import {ROLES} from "@/const/roles";
 
 @Options({
   components: {
@@ -33,7 +34,10 @@ import {MutationTypes} from "@/types/store/MutationTypes";
     ...mapMutations("user",[MutationTypes.CLEAR_USER_INFO]),
 
     goToHome() {
-      this.$router.push("/home")
+      switch (this.userInfo.role) {
+        case ROLES.ADMIN: this.$router.push("/post/management"); break;
+        default: this.$router.push("/home"); break;
+      }
     },
 
     logout() {
