@@ -1,11 +1,12 @@
 <template>
-  <div class="common-layout">
-    <el-container class="is-flex">
-      <el-header>
+    <el-container class="is-flex has-background-white">
+      <el-header class="background-topbar">
         <TopBar></TopBar>
       </el-header>
-      <el-main style="margin-top: 20px">
-        <router-view></router-view>
+      <el-main>
+        <div class="common-layout">
+          <router-view></router-view>
+        </div>
       </el-main>
       <footer class="footer">
         <div class="has-text-centered">
@@ -15,7 +16,6 @@
         </div>
       </footer>
     </el-container>
-  </div>
 </template>
 
 <script lang="ts">
@@ -69,5 +69,8 @@ export default class BasePage extends Vue {
 </script>
 
 <style lang="scss" scoped>
-
+.background-topbar{
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  min-height: 100px;
+}
 </style>
