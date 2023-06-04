@@ -61,6 +61,11 @@ export interface Actions {
     { commit }: AugmentedActionContext,
     params: any
   ): void,
+
+  [ActionTypes.PUBLISH_LIST_POST](
+    { commit }: AugmentedActionContext,
+    params: any
+  ): void,
 }
 
 export const actions: ActionTree<State, State> & Actions = {
@@ -106,6 +111,11 @@ export const actions: ActionTree<State, State> & Actions = {
 
   async [ActionTypes.UPDATE_STATUS_POST]({ commit }, data) {
     let response: any = await PostService.updateStatusPost(data.id, data.status)
+    return response
+  },
+
+  async [ActionTypes.PUBLISH_LIST_POST]({ commit }, params) {
+    let response: any = await PostService.publishListPost(params)
     return response
   },
 }

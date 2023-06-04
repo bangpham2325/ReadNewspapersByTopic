@@ -3,10 +3,14 @@
 		<h2 class="title is-3">{{ content.title }}</h2>
 
 		<div v-for="line in content.paragraph">
-			<p>{{ line.text }}</p>
-			<figure class="image is-2by1 my-6" v-if="line.below_img">
-				<img :src=content.image>
-			</figure>
+			<p class="my-4">{{ line.text }}</p>
+			<div v-if="line.below_img">
+				<figure class="image is-2by1 my-6">
+					<img :src=content.image>
+				</figure>
+				<p class="subtitle is-6 is-flex is-justify-content-center has-text-centered"><b><i>{{ content.description_img }}</i></b></p>
+			</div>
+			
 		</div>
 	</div>
 

@@ -91,6 +91,15 @@ class PostService extends BaseService {
       return null
     }
   }
+
+  async publishListPost(list_id:any){
+    try{
+      const res:any = await this.request().patch(`${this.entity}/publish_post/`, list_id)
+      return res
+    }catch(error){
+      return null
+    }
+  }
 }
 
 export default new PostService();

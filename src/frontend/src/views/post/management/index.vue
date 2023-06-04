@@ -10,14 +10,17 @@
           <el-radio-button label="DRAFT" @change="handleRadioChange('DRAFT')"/>
           <el-radio-button label="PUBLISHED" @change="handleRadioChange('PUBLISHED')"/>
         </el-radio-group>
+        <button v-if="this.filterStatus == 'DRAFT' && !this.selectMuti" class="button is-primary ml-4" style="background-color: #00773e;" @click="selectMulPost">Chọn nhiều bài</button>
+        <button v-if="this.selectMuti" class="button is-primary ml-4" style="background-color: #00773e;" @click="publishPosts">Đăng bài</button>
+        <button v-if="this.selectMuti" class="button is-dark ml-4" @click="this.selectMuti=false">Hủy chọn nhiều</button>
       </div>
     </el-col>
   </el-row>
 	
   <div class="tile is-ancestor layout-post">
-    <template v-for="post in postsFiltered">
-      <div class="tile is-parent" @click="detailPost(post.id)">
-        <div class="tile is-child box card">
+    <template v-for="post in posts">
+      <div :class="['tile', 'is-parent']" @click="clickPost(post.id)">
+        <div :class="['tile', 'is-child', 'box card', {'clickedPost': selectedPosts.includes(post.id)}]">
           <div class="card-image">
             <figure class="image is-3by2">
               <img :src=post.thumbnail alt="Placeholder image">
@@ -76,25 +79,42 @@
 import { Options, Vue } from 'vue-class-component';
 import { mapActions, mapMutations } from "vuex";
 import { ActionTypes } from "@/types/store/ActionTypes";
+import {ElMessage} from "element-plus";
 
 @Options({
 	data(){
     return {
       posts: [],
-      postsFiltered: [],
 			currentPage: 1,
       filterStatus: 'ALL',
-      totalPage: 10
+      totalPage: 10,
+      selectMuti: false,
+      selectedPosts: [] as any
     }
   },
 
 	methods: {
     ...mapMutations(["SET_LOADING"]),
-    ...mapActions("post", [ActionTypes.FETCH_POSTS]),
+    ...mapActions("post", [ActionTypes.FETCH_POSTS, ActionTypes.PUBLISH_LIST_POST]),
 	
-		async getPosts(){
+		async getPosts(page:any = null, status: any = null){
       this.SET_LOADING(true)
-      let data = await this.FETCH_POSTS()
+      let data: any
+      if(!page && !status){
+        data = await this.FETCH_POSTS()
+      }
+      else if (page && status){
+        data = await this.FETCH_POSTS({
+        page: page,
+        status: status})
+      }
+      else if (page && !status){
+        data = await this.FETCH_POSTS({page: page})
+      }
+      else {
+        data = await this.FETCH_POSTS({status: status})
+      }
+        
       if (data) {
         this.totalPage = Math.ceil(data.count/12)*10
         this.posts = data.results
@@ -106,44 +126,24 @@ import { ActionTypes } from "@/types/store/ActionTypes";
       this.$router.push({ name: 'detail-post', params: { id: post_id } })
     },
 
-    handleRadioChange(type:string) {
-      if(type == 'ALL'){
-        this.postsFiltered = this.posts
-        this.filterStatus = type
-      }
-      else if(type == 'DRAFT'){
-        this.postsFiltered = []
-        for (let i in this.posts){
-          if(this.posts[i].status == 'DRAFT')
-            this.postsFiltered.push(this.posts[i])
+    async handleRadioChange(type:string) {
+        if(type == 'ALL'){
+          await this.getPosts()
+          this.filterStatus = type
         }
-        this.filterStatus = type
-      }
-      else{
-        this.postsFiltered = []
-        for (let i in this.posts){
-          if(this.posts[i].status == 'PUBLISHED')
-            this.postsFiltered.push(this.posts[i])
+        else {
+          await this.getPosts(null,type)
+          this.filterStatus = type
         }
-        this.filterStatus = type
-      }
     },
 
 		async handleCurrentChange(currentPage:any) {
       this.currentPage = currentPage;
-      let data = await this.FETCH_POSTS({page: this.currentPage})
-      if (data) {
-        this.posts = data.results
+      if(this.filterStatus == 'ALL'){
+        await this.getPosts(this.currentPage)
       }
-      if(this.filterStatus == 'ALL')
-        this.postsFiltered = this.posts
-      else{
-        this.postsFiltered = []
-        for (let i in this.posts){
-          if(this.posts[i].status == this.filterStatus)
-            this.postsFiltered.push(this.posts[i])
-        }
-      }
+      else 
+        await this.getPosts(this.currentPage,this.filterStatus)
 			this.scrollToTop()
     },
 		
@@ -153,11 +153,41 @@ import { ActionTypes } from "@/types/store/ActionTypes";
 				behavior: 'smooth',
 			});
 		},
+
+    selectMulPost(){
+      this.selectedPosts = []
+      this.selectMuti=true
+    },
+
+    clickPost(post_id: string){
+        if(!this.selectMuti)
+          this.detailPost(post_id)
+        else {
+          if(this.selectedPosts.includes(post_id))
+            this.selectedPosts = this.selectedPosts.filter((id:any) => id !== post_id);
+          else
+            this.selectedPosts.push(post_id)
+        }
+    },
+
+    async publishPosts(){
+      let res = await this.PUBLISH_LIST_POST({post_ids: this.selectedPosts})
+      if(res.status == 200){
+        await this.getPosts(this.currentPage,this.filterStatus)
+        this.selectedPosts = []
+        ElMessage({
+          message: `Đăng bài thành công.`,
+          type: 'success',
+        })
+      }
+      else {
+        ElMessage.error('Có lỗi đã xảy ra.')
+      }
+    }
   },
 
 	async created(){
     await this.getPosts()
-    this.postsFiltered = this.posts
   },
 })
 
@@ -176,5 +206,9 @@ export default class ManagementPage extends Vue {
 .el-radio-button {
   --el-radio-button-checked-bg-color:#00773e;
   --el-radio-button-checked-border-color: #00773e;
+}
+
+.clickedPost{
+  border: 3px solid #00773e;
 }
 </style>
