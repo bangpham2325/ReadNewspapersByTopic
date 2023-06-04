@@ -20,9 +20,9 @@
 	  <el-row v-else class="is-flex is-justify-content-right">
 		<button class="button is-primary" style="background-color: #00773e;" @click="statusPost('PUBLISHED')">Đăng bài viết</button>
 	  </el-row>
-    
-      <el-dialog v-model="ratingSection">
-        <form>
+      <div class="modal" :class="{'is-active': ratingSection}">
+				<div class="modal-background" @click="ratingSection=false"></div>
+				<div class="modal-content has-background-white p-6">
           <div class="field">
             <label class="title is-4">Đánh giá sự hài lòng của bạn về bài viết:</label>
             <div class="control mt-5">
@@ -53,8 +53,8 @@
               <button class="button is-black" @click="submitRatingForm">Submit</button>
             </div>
           </div>
-        </form>
-      </el-dialog>
+      	</div>
+			</div>
     </el-col>
   </el-row>
 </template>
@@ -150,6 +150,17 @@ import {ElMessage} from "element-plus";
             star_rating: this.rating
           }
         })
+
+				if(res.data.detail == 'you have created rating '){
+					ElMessage('Bạn đã đánh giá bài viết này trước đây!')
+					this.ratingSection = false
+				}
+				else{
+					ElMessage({
+						message: `Cảm ơn bạn đã đánh giá bài viết này.`,
+						type: 'success',
+					})
+				}
       }
       else {
 				this.$router.push("/login")

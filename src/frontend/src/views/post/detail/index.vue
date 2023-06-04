@@ -13,7 +13,7 @@
       <RecommendationSection></RecommendationSection>
     </div>
     <div>
-      <CommentSection></CommentSection>
+      <CommentSection :post="postDetail"></CommentSection>
     </div>
   </div>
 </template>

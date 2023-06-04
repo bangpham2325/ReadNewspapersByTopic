@@ -157,6 +157,10 @@
   import {ROLES} from "@/const/roles";
   
   @Options({
+    props: {
+      post: [] as any
+    },
+
     data() {
       return {
         comment: "",
@@ -189,9 +193,9 @@
             id: this.$route.params.id,
             content: this.comment,
           });
-  
+          
           if (response.status == 201) {
-              this.comment = '',
+              this.comment = ''
               await this.getPostDetail()
           }
         } else {
@@ -267,8 +271,19 @@
       ...mapState("user", ["userInfo"])
     },
 
+    watch: {
+      async post() {
+        await this.getPostDetail()
+      }
+    },
+
     async created() {
-      await this.getPostDetail()
+      this.unwatchComment = this.$watch('post', (newVal:any) => {
+        if (newVal) {
+          this.post_comment = {...newVal.post_comment}
+          this.unwatchComment();
+        }
+      });
     }
   })
   export default class CommentSection extends Vue {

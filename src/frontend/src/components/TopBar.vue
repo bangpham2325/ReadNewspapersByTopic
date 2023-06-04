@@ -1,5 +1,5 @@
 <template>
-  <el-row>
+  <el-row class="layout">
     <el-col :span="8">
       <LogoWeb></LogoWeb>
     </el-col>
@@ -127,5 +127,33 @@ export default class TopBar extends Vue {
   grid-template-columns: repeat(4, 1fr);
   grid-gap: 10px;
 }
+.layout{
+  padding: 2% 5% 0% 5%;
+  background: white;
+}
 
+.sign {
+  font-size: 1rem;
+  font-weight: 500;
+  text-align: center;
+
+  &__type {
+    display: inline-block;
+    height: 40px;
+    width: 100px;
+    background-color: #121221;
+    border-radius: 60px;
+    color: white;
+    transition: all 0.2s ease-in-out;
+  }
+
+  &__text {
+    margin: 0 20px;
+    line-height: 40px;
+    display: inline-block;
+    color: #121221;
+    text-transform: capitalize;
+    transition: visibility 0.1s, opacity 0.3s linear;
+  }
+}
 </style>
