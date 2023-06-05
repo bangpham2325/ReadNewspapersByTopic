@@ -1,7 +1,7 @@
 <template>
   <h2 class="title is-2 mt-6">BÌNH LUẬN</h2>
   
-  <div class="media mb-6" style="width: 100%">
+  <div class="media mb-6" style="width: 100%" v-if="userInfo.id">
     <figure class="media-left">
 			<p class="image is-64x64">
 				<img v-if="userInfo.avatar" :src="userInfo.avatar" class="is-rounded" style="height: 100%"/>
@@ -62,7 +62,7 @@
 					<p class="subtitle is-5 ml-3 mt-1">{{ comment.content }}</p>
 					<p>
 						<span><el-button text @click="replyComment(comment.id)">Reply</el-button></span>
-						<span v-if="userInfo.role == comment.user.role || userInfo.role == ROLES.ADMIN">
+						<span v-if="userInfo.id == comment.user.id || userInfo.role == ROLES.ADMIN">
 							<el-button text @click="editComment(comment.id, comment.content, 'parent')">Edit</el-button>
 							<el-button text @click="delComment(comment.id)">Delete</el-button>
 						</span>
@@ -104,7 +104,7 @@
                   <p class="title is-4 ml-3 mt-3">{{ item.user.full_name }}</p>
 					        <p class="subtitle is-5 ml-3 mt-1">{{ item.content }}</p>
 									<p>
-										<span v-if="userInfo.role == item.user.role || userInfo.role == ROLES.ADMIN">
+										<span v-if="userInfo.id == item.user.id || userInfo.role == ROLES.ADMIN">
 											<el-button text @click="editComment(item.id, item.content, 'child')">Edit</el-button>
 											<el-button text @click="delComment(item.id)">Delete</el-button>
 										</span>

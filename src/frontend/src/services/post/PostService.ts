@@ -100,6 +100,16 @@ class PostService extends BaseService {
       return null
     }
   }
+
+  async deletePost(id:string){
+    try{
+      const res:any = await this.request().delete(`${this.entity}/${id}/`)
+      return res
+    }
+    catch(error){
+      return null
+    }
+  }
 }
 
 export default new PostService();
