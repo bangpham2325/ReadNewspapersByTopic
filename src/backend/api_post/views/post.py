@@ -1,3 +1,4 @@
+import api_post
 from api_base.views import BaseViewSet
 from api_post.models import Posts
 from api_post.serializers import PostSerializer, PostShortSerializer, PostLikeSerializer
@@ -123,3 +124,9 @@ class PostViewSet(BaseViewSet):
             serializer.is_valid(raise_exception=True)
             self.perform_create(serializer)
             return Response({'message': 'you have added bookmarks for this post!', "status": True}, status=status.HTTP_200_OK)
+
+    @action(methods=[HttpMethod.GET], detail=True, url_path="recommend", serializer_class=PostShortSerializer)
+    def recommend(self, request, *args, **kwargs):
+        data = api_post.services.recommendation.get_recommendations(kwargs['pk'])
+        serializer = self.get_serializer(data, many=True)
+        return Response({'message': serializer.data})
