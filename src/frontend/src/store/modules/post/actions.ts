@@ -66,6 +66,11 @@ export interface Actions {
     { commit }: AugmentedActionContext,
     params: any
   ): void,
+
+  [ActionTypes.DELETE_POST](
+    { commit }: AugmentedActionContext,
+    id: string
+  ): void,
 }
 
 export const actions: ActionTree<State, State> & Actions = {
@@ -116,6 +121,11 @@ export const actions: ActionTree<State, State> & Actions = {
 
   async [ActionTypes.PUBLISH_LIST_POST]({ commit }, params) {
     let response: any = await PostService.publishListPost(params)
+    return response
+  },
+
+  async [ActionTypes.DELETE_POST]({ commit }, id) {
+    let response: any = await PostService.deletePost(id)
     return response
   },
 }

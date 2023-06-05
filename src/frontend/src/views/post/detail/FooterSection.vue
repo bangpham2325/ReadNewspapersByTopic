@@ -15,10 +15,12 @@
 			<el-button type="text" icon="ChatRound" style="color:#00773e;" size="large" @click="ratingSection=true">{{ postDetail.total_rating }}</el-button>
 		</el-tooltip>
 		<button v-if="this.userInfo.role === 'ADMIN'" class="button is-dark" @click="statusPost('DRAFT')">Ẩn bài viết</button>
+		<button v-if="this.userInfo.role === 'ADMIN'" class="button is-danger ml-2" @click="deletePost">Xóa bài viết</button>
       </el-row>
 
 	  <el-row v-else class="is-flex is-justify-content-right">
 		<button class="button is-primary" style="background-color: #00773e;" @click="statusPost('PUBLISHED')">Đăng bài viết</button>
+		<button class="button is-danger ml-2" @click="deletePost">Xóa bài viết</button>
 	  </el-row>
       <div class="modal" :class="{'is-active': ratingSection}">
 				<div class="modal-background" @click="ratingSection=false"></div>
@@ -87,7 +89,7 @@ import {ElMessage} from "element-plus";
 
 	methods: {
 		...mapMutations(["SET_LOADING"]),
-    ...mapActions("post", [ActionTypes.ADD_POST_BOOKMARK, ActionTypes.LIKE_POST, ActionTypes.RATE_POST, ActionTypes.UPDATE_STATUS_POST]),
+    ...mapActions("post", [ActionTypes.ADD_POST_BOOKMARK, ActionTypes.LIKE_POST, ActionTypes.RATE_POST, ActionTypes.UPDATE_STATUS_POST, ActionTypes.DELETE_POST]),
 
 		async actionPost(action: String){
 			if(this.userInfo.id){
@@ -181,6 +183,19 @@ import {ElMessage} from "element-plus";
 					message: `Ẩn bài ${this.postDetail.title} thành công.`,
 					type: 'success',
 				})
+			}
+			else{
+				ElMessage.error('Đã có lỗi xảy ra.')
+			}
+		},
+
+		async deletePost(){
+			let res = await this.DELETE_POST(this.postDetail.id)
+			if(res.status == 204){
+				ElMessage({
+						message: `Xóa bài viết thành công.`,
+						type: 'success',
+					})
 			}
 			else{
 				ElMessage.error('Đã có lỗi xảy ra.')
