@@ -130,3 +130,9 @@ class PostViewSet(BaseViewSet):
         data = api_post.services.recommendation.get_recommendations(kwargs['pk'])
         serializer = self.get_serializer(data, many=True)
         return Response({'message': serializer.data})
+
+    @action(methods=[HttpMethod.GET], detail=False, url_path="new_post", serializer_class=PostShortSerializer)
+    def get_new_post(self, request, *args, **kwargs):
+        res_data = PostService.get_list_new_post()
+        serializer = self.get_serializer(res_data, many=True).data
+        return Response(serializer, status=status.HTTP_200_OK)

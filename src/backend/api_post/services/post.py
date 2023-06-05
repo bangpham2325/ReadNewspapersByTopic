@@ -81,6 +81,13 @@ class PostService(BaseService):
         return posts
 
     @classmethod
+    def get_list_new_post(cls, params=None):
+        ft = Q(status=PostStatus.PUBLISHED.value)
+        posts = Posts.objects.prefetch_related('post_rating').prefetch_related('category').prefetch_related(
+            'source').annotate(avg_rating=Avg('post_rating__star_rating')).filter(ft).order_by('-publish_date')[:50]
+        return posts
+
+    @classmethod
     def get_post_management(cls, params=None):
         ft = Q()
         if params.get('search'):
