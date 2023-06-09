@@ -1,4 +1,5 @@
 <template>
+  <div v-loading="loading">
   <el-row>
     <el-col :span=12>
       <h1 class="title is-3 is-flex">Tất cả bài viết</h1>
@@ -73,6 +74,7 @@
 			:total=totalPage
 			@current-change="handleCurrentChange"/>
 	</div>
+</div>
 </template>
 
 <script lang="ts">
@@ -89,7 +91,8 @@ import {ElMessage} from "element-plus";
       filterStatus: 'ALL',
       totalPage: 10,
       selectMuti: false,
-      selectedPosts: [] as any
+      selectedPosts: [] as any,
+      loading: true
     }
   },
 
@@ -188,6 +191,7 @@ import {ElMessage} from "element-plus";
 
 	async created(){
     await this.getPosts()
+    this.loading = false
   },
 })
 

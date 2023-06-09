@@ -33,6 +33,15 @@ class UserService extends BaseService{
     }
   }
 
+  async updateUserCategory(list_id:any){
+    try {
+      const response= await this.request().patch(`${this.entity}/update_category/`, list_id);
+      return response;
+    } catch (error) {
+      return null;
+    }
+  }
+
 }
 
 export default new UserService();

@@ -1,16 +1,62 @@
 <template>
-	<h2 class="title is-2 mt-6">ĐỪNG BỎ LỠ</h2>
-	<el-carousel :interval="4000" type="card" height="350px">
-    <el-carousel-item v-for="item in 6" :key="item">
-      <h3 text="2xl" justify="center">{{ item }}</h3>
-    </el-carousel-item>
-  </el-carousel>
+  <div v-if="postCommendation.length != 0">
+    <h2 class="title is-2 my-6">ĐỪNG BỎ LỠ</h2>
+    
+    <el-carousel :interval="4000" type="card" height="300px" v-if="postCommendation.length >= 3">
+      <el-carousel-item v-for="item in postCommendation" :key="item">
+        <div @click="detailPost(item.id)">
+          <img :src="item.thumbnail" :alt="item.title" />
+          <h3 class="title is-6 mt-4">{{ item.title }}</h3>
+        </div>
+      </el-carousel-item>
+    </el-carousel>
+
+    <el-carousel :interval="5000" arrow="always" height="330px" v-else>
+      <el-carousel-item v-for="item in postCommendation" :key="item">
+        <div style="display: flex;flex-direction: column;align-items: center;" @click="detailPost(item.id)">
+          <img :src="item.thumbnail" :alt="item.title"/>
+          <h3 class="title is-6 mt-4">{{ item.title }}</h3>
+        </div>
+      </el-carousel-item>
+    </el-carousel>
+  </div>
 </template>
 
 <script lang="ts">
 import {Options, Vue} from 'vue-class-component';
+import { mapActions, mapMutations } from "vuex";
+import { ActionTypes } from "@/types/store/ActionTypes";
+import {ElMessage} from "element-plus";
 
 @Options({
+  data(){
+    return {
+      postCommendation: [] as any
+    }
+  },
+
+  methods: {
+    ...mapMutations(["SET_LOADING"]),
+    ...mapActions("post", [ActionTypes.RECOMENDATION_POST]),
+
+    async getPostRecommendation(){
+      this.SET_LOADING(true)
+      let data = await this.RECOMENDATION_POST(this.$route.params.id)
+      if(data)
+        this.postCommendation = data.message
+      console.log(this.postCommendation)
+      this.SET_LOADING(false)
+    },
+
+    detailPost(post_id: string){
+      this.$router.push({ name: 'detail-post', params: { id: post_id } })
+    },
+  },
+
+  async created(){
+    await this.getPostRecommendation()
+  },
+
 })
 
 export default class RecommendationSection extends Vue {
@@ -19,18 +65,13 @@ export default class RecommendationSection extends Vue {
 
 <style scoped>
 .el-carousel__item h3 {
-  color: #475669;
   opacity: 0.75;
-  line-height: 200px;
   margin: 0;
   text-align: center;
 }
 
-.el-carousel__item:nth-child(2n) {
-  background-color: #99a9bf;
+.image-container {
+  position: relative;
 }
 
-.el-carousel__item:nth-child(2n + 1) {
-  background-color: #d3dce6;
-}
 </style>

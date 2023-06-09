@@ -11,6 +11,8 @@ import PostCategoryPage from "@/views/post/category/index.vue";
 import SearchPage from "@/views/post/search/index.vue";
 import BookmarkPage from "@/views/post/bookmark/index.vue";
 import ManagementPage from "@/views/post/management/index.vue";
+import CategoryPage from "@/views/category/index.vue";
+import NewPostPage from "@/views/post/new/index.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -65,9 +67,19 @@ const routes: Array<RouteRecordRaw> = [
             name: "bookmark",
             component: BookmarkPage,
           },
+          {
+            path: "new-post",
+            name: "new-post",
+            component: NewPostPage
+          },
         ]
       },
     ]
+  },
+  {
+    path: "/category",
+    name: "category",
+    component: CategoryPage,
   },
   {
     path: "/login",

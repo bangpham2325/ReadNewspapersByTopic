@@ -1,4 +1,14 @@
 <template>
+	<el-row v-if="postDetail.status=='PUBLISHED'" class="is-flex is-justify-content-right mb-6">
+		<button v-if="this.userInfo.role === 'ADMIN'" class="button is-dark" @click="statusPost('DRAFT')">Ẩn bài viết</button>
+		<button v-if="this.userInfo.role === 'ADMIN'" class="button is-danger ml-2" @click="deletePost">Xóa bài viết</button>
+	</el-row>
+
+	<el-row v-else class="is-flex is-justify-content-right mb-6">
+		<button class="button is-primary" style="background-color: #00773e;" @click="statusPost('PUBLISHED')">Đăng bài viết</button>
+		<button class="button is-danger ml-2" @click="deletePost">Xóa bài viết</button>
+	</el-row>
+
 	<el-row>
 		<el-col :span="12">
 			<el-tooltip :content=postDetail.publish_date placement="top-start">
@@ -40,7 +50,9 @@
 
 <script lang="ts">
 import {Options, Vue} from 'vue-class-component';
-import {mapState, mapGetters} from "vuex";
+import {mapActions, mapState, mapGetters, mapMutations} from "vuex";
+import { ActionTypes } from '@/types/store/ActionTypes';
+import {ElMessage} from "element-plus";
 
 @Options({
 	props: {
@@ -48,9 +60,48 @@ import {mapState, mapGetters} from "vuex";
 	},
 
 	methods: {
+		...mapMutations(["SET_LOADING"]),
+    ...mapActions("post", [ActionTypes.UPDATE_STATUS_POST, ActionTypes.DELETE_POST]),
+
 		openSource(){
 			window.open(this.postDetail.source.domain, '_blank');
+		},
+
+		async statusPost(status:string){
+			let res = await this.UPDATE_STATUS_POST({id: this.postDetail.id, status: {status: status}})
+			if (res.status == 200){
+				window.location.reload();
+				if(status == 'PUBLISHED')
+					ElMessage({
+						message: `Đăng bài ${this.postDetail.title} thành công.`,
+						type: 'success',
+					})
+				else {
+					ElMessage({
+						message: `Ẩn bài ${this.postDetail.title} thành công.`,
+						type: 'success',
+					})
+				}
+			}
+			else{
+				ElMessage.error('Đã có lỗi xảy ra.')
+			}
+		},
+
+		async deletePost(){
+			let res = await this.DELETE_POST(this.postDetail.id)
+			if(res.status == 204){
+				ElMessage({
+						message: `Xóa bài viết thành công.`,
+						type: 'success',
+					})
+				this.$router.push('/post/management')
+			}
+			else{
+				ElMessage.error('Đã có lỗi xảy ra.')
+			}
 		}
+
 	},
 	computed: {
     ...mapState(["is_loading"]),
