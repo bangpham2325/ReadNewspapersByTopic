@@ -60,10 +60,13 @@ class PostService(BaseService):
         return posts
 
     @classmethod
-    def get_list_post_by_favourite(cls):
+    def get_list_post_by_favourite(cls, params=None):
         ft = Q(status=PostStatus.PUBLISHED.value)
         posts = Posts.objects.prefetch_related('post_rating').prefetch_related('category').prefetch_related(
             'source').annotate(avg_rating=Avg('post_rating__star_rating')).filter(ft).order_by('-avg_rating')[:8]
+        if params.getlist('categories'):
+            topic_ids = params.getlist('categories')
+            posts = posts.filter(category__id__in=topic_ids)
         return posts
 
     @classmethod
@@ -71,6 +74,9 @@ class PostService(BaseService):
         ft = Q(status=PostStatus.PUBLISHED.value)
         posts = Posts.objects.filter(ft).prefetch_related('post_rating').prefetch_related('category').prefetch_related(
             'source').annotate(avg_rating=Avg('post_rating__star_rating')).order_by('-views')[:8]
+        if params.getlist('categories'):
+            topic_ids = params.getlist('categories')
+            posts = posts.filter(category__id__in=topic_ids)
         return posts
 
     @classmethod
@@ -78,6 +84,9 @@ class PostService(BaseService):
         ft = Q(status=PostStatus.PUBLISHED.value)
         posts = Posts.objects.prefetch_related('post_rating').prefetch_related('category').prefetch_related(
             'source').annotate(avg_rating=Avg('post_rating__star_rating')).filter(ft).order_by('-likes')[:8]
+        if params.getlist('categories'):
+            topic_ids = params.getlist('categories')
+            posts = posts.filter(category__id__in=topic_ids)
         return posts
 
     @classmethod
@@ -85,6 +94,9 @@ class PostService(BaseService):
         ft = Q(status=PostStatus.PUBLISHED.value)
         posts = Posts.objects.prefetch_related('post_rating').prefetch_related('category').prefetch_related(
             'source').annotate(avg_rating=Avg('post_rating__star_rating')).filter(ft).order_by('-publish_date')[:50]
+        if params.getlist('categories'):
+            topic_ids = params.getlist('categories')
+            posts = posts.filter(category__id__in=topic_ids)
         return posts
 
     @classmethod
