@@ -4,6 +4,7 @@ from enum import Enum
 class Roles(Enum):
     ADMIN = "ADMIN"
     USER = "USER"
+    AUTHOR = "AUTHOR"
 
     @classmethod
     def choices(cls):
