@@ -37,8 +37,10 @@ def get_recommendations(post_id, num_recommendations=5):
     vector = [tfidf_vectors_svd[index].astype(np.float64).tobytes() for index in top_indices]
     # lấy ra các id của bài post dựa trên vector
     recommended_ids = [post_id_dict.get(index) for index in vector[::-1]]
-    order_case = Case(*[When(id=id_val, then=pos) for pos, id_val in enumerate(recommended_ids)])
-
+    try:
+        recommended_ids.remove(uuid.UUID(post_id))
+    except:
+        pass
     # Filter and retrieve the recommended posts with the status of 'Published', ordered by recommended_ids
     recommended_posts = Posts.objects.filter(
         Q(id__in=recommended_ids) & Q(status=PostStatus.PUBLISHED.value)
