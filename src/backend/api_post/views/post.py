@@ -61,11 +61,12 @@ class PostViewSet(BaseViewSet):
 
     @action(methods=[HttpMethod.GET], detail=False, url_path="library", serializer_class=PostShortSerializer)
     def get_post_library(self, request, *args, **kwargs):
-        res_data = PostService.get_list_post_by_favourite()
+        params = request.query_params
+        res_data = PostService.get_list_post_by_favourite(params)
         serializer = {"post_favourite": self.get_serializer(res_data, many=True).data}
-        res_data = PostService.get_list_post_by_views()
+        res_data = PostService.get_list_post_by_views(params)
         serializer.update({"post_views": self.get_serializer(res_data, many=True).data})
-        res_data = PostService.get_list_post_by_likes()
+        res_data = PostService.get_list_post_by_likes(params)
         serializer.update({"post_likes": self.get_serializer(res_data, many=True).data})
         return Response(serializer, status=status.HTTP_200_OK)
 
@@ -133,6 +134,7 @@ class PostViewSet(BaseViewSet):
 
     @action(methods=[HttpMethod.GET], detail=False, url_path="new_post", serializer_class=PostShortSerializer)
     def get_new_post(self, request, *args, **kwargs):
-        res_data = PostService.get_list_new_post()
+        params = request.query_params
+        res_data = PostService.get_list_new_post(params)
         serializer = self.get_serializer(res_data, many=True).data
         return Response(serializer, status=status.HTTP_200_OK)
