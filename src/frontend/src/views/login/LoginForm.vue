@@ -101,7 +101,10 @@ declare const gapi: any;
           if (response.status == 200) {
             const user_info: any = await this.GET_USER_INFO(this.tokenInfo.user_id)
             if (user_info.status == 200) {
-              this.$router.push("/home")
+              if(user_info.data.categories.length == 0 && user_info.data.role != 'ADMIN')
+                this.$router.push("/category")
+              else
+                this.$router.push({name: 'home'})
               return
             }
           } else {
@@ -116,12 +119,10 @@ declare const gapi: any;
       this.is_freeze = false
     },
     async  googleLogin(response: any) {
-      console.log(response)
       this.is_freeze = true
       const response_data: any = await this.LOGIN_WITH_GOOGLE({ auth_token: response['credential'] })
       if (response_data.status == 200) {
             const user_info: any = await this.GET_USER_INFO(this.tokenInfo.user_id)
-            console.log(user_info)
             if (user_info.status == 200) {
               this.$router.push("/")
               return

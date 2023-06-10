@@ -19,6 +19,11 @@
               <template #default>
                 <div style="margin: 3% 6% 3% 6%;">
                   <div class="tile is-ancestor">
+                    <div class="tile is-parent">
+                      <el-button type="text" class="subtitle is-6 has-text-centered" style="width: 100%;color:#00773e;" @click="newPost">
+                        Tin tức mới nhất
+                      </el-button>
+                    </div>
                     <div class="tile is-parent" v-for="(topic, index) in category" :key="index">
                       <el-button type="text" class="subtitle is-6 has-text-centered" style="width: 100%;color:#00773e;" @click="filterByCategory(topic.title, topic.id)">
                         {{ topic.title }}
@@ -72,7 +77,7 @@ import { ActionTypes } from '@/types/store/ActionTypes';
     return {
       category: [],
       popoverVisible: false,
-      searchText: ""
+      searchText: "",
     }
   },
 
@@ -99,6 +104,11 @@ import { ActionTypes } from '@/types/store/ActionTypes';
 
     filterByCategory(topic_name: string, topic_id: string){
       this.$router.push({ name: 'posts-by-category', params: {name:topic_name, id: topic_id } })
+      this.popoverVisible = false
+    },
+
+    newPost(){
+      this.$router.push('/post/new-post')
       this.popoverVisible = false
     },
 

@@ -1,5 +1,5 @@
 <template>
-  <div class="detail-post">
+  <div class="detail-post" v-loading="loading">
     <div style="margin-bottom:50px;">
       <SummarySection :postDetail="postDetail"></SummarySection>
     </div>
@@ -43,7 +43,8 @@ import FooterSection from './FooterSection.vue';
         category: {
           title: ""
         }
-      }
+      },
+      loading: true,
     }
   },
 
@@ -63,6 +64,7 @@ import FooterSection from './FooterSection.vue';
 
   async created(){
     await this.getPostDetail()
+    this.loading = false
   },
 
 })
@@ -73,6 +75,6 @@ export default class PostDetailPage extends Vue {
 
 <style lang="scss" scoped>
 .detail-post {
-  padding: 0% 12% 0% 12%;
+  padding: 0% 20% 0% 20%;
 }
 </style>

@@ -1,145 +1,147 @@
 <template>
-  <h1 class="title is-2 is-flex">Tin tức nổi bật</h1>
-  <div class="tile is-ancestor">
-    <div class="tile is-parent" @click="detailPost(postHot.id)">
-      <div class="tile is-child box card">
-        <div class="card-image">
-          <figure class="image is-2by1" style="height:auto">
-            <img :src=postHot.thumbnail alt="Placeholder image">
-          </figure>
+  <div v-loading="loading">
+    <h1 class="title is-2 is-flex">Tin tức nổi bật</h1>
+    <div class="tile is-ancestor">
+      <div class="tile is-parent" @click="detailPost(postHot.id)">
+        <div class="tile is-child box card">
+          <div class="card-image">
+            <figure class="image is-2by1" style="height:auto">
+              <img :src=postHot.thumbnail alt="Placeholder image">
+            </figure>
+          </div>
+          <div class="card-content">
+            <p class="title is-4">{{  postHot.title }}</p>
+            <p class="subtitle is-5" style="color:#808080">{{ postHot.summary }}</p>
+            <el-row>
+              <el-col :span="12">
+                <el-row>
+                    <el-avatar :size="50">
+                      <img src="https://img.vietcetera.com/uploads/avatar-images/12-apr-2023/vu-hoang-long-1681282620604-160x160.jpg">
+                    </el-avatar>
+                    <p class="title is-5 mt-4 ml-4" style="color:#00773e;">{{ postHot.author }}</p>
+                </el-row>
+              </el-col>
+          
+              <el-col :span="12">
+                <el-row class="is-flex is-justify-content-right">
+                  <p class="title is-6 mt-4">{{ postHot.publish_date }}</p>
+                </el-row>
+              </el-col>
+            </el-row>
+          </div>    
         </div>
-        <div class="card-content">
-          <p class="title is-4">{{  postHot.title }}</p>
-          <p class="subtitle is-5" style="color:#808080">{{ postHot.summary }}</p>
-          <el-row>
-            <el-col :span="12">
+      </div>
+
+      <div class="tile is-5 is-vertical is-parent">
+        <div class="tile is-child box card" v-for="post in postLikes" style="display: flex;align-items: center;">
+          <el-row @click="detailPost(post.id)">
+            <el-col :span="6" class="mr-5">
+              <figure class="image is-1by1" >
+                <img :src=post.thumbnail alt="Placeholder image">
+              </figure>
+            </el-col>
+
+            <el-col :span="15">
+              <p class="title is-6">{{  post.title }}</p>
+              <p style="color:#808080; font-size: 12px;">{{ post.summary }}</p>
+            </el-col>
+          </el-row>       
+        </div>
+      </div>
+    </div>
+
+    <h1 class="title is-3 is-flex mt-6">Bài viết phổ biến</h1>
+    <div class="tile is-ancestor layout-post">
+      <template v-for="post in postByLibrary.post_views">
+        <div class="tile is-parent" @click="detailPost(post.id)">
+          <div class="tile is-child box card">
+            <div class="card-image">
+              <figure class="image is-3by2">
+                <img :src=post.thumbnail alt="Placeholder image">
+              </figure>
+            </div>
+            <div class="card-content">
+              
               <el-row>
-                  <el-avatar :size="50">
-                    <img src="https://img.vietcetera.com/uploads/avatar-images/12-apr-2023/vu-hoang-long-1681282620604-160x160.jpg">
-                  </el-avatar>
-                  <p class="title is-5 mt-4 ml-4" style="color:#00773e;">{{ postHot.author }}</p>
+                <el-col :span="20">
+                  <el-row>
+                    <p class="title is-6 mt-3" style="color:#00773e;">{{ post.category.title }}</p>
+                  </el-row> 
+                </el-col>
+                <el-col :span="4">
+                  <el-row class="is-flex is-justify-content-right">
+                    <el-button type="text" icon="View" style="color:#00773e;" size="large">{{ post.views }}</el-button>
+                  </el-row>
+                </el-col>
               </el-row>
-            </el-col>
-        
-            <el-col :span="12">
-              <el-row class="is-flex is-justify-content-right">
-                <p class="title is-6 mt-4">{{ postHot.publish_date }}</p>
+
+              <p class="title is-5" style="min-height:90px;">{{  post.title }}</p>
+              <p style="color:#808080; font-size: 12px; min-height:120px;">{{ post.summary }}</p>
+
+              <el-row>
+                <el-col :span="12">
+                  <el-button type="text" icon="Histogram" style="color:black;" size="large" class="title is-6 mt-1" v-if="post.avg_rating != null">{{ post.avg_rating }}</el-button>
+                  <el-button type="text" icon="Histogram" style="color:black;" size="large" class="title is-6 mt-1" v-else>0</el-button>
+                </el-col>
+                <el-col :span="12">
+                  <el-row class="is-flex is-justify-content-right">
+                    <p class="title is-6 mt-4">{{ post.publish_date }}</p>
+                  </el-row>
+                </el-col>
               </el-row>
-            </el-col>
-          </el-row>
-        </div>    
-      </div>
-    </div>
-
-    <div class="tile is-5 is-vertical is-parent">
-      <div class="tile is-child box card" v-for="post in postLikes" style="display: flex;align-items: center;">
-        <el-row @click="detailPost(post.id)">
-          <el-col :span="6" class="mr-5">
-            <figure class="image is-1by1" >
-              <img :src=post.thumbnail alt="Placeholder image">
-            </figure>
-          </el-col>
-
-          <el-col :span="15">
-            <p class="title is-6">{{  post.title }}</p>
-            <p style="color:#808080; font-size: 12px;">{{ post.summary }}</p>
-          </el-col>
-        </el-row>       
-      </div>
-    </div>
-  </div>
-
-  <h1 class="title is-3 is-flex mt-6">Bài viết phổ biến</h1>
-  <div class="tile is-ancestor layout-post">
-    <template v-for="post in postByLibrary.post_views">
-      <div class="tile is-parent" @click="detailPost(post.id)">
-        <div class="tile is-child box card">
-          <div class="card-image">
-            <figure class="image is-3by2">
-              <img :src=post.thumbnail alt="Placeholder image">
-            </figure>
-          </div>
-          <div class="card-content">
-            
-            <el-row>
-              <el-col :span="20">
-                <el-row>
-                  <p class="title is-6 mt-3" style="color:#00773e;">{{ post.category.title }}</p>
-                </el-row> 
-              </el-col>
-              <el-col :span="4">
-                <el-row class="is-flex is-justify-content-right">
-                  <el-button type="text" icon="Pointer" style="color:#00773e;" size="large">{{ post.views }}</el-button>
-                </el-row>
-              </el-col>
-            </el-row>
-
-            <p class="title is-5" style="min-height:90px;">{{  post.title }}</p>
-            <p style="color:#808080; font-size: 12px; min-height:120px;">{{ post.summary }}</p>
-
-            <el-row>
-              <el-col :span="12">
-                <el-button type="text" icon="Histogram" style="color:black;" size="large" class="title is-6 mt-1" v-if="post.avg_rating != null">{{ post.avg_rating }}</el-button>
-                <el-button type="text" icon="Histogram" style="color:black;" size="large" class="title is-6 mt-1" v-else>0</el-button>
-              </el-col>
-              <el-col :span="12">
-                <el-row class="is-flex is-justify-content-right">
-                  <p class="title is-6 mt-4">{{ post.publish_date }}</p>
-                </el-row>
-              </el-col>
-            </el-row>
+            </div>
           </div>
         </div>
-      </div>
-    </template>
-  </div>  
+      </template>
+    </div>  
 
-  <h1 class="title is-3 is-flex mt-6">Bài viết được yêu thích</h1>
+    <h1 class="title is-3 is-flex mt-6">Bài viết được yêu thích</h1>
 
-  <div class="tile is-ancestor layout-post">
-    <template v-for="post in postByLibrary.post_favourite">
-      <div class="tile is-parent" @click="detailPost(post.id)">
-        <div class="tile is-child box card">
-          <div class="card-image">
-            <figure class="image is-3by2">
-              <img :src=post.thumbnail alt="Placeholder image">
-            </figure>
-          </div>
+    <div class="tile is-ancestor layout-post">
+      <template v-for="post in postByLibrary.post_favourite">
+        <div class="tile is-parent" @click="detailPost(post.id)">
+          <div class="tile is-child box card">
+            <div class="card-image">
+              <figure class="image is-3by2">
+                <img :src=post.thumbnail alt="Placeholder image">
+              </figure>
+            </div>
 
-          <div class="card-content">
+            <div class="card-content">
 
-            <el-row>
-              <el-col :span="20">
-                <el-row>
-                  <p class="title is-6 mt-3" style="color:#00773e;">{{ post.category.title }}</p>
-                </el-row> 
-              </el-col>
-              <el-col :span="4">
-                <el-row class="is-flex is-justify-content-right">
-                  <el-button type="text" icon="StarFilled" style="color:#00773e;" size="large">{{ post.likes }}</el-button>
-                </el-row>
-              </el-col>
-            </el-row>
+              <el-row>
+                <el-col :span="20">
+                  <el-row>
+                    <p class="title is-6 mt-3" style="color:#00773e;">{{ post.category.title }}</p>
+                  </el-row> 
+                </el-col>
+                <el-col :span="4">
+                  <el-row class="is-flex is-justify-content-right">
+                    <el-button type="text" icon="StarFilled" style="color:#00773e;" size="large">{{ post.likes }}</el-button>
+                  </el-row>
+                </el-col>
+              </el-row>
 
-            <p class="title is-5" style="min-height:90px;">{{  post.title }}</p>
-            <p style="color:#808080; font-size: 12px;min-height:120px;">{{ post.summary }}</p>
+              <p class="title is-5" style="min-height:90px;">{{  post.title }}</p>
+              <p style="color:#808080; font-size: 12px;min-height:120px;">{{ post.summary }}</p>
 
-            <el-row>
-              <el-col :span="12">
-                <el-button type="text" icon="Histogram" style="color:black;" size="large" class="title is-6 mt-1" v-if="post.avg_rating != null">{{ post.avg_rating }}</el-button>
-                <el-button type="text" icon="Histogram" style="color:black;" size="large" class="title is-6 mt-1" v-else>0</el-button>
-              </el-col>
-              <el-col :span="12">
-                <el-row class="is-flex is-justify-content-right">
-                  <p class="title is-6 mt-4">{{ post.publish_date }}</p>
-                </el-row>
-              </el-col>
-            </el-row>
+              <el-row>
+                <el-col :span="12">
+                  <el-button type="text" icon="Histogram" style="color:black;" size="large" class="title is-6 mt-1" v-if="post.avg_rating != null">{{ post.avg_rating }}</el-button>
+                  <el-button type="text" icon="Histogram" style="color:black;" size="large" class="title is-6 mt-1" v-else>0</el-button>
+                </el-col>
+                <el-col :span="12">
+                  <el-row class="is-flex is-justify-content-right">
+                    <p class="title is-6 mt-4">{{ post.publish_date }}</p>
+                  </el-row>
+                </el-col>
+              </el-row>
 
+            </div>
           </div>
         </div>
-      </div>
-    </template>
+      </template>
+    </div>
   </div>
 </template>
 
@@ -159,6 +161,7 @@ import { ActionTypes } from '@/types/store/ActionTypes';
       postByLibrary: [],
       postLikes: [],
       postHot: {},
+      loading: true,
     }
   },
 
@@ -186,6 +189,7 @@ import { ActionTypes } from '@/types/store/ActionTypes';
 
   async created(){
     await this.getPostByLibrary()
+    this.loading = false
   },
 
   mounted() {

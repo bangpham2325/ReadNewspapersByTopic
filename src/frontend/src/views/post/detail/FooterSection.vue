@@ -8,20 +8,13 @@
         <el-button v-if="!this.postDetail.has_bookmarked" type="text" icon="Collection" style="color:#00773e;" size="large" @click="actionPost('save')">Lưu bài</el-button>
         <el-button v-else type="text" icon="Management" style="color:#FF9900;" size="large" @click="actionPost('unsave')">Bỏ lưu</el-button>
         <el-tooltip content="Thích bài viết" placement="top-start">
-          <el-button v-if="!this.postDetail.has_liked" type="text" icon="Star" style="color:#00773e;" size="large" @click="actionPost('like')">{{ postDetail.likes }}</el-button>
-          <el-button v-else type="text" icon="StarFilled" style="color:#FF9900;" size="large" @click="actionPost('unlike')">{{ postDetail.likes }}</el-button>
+          <el-button v-if="!this.postDetail.has_liked" type="text" size="large" style="color:#00773e;" @click="actionPost('like')"><font-awesome-icon :icon="['far', 'thumbs-up']" style="color:#00773e;" class="mr-2"/>{{ postDetail.likes }}</el-button>
+          <el-button v-else type="text" size="large" @click="actionPost('unlike')" style="color: #FF9900;"><font-awesome-icon :icon="['fas', 'thumbs-up']" style="color: #FF9900;" class="mr-2"/>{{ postDetail.likes }}</el-button>
         </el-tooltip>
 		<el-tooltip content="Đánh giá bài viết" placement="top-start">
-			<el-button type="text" icon="ChatRound" style="color:#00773e;" size="large" @click="ratingSection=true">{{ postDetail.total_rating }}</el-button>
+			<el-button type="text" icon="Star" style="color:#00773e;" size="large" @click="ratingSection=true">{{ postDetail.total_rating }}</el-button>
 		</el-tooltip>
-		<button v-if="this.userInfo.role === 'ADMIN'" class="button is-dark" @click="statusPost('DRAFT')">Ẩn bài viết</button>
-		<button v-if="this.userInfo.role === 'ADMIN'" class="button is-danger ml-2" @click="deletePost">Xóa bài viết</button>
       </el-row>
-
-	  <el-row v-else class="is-flex is-justify-content-right">
-		<button class="button is-primary" style="background-color: #00773e;" @click="statusPost('PUBLISHED')">Đăng bài viết</button>
-		<button class="button is-danger ml-2" @click="deletePost">Xóa bài viết</button>
-	  </el-row>
       <div class="modal" :class="{'is-active': ratingSection}">
 				<div class="modal-background" @click="ratingSection=false"></div>
 				<div class="modal-content has-background-white p-6">
@@ -66,8 +59,14 @@ import {Options, Vue} from 'vue-class-component';
 import {mapActions, mapState, mapGetters, mapMutations} from "vuex";
 import { ActionTypes } from '@/types/store/ActionTypes';
 import {ElMessage} from "element-plus";
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { faThumbsUp } from '@fortawesome/free-solid-svg-icons';
 
 @Options({
+	components: {
+    FontAwesomeIcon,
+  },
+
 	computed: {
     ...mapState(["is_loading"]),
     ...mapGetters("user", ["userInfo"]),
@@ -89,7 +88,7 @@ import {ElMessage} from "element-plus";
 
 	methods: {
 		...mapMutations(["SET_LOADING"]),
-    ...mapActions("post", [ActionTypes.ADD_POST_BOOKMARK, ActionTypes.LIKE_POST, ActionTypes.RATE_POST, ActionTypes.UPDATE_STATUS_POST, ActionTypes.DELETE_POST]),
+    ...mapActions("post", [ActionTypes.ADD_POST_BOOKMARK, ActionTypes.LIKE_POST, ActionTypes.RATE_POST]),
 
 		async actionPost(action: String){
 			if(this.userInfo.id){
@@ -168,39 +167,6 @@ import {ElMessage} from "element-plus";
 				this.$router.push("/login")
 			}
 		},
-
-		async statusPost(status:string){
-			let res = await this.UPDATE_STATUS_POST({id: this.postDetail.id, status: {status: status}})
-			if (res.status == 200){
-				window.location.reload();
-				if(status == 'PUBLISHED')
-					ElMessage({
-						message: `Đăng bài ${this.postDetail.title} thành công.`,
-						type: 'success',
-					})
-				else
-				ElMessage({
-					message: `Ẩn bài ${this.postDetail.title} thành công.`,
-					type: 'success',
-				})
-			}
-			else{
-				ElMessage.error('Đã có lỗi xảy ra.')
-			}
-		},
-
-		async deletePost(){
-			let res = await this.DELETE_POST(this.postDetail.id)
-			if(res.status == 204){
-				ElMessage({
-						message: `Xóa bài viết thành công.`,
-						type: 'success',
-					})
-			}
-			else{
-				ElMessage.error('Đã có lỗi xảy ra.')
-			}
-		}
 	},
 	created(){
 		for ( let rate in this.postDetail.post_rating){

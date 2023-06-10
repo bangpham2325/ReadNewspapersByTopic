@@ -23,10 +23,12 @@ export interface Actions {
     { commit }: AugmentedActionContext,
     user_id: string
   ): void,
+
   [ActionTypes.GET_USER_PROFILE](
     { commit }: AugmentedActionContext,
     user_id: string
   ): any,
+
   [ActionTypes.UPDATE_USER_PROFILE](
     { commit }: AugmentedActionContext,
     payload: any,
@@ -36,6 +38,11 @@ export interface Actions {
     { commit }: AugmentedActionContext,
     payload: any,
   ): any,
+
+  [ActionTypes.UPDATE_USER_CATEGORY](
+    { commit }: AugmentedActionContext,
+    params: any
+  ): void,
 }
 
 export const actions: ActionTree<State, State> & Actions = {
@@ -67,6 +74,11 @@ export const actions: ActionTree<State, State> & Actions = {
 
   async [ActionTypes.UPDATE_USER_AVATAR]({ commit }, payload) {
     let response: any = await UserService.updateUserAvatar(payload.data)
+    return response
+  },
+
+  async [ActionTypes.UPDATE_USER_CATEGORY]({ commit }, params) {
+    let response: any = await UserService.updateUserCategory(params)
     return response
   },
 }

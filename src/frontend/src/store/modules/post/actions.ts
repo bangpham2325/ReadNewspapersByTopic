@@ -42,6 +42,16 @@ export interface Actions {
     params: any
   ): void,
 
+  [ActionTypes.FETCH_POST_NEW](
+    { commit }: AugmentedActionContext,
+    params: any
+  ): void,
+
+  [ActionTypes.RECOMENDATION_POST](
+    { commit }: AugmentedActionContext,
+    id: string
+  ): void,
+
   [ActionTypes.ADD_POST_BOOKMARK](
     { commit }: AugmentedActionContext,
     id: string
@@ -97,6 +107,16 @@ export const actions: ActionTree<State, State> & Actions = {
   async [ActionTypes.FETCH_POST_BY_BOOKMARK]({ commit }, params) {
     let response: any = await PostService.getPostByBookmark(params)
     return response
+  },
+
+  async [ActionTypes.FETCH_POST_NEW]({ commit}, params) {
+    let data: any = await PostService.getNewPosts(params)
+    return data
+  },
+
+  async [ActionTypes.RECOMENDATION_POST]({ commit}, id) {
+    let data: any = await PostService.recommendPost(id)
+    return data
   },
 
   async [ActionTypes.ADD_POST_BOOKMARK]({ commit }, id) {

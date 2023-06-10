@@ -110,6 +110,26 @@ class PostService extends BaseService {
       return null
     }
   }
+
+  async getNewPosts(params: any = null){
+    try{
+      const res = await this.request().get(`${this.entity}/new_post/`, {
+        params,
+      })
+      return res.data;
+    } catch (error){
+      return [];
+    }
+  }
+
+  async recommendPost(id:string){
+    try{
+      const res = await this.request().get(`${this.entity}/${id}/recommend/`)
+      return res.data
+    }catch(error) {
+      return [];
+    }
+  }
 }
 
 export default new PostService();
