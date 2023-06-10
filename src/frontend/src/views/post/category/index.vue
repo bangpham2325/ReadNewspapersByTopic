@@ -68,7 +68,6 @@ import { RouteLocationNormalized } from 'vue-router';
     async $route(){
 			await this.getPostByCategory()
 			this.titleCategory = this.$route.params.name
-			console.log(this.postCategory)
 		}
 	},
 

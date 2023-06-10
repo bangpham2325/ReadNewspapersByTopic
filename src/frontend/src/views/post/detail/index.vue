@@ -62,6 +62,14 @@ import FooterSection from './FooterSection.vue';
     }
   },
 
+  watch: {
+    async $route(){
+      this.loading = true
+			await this.getPostDetail()
+      this.loading = false
+		}
+	},
+
   async created(){
     await this.getPostDetail()
     this.loading = false
