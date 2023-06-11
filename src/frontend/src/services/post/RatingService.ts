@@ -7,7 +7,7 @@ class RatingService extends BaseService {
 
   async getAll(id: string) {
     try {
-      const response: any = await this.request().get(`events/${id}/${this.entity}/`);
+      const response: any = await this.request().get(`newspaper/post/${id}/${this.entity}/`);
       return response.data;
     } catch (error) {
       return [];
@@ -17,7 +17,7 @@ class RatingService extends BaseService {
   async create(id: string, data: any) {
     try {
       const response: any = await this.request().post(
-        `events/${id}/${this.entity}/`,
+        `newspaper/post/${id}/${this.entity}/`,
         data
       );
       return response

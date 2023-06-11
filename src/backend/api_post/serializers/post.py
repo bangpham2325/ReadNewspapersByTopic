@@ -11,7 +11,8 @@ from api_interaction.models import Rating, Comment, Bookmark
 from api_interaction.serializers import CommentPostSerializer, RatingPostSerializer
 from django.utils.timesince import timesince
 from api_post.constants.timestring import TIME_STRINGS
-
+from api_user.serializers import UserShortSerializer
+from api_user.models import User
 
 class PublishDateField(serializers.Field):
     def to_representation(self, value):
@@ -22,11 +23,11 @@ class PublishDateField(serializers.Field):
 
 
 class PostSerializer(serializers.ModelSerializer):
-    category_ids = serializers.PrimaryKeyRelatedField(required=True, write_only=True, many=True,
+    category_ids = serializers.PrimaryKeyRelatedField(required=True, write_only=True, many=False,
                                                         queryset=Category.objects.all(),
                                                         pk_field=UUIDField(format='hex'),
                                                         source='category')
-    source_id = serializers.PrimaryKeyRelatedField(required=True, write_only=True,
+    source_id = serializers.PrimaryKeyRelatedField(required=False, write_only=True,
                                                         queryset=Source.objects.all(),
                                                         pk_field=UUIDField(format='hex'),
                                                         source='source')
@@ -36,7 +37,12 @@ class PostSerializer(serializers.ModelSerializer):
     keywords = KeywordSerializer(many=True, required=False)
     post_comment = CommentPostSerializer(many=True, required=False)
     post_rating = RatingPostSerializer(many=True, required=False)
-    publish_date = PublishDateField()
+    publish_date = PublishDateField(required=False)
+    user = UserShortSerializer(required=False)
+    user_id = serializers.PrimaryKeyRelatedField(required=False, write_only=True,
+                                                 queryset=User.objects.all(),
+                                                 pk_field=UUIDField(format='hex'),
+                                                 source='user')
 
     class Meta:
         model = Posts
@@ -59,7 +65,9 @@ class PostSerializer(serializers.ModelSerializer):
             "keywords",
             "post_comment",
             "post_rating",
-            "views"
+            "views",
+            "user",
+            "user_id",
         ]
         extra_kwargs = {
             'thumbnail': {'required': False},
@@ -68,6 +76,13 @@ class PostSerializer(serializers.ModelSerializer):
             'status': {'required': False},
             'publish_date': {'required': False},
         }
+
+    def to_internal_value(self, data):
+        context = self.context.get('view')
+        if context and context.action in ['create']:
+            data.update({'user_id': context.request.user.user.id})
+        data_res = super().to_internal_value(data)
+        return data_res
 
     def create(self, validated_data):
         return PostService.create_post(validated_data)
@@ -107,6 +122,7 @@ class PostShortSerializer(serializers.ModelSerializer):
     source = SourceSerializer(required=True)
     avg_rating = serializers.IntegerField()  # Add SerializerMethodField for average rating
     publish_date = PublishDateField()
+    user = UserShortSerializer(required=False)
 
     class Meta:
         model = Posts
@@ -124,7 +140,8 @@ class PostShortSerializer(serializers.ModelSerializer):
             "status",
             "likes",
             "views",
-            "avg_rating"
+            "avg_rating",
+            "user"
         ]
 
 

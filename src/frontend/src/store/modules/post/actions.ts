@@ -21,6 +21,15 @@ export interface Actions {
     { commit }: AugmentedActionContext,
     params: any
   ): void,
+  [ActionTypes.MY_POSTS](
+    { commit }: AugmentedActionContext,
+    params: any
+  ): void,
+
+  [ActionTypes.FETCH_POSTS_BY_AUTHOR](
+    { commit }: AugmentedActionContext,
+    params: any
+  ): void,
 
   [ActionTypes.FETCH_POST_LIBRARY](
     { commit }: AugmentedActionContext,
@@ -86,6 +95,16 @@ export interface Actions {
 export const actions: ActionTree<State, State> & Actions = {
   async [ActionTypes.FETCH_POSTS]({ commit}, params) {
     let data: any = await PostService.getAllPosts(params)
+    return data
+  },
+
+  async [ActionTypes.MY_POSTS]({ commit}, params) {
+    let data: any = await PostService.getMyPosts(params)
+    return data
+  },
+
+  async [ActionTypes.FETCH_POSTS_BY_AUTHOR]({ commit}, params) {
+    let data: any = await PostService.getPostsByAuthor(params)
     return data
   },
 

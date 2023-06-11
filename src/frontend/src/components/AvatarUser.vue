@@ -15,6 +15,9 @@
 								<router-link to="/post/management" class="dropdown-item ml-3" v-if="this.userInfo.role == 'ADMIN'">
 									Dashboard
 								</router-link>
+								<router-link to="/post/my-posts" class="dropdown-item ml-2" v-if="this.userInfo.role == 'AUTHOR'">
+								    My Posts
+								</router-link>
 								<router-link to="/profile/edit" class="dropdown-item">
 									Profile
 								</router-link>

@@ -35,6 +35,7 @@ class RegisterSerializer(serializers.ModelSerializer):
         return extra_kwargs
 
     def create(self, validated_data):
+        context = self.context.get('view')
         account = dict({
             'password': validated_data.pop('password'),
             'email': validated_data.pop('email')
@@ -43,6 +44,10 @@ class RegisterSerializer(serializers.ModelSerializer):
         validated_data.update({
             'account': account,
         })
+        if context and context.action in ['author']:
+            validated_data.update({
+                'role': Roles.AUTHOR.value,
+            })
         return User.objects.create(**validated_data)
 
 

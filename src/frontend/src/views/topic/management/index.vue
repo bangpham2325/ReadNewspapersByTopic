@@ -94,7 +94,7 @@
 import {Options, Vue} from "vue-class-component";
 import {mapActions} from "vuex";
 import {ActionTypes} from "@/types/store/ActionTypes";
-import TopicItem from "@/types/campaign/TopicItem";
+import TopicItem from "@/types/post/TopicItem";
 import TopicForm from "@/views/topic/management/TopicForm.vue";
 import {ElMessageBox, ElNotification, FormInstance} from "element-plus";
 import Pagination from "@/components/Pagination.vue";

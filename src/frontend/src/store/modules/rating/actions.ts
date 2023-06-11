@@ -2,7 +2,7 @@ import { ActionTypes } from '@/types/store/ActionTypes'
 import { ActionTree, ActionContext } from 'vuex'
 import { State } from './state'
 import { Mutations } from './mutations'
-import RatingService from "@/services/campaign/RatingService";
+import RatingService from "@/services/post/RatingService";
 
 type AugmentedActionContext = {
   commit<K extends keyof Mutations>(

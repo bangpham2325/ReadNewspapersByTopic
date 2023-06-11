@@ -23,6 +23,9 @@
                       <el-button type="text" class="subtitle is-6 has-text-centered" style="width: 100%;color:#00773e;" @click="newPost">
                         Tin tức mới nhất
                       </el-button>
+                      <el-button type="text" class="subtitle is-6 has-text-centered" style="width: 100%;color:#00773e;" @click="newPost">
+                        Blog cá nhân
+                      </el-button>
                     </div>
                     <div class="tile is-parent" v-for="(topic, index) in category" :key="index">
                       <el-button type="text" class="subtitle is-6 has-text-centered" style="width: 100%;color:#00773e;" @click="filterByCategory(topic.title, topic.id)">
@@ -90,6 +93,7 @@ import { ActionTypes } from '@/types/store/ActionTypes';
 
     async getCategory(){
       this.SET_LOADING(true)
+      console.log("bang test")
       let data = await this.FETCH_TOPICS()
       if (data) {
         this.category = data.results
