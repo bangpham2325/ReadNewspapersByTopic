@@ -42,6 +42,9 @@ import FooterSection from './FooterSection.vue';
       postDetail: {
         category: {
           title: ""
+        },
+        user: {
+          id: ""
         }
       },
       loading: true,

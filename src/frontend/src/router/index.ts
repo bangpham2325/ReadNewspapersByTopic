@@ -13,6 +13,7 @@ import BookmarkPage from "@/views/post/bookmark/index.vue";
 import ManagementPage from "@/views/post/management/index.vue";
 import CategoryPage from "@/views/category/index.vue";
 import NewPostPage from "@/views/post/new/index.vue";
+import MyPostByAuthor from "@/views/post/mypostbyauthor/index.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -46,6 +47,16 @@ const routes: Array<RouteRecordRaw> = [
             path: "management",
             name: "management-post",
             component: ManagementPage,
+          },
+          {
+            path: "my-posts",
+            name: "my-posts-management",
+            component: ManagementPage,
+          },
+          {
+            path: "my-posts-by-author/:id",
+            name: "my-posts-by-author",
+            component: MyPostByAuthor,
           },
           {
             path: "detail/:id",

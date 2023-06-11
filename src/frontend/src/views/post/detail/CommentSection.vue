@@ -58,7 +58,9 @@
 				</div>
   
 				<div v-else class="content">
-					<p class="title is-4 ml-3 mt-3">{{ comment.user.full_name }}</p>
+          <p v-if="userInfo.id == comment.user.id" class="title is-4 ml-3 mt-3">bạn</p>
+          <p v-else-if="comment.user.id == post.user.id" class="title is-4 ml-3 mt-3"> tác giả</p>
+          <p v-else class="title is-4 ml-3 mt-3">{{ comment.user.full_name }}</p>
 					<p class="subtitle is-5 ml-3 mt-1">{{ comment.content }}</p>
 					<p>
 						<span><el-button text @click="replyComment(comment.id)">Reply</el-button></span>
@@ -101,7 +103,9 @@
 								</div>
 
 								<div v-else class="content">
-                  <p class="title is-4 ml-3 mt-3">{{ item.user.full_name }}</p>
+                  <p v-if="userInfo.id == item.user.id" class="title is-4 ml-3 mt-3">bạn</p>
+                  <p v-else-if="item.user.id == post.user.id" class="title is-4 ml-3 mt-3"> tác giả</p>
+                  <p v-else class="title is-4 ml-3 mt-3">{{ item.user.full_name }}</p>
 					        <p class="subtitle is-5 ml-3 mt-1">{{ item.content }}</p>
 									<p>
 										<span v-if="userInfo.id == item.user.id || userInfo.role == ROLES.ADMIN">

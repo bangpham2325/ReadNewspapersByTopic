@@ -1,182 +1,176 @@
 <template>
   <div v-loading="loading">
-  <el-row>
-    <el-col :span=12>
-      <h1 class="title is-3 is-flex">Tất cả bài viết</h1>
-    </el-col>
-    <el-col :span=12>
-      <div class="is-flex is-justify-content-right">
-        <el-radio-group v-model="filterStatus" size="large">
-          <el-radio-button label="ALL" @change="handleRadioChange('ALL')"/>
-          <el-radio-button label="DRAFT" @change="handleRadioChange('DRAFT')"/>
-          <el-radio-button label="PUBLISHED" @change="handleRadioChange('PUBLISHED')"/>
-        </el-radio-group>
-        <button v-if="this.filterStatus == 'DRAFT' && !this.selectMuti" class="button is-primary ml-4" style="background-color: #00773e;" @click="selectMulPost">Chọn nhiều bài</button>
-        <button v-if="this.selectMuti" class="button is-primary ml-4" style="background-color: #00773e;" @click="publishPosts">Đăng bài</button>
-        <button v-if="this.selectMuti" class="button is-dark ml-4" @click="this.selectMuti=false">Hủy chọn nhiều</button>
-      </div>
-    </el-col>
-  </el-row>
-	
-  <div class="tile is-ancestor layout-post">
-    <template v-for="post in posts">
-      <div :class="['tile', 'is-parent']" @click="clickPost(post.id)">
-        <div :class="['tile', 'is-child', 'box card', {'clickedPost': selectedPosts.includes(post.id)}]">
-          <div class="card-image">
-            <figure class="image is-3by2">
-              <img :src=post.thumbnail alt="Placeholder image">
-            </figure>
-          </div>
-          <div class="card-content">
-            <el-row class="mb-3">
-              <el-col :span="12">
-								<el-row>
-									<el-tag v-if="post.status=='DRAFT'" type="info" effect="dark">{{ post.status }}</el-tag>
-									<el-tag v-else type="success" effect="dark">{{ post.status }}</el-tag>
-								</el-row>
-              </el-col>
-              <el-col :span="12">
-                <el-row class="is-flex is-justify-content-right">
-									<p class="title is-6" style="color:#00773e;">{{ post.category.title }}</p>
-                </el-row>
-              </el-col>
-            </el-row>
+    <el-row>
+      <el-col :span=12>
+        <h1 class="title is-3 is-flex">Tất cả bài viết</h1>
+      </el-col>
+      <el-col :span=12>
+        <div class="is-flex is-justify-content-right">
+          <el-radio-group v-model="filterStatus" size="large">
+            <el-radio-button label="ALL" @change="handleRadioChange('ALL')" />
+            <el-radio-button label="DRAFT" @change="handleRadioChange('DRAFT')" />
+            <el-radio-button label="PENDING" @change="handleRadioChange('PENDING')" />
+            <el-radio-button label="PUBLISHED" @change="handleRadioChange('PUBLISHED')" />
+          </el-radio-group>
+          <button v-if="(this.filterStatus == 'DRAFT' || this.filterStatus == 'PENDING') && this.userInfo.role == 'ADMIN' && !this.selectMuti"
+            class="button is-primary ml-4" style="background-color: #00773e;" @click="selectMulPost">Chọn nhiều
+            bài</button>
+          <button v-if="this.selectMuti" class="button is-primary ml-4" style="background-color: #00773e;"
+            @click="publishPosts">Đăng bài</button>
+          <button v-if="this.selectMuti" class="button is-dark ml-4" @click="this.selectMuti = false">Hủy chọn
+            nhiều</button>
+        </div>
+      </el-col>
+    </el-row>
 
-            <p class="title is-5" style="min-height:70px;">{{  post.title }}</p>
-            <p style="color:#808080; font-size: 12px; min-height:100px;">{{ post.summary }}</p>
+    <div class="tile is-ancestor layout-post">
+      <template v-for="post in posts">
+        <div :class="['tile', 'is-parent']" @click="clickPost(post.id)">
+          <div :class="['tile', 'is-child', 'box card', { 'clickedPost': selectedPosts.includes(post.id) }]">
+            <div class="card-image">
+              <figure class="image is-3by2">
+                <img :src=post.thumbnail alt="Placeholder image">
+              </figure>
+            </div>
+            <div class="card-content">
+              <el-row class="mb-3">
+                <el-col :span="12">
+                  <el-row>
+                    <el-tag v-if="post.status == 'DRAFT'" type="info" effect="dark">{{ post?.status }}</el-tag>
+                    <el-tag v-else-if="post.status == 'PENDING'" type="primary" effect="dark">{{ post?.status }}</el-tag>
+                    <el-tag v-else type="success" effect="dark">{{ post?.status }}</el-tag>
+                  </el-row>
+                </el-col>
+                <el-col :span="12">
+                  <el-row class="is-flex is-justify-content-right">
+                    <p class="title is-6" style="color:#00773e;">{{ post.category?.title ? post.category.title : "" }}</p>
+                  </el-row>
+                </el-col>
+              </el-row>
 
-						<el-row>
-							<el-col :span="14">
-								<el-row>
-										<el-avatar :size="40" class="mt-1">
-											<img src="https://img.vietcetera.com/uploads/avatar-images/12-apr-2023/vu-hoang-long-1681282620604-160x160.jpg">
-										</el-avatar>
-										<p class="title is-6 mt-4 ml-4" style="color:#00773e;">{{ post.author }}</p>
-								</el-row>
-							</el-col>
-					
-							<el-col :span="10">
-								<el-row class="is-flex is-justify-content-right">
-									<p class="title is-6 mt-4">{{ post.publish_date }}</p>
-								</el-row>
-							</el-col>
-						</el-row>
+              <p class="title is-5" style="min-height:70px;">{{ post?.title }}</p>
+              <p style="color:#808080; font-size: 12px; min-height:100px;">{{ post?.summary }}</p>
+
+              <el-row>
+                <el-col :span="14">
+                  <el-row>
+                    <el-avatar :size="40" class="mt-1">
+                      <img src="https://res.cloudinary.com/ddrpryfpq/image/upload/v1686416519/anh_ggjqgg.jpg">
+                    </el-avatar>
+                    <p class="title is-6 mt-4 ml-4" style="color:#00773e;">{{ post?.author }}</p>
+                  </el-row>
+                </el-col>
+
+                <el-col :span="10">
+                  <el-row class="is-flex is-justify-content-right">
+                    <p class="title is-6 mt-4">{{ post?.publish_date }}</p>
+                  </el-row>
+                </el-col>
+              </el-row>
+            </div>
           </div>
         </div>
-      </div>
-    </template>
-  </div> 
+      </template>
+    </div>
 
-	<div class="is-flex is-justify-content-center mt-4">
-		<el-pagination 
-			background 
-			layout="prev, pager, next" 
-			:total=totalPage
-			@current-change="handleCurrentChange"/>
-	</div>
-</div>
+    <div class="is-flex is-justify-content-center mt-4">
+      <el-pagination background layout="prev, pager, next" :total=totalPage @current-change="handleCurrentChange" />
+    </div>
+  </div>
 </template>
 
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
-import { mapActions, mapMutations } from "vuex";
+import { mapActions, mapMutations, mapGetters, mapState } from "vuex";
 import { ActionTypes } from "@/types/store/ActionTypes";
-import {ElMessage} from "element-plus";
+import { ElMessage } from "element-plus";
 
 @Options({
-	data(){
+  data() {
     return {
       posts: [],
-			currentPage: 1,
+      currentPage: 1,
       filterStatus: 'ALL',
       totalPage: 10,
       selectMuti: false,
       selectedPosts: [] as any,
-      loading: true
+      loading: true,
     }
   },
 
-	methods: {
+  methods: {
     ...mapMutations(["SET_LOADING"]),
-    ...mapActions("post", [ActionTypes.FETCH_POSTS, ActionTypes.PUBLISH_LIST_POST]),
-	
-		async getPosts(page:any = null, status: any = null){
+    ...mapActions("post", [ActionTypes.FETCH_POSTS, ActionTypes.MY_POSTS, ActionTypes.PUBLISH_LIST_POST]),
+
+    async getPosts(page: any = null, status: any = null) {
       this.SET_LOADING(true)
       let data: any
-      if(!page && !status){
-        data = await this.FETCH_POSTS()
+      if (this.userInfo.role === "ADMIN") {
+          data = await this.FETCH_POSTS({page: page, status: status});
+      } 
+      else if (this.userInfo.role === "AUTHOR") {
+          data = await this.MY_POSTS({page: page, status: status});
       }
-      else if (page && status){
-        data = await this.FETCH_POSTS({
-        page: page,
-        status: status})
-      }
-      else if (page && !status){
-        data = await this.FETCH_POSTS({page: page})
-      }
-      else {
-        data = await this.FETCH_POSTS({status: status})
-      }
-        
+
+
       if (data) {
-        this.totalPage = Math.ceil(data.count/12)*10
+        this.totalPage = Math.ceil(data.count / 12) * 10
         this.posts = data.results
       }
       this.SET_LOADING(false)
     },
-
-    detailPost(post_id: string){
+    detailPost(post_id: string) {
       this.$router.push({ name: 'detail-post', params: { id: post_id } })
     },
 
-    async handleRadioChange(type:string) {
-        if(type == 'ALL'){
-          await this.getPosts()
-          this.filterStatus = type
-        }
-        else {
-          await this.getPosts(null,type)
-          this.filterStatus = type
-        }
+    async handleRadioChange(type: string) {
+      if (type == 'ALL') {
+        await this.getPosts()
+        this.filterStatus = type
+      }
+      else {
+        await this.getPosts(null, type)
+        this.filterStatus = type
+      }
     },
 
-		async handleCurrentChange(currentPage:any) {
+    async handleCurrentChange(currentPage: any) {
       this.currentPage = currentPage;
-      if(this.filterStatus == 'ALL'){
+      if (this.filterStatus == 'ALL') {
         await this.getPosts(this.currentPage)
       }
-      else 
-        await this.getPosts(this.currentPage,this.filterStatus)
-			this.scrollToTop()
+      else
+        await this.getPosts(this.currentPage, this.filterStatus)
+      this.scrollToTop()
     },
-		
-		scrollToTop() {
-			window.scrollTo({
-				top: 0,
-				behavior: 'smooth',
-			});
-		},
 
-    selectMulPost(){
+    scrollToTop() {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth',
+      });
+    },
+
+    selectMulPost() {
       this.selectedPosts = []
-      this.selectMuti=true
+      this.selectMuti = true
     },
 
-    clickPost(post_id: string){
-        if(!this.selectMuti)
-          this.detailPost(post_id)
-        else {
-          if(this.selectedPosts.includes(post_id))
-            this.selectedPosts = this.selectedPosts.filter((id:any) => id !== post_id);
-          else
-            this.selectedPosts.push(post_id)
-        }
+    clickPost(post_id: string) {
+      if (!this.selectMuti)
+        this.detailPost(post_id)
+      else {
+        if (this.selectedPosts.includes(post_id))
+          this.selectedPosts = this.selectedPosts.filter((id: any) => id !== post_id);
+        else
+          this.selectedPosts.push(post_id)
+      }
     },
 
-    async publishPosts(){
-      let res = await this.PUBLISH_LIST_POST({post_ids: this.selectedPosts})
-      if(res.status == 200){
-        await this.getPosts(this.currentPage,this.filterStatus)
+    async publishPosts() {
+      let res = await this.PUBLISH_LIST_POST({ post_ids: this.selectedPosts })
+      if (res.status == 200) {
+        await this.getPosts(this.currentPage, this.filterStatus)
         this.selectedPosts = []
         ElMessage({
           message: `Đăng bài thành công.`,
@@ -188,8 +182,10 @@ import {ElMessage} from "element-plus";
       }
     }
   },
-
-	async created(){
+  computed: {
+      ...mapGetters("user", ["userInfo"]),
+  },
+  async created() {
     await this.getPosts()
     this.loading = false
   },
@@ -202,17 +198,18 @@ export default class ManagementPage extends Vue {
 </script>
 
 <style lang="scss" scoped>
-.tile.is-ancestor.layout-post{
+.tile.is-ancestor.layout-post {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-gap: 10px;
 }
+
 .el-radio-button {
-  --el-radio-button-checked-bg-color:#00773e;
+  --el-radio-button-checked-bg-color: #00773e;
   --el-radio-button-checked-border-color: #00773e;
 }
 
-.clickedPost{
+.clickedPost {
   border: 3px solid #00773e;
 }
 </style>

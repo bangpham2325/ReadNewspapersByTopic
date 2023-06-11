@@ -7,7 +7,8 @@ class TopicService extends BaseService {
 
   async getAll(params: any = null) {
     try {
-      const response: any = await this.request().get(`${this.entity}/`);
+      const response: any = await this.request().get(`${this.entity}/`, {
+      });
       return response.data;
     } catch (error) {
       return [];

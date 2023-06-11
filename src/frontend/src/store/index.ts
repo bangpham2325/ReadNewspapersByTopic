@@ -1,10 +1,7 @@
 import { createStore } from 'vuex'
 import { authentication } from "@/store/modules/authentication";
 import { user } from  "@/store/modules/user";
-import { campaign } from '@/store/modules/campaign';
 import { topic } from '@/store/modules/topic';
-import { campaignProcess } from '@/store/modules/campaignProcess';
-import { transaction } from './modules/transaction';
 import { rating } from './modules/rating';
 import { post } from './modules/post';
 import { discussion } from './modules/discussion';
@@ -28,10 +25,7 @@ export default createStore({
   modules: {
     authentication,
     user,
-    campaign,
     topic,
-    campaignProcess,
-    transaction,
     rating,
     post,
     discussion
