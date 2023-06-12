@@ -94,4 +94,5 @@ export default class NewPostPage extends Vue {
 	grid-template-columns: repeat(3, 1fr);
 	grid-gap: 10px;
 }
+
 </style>

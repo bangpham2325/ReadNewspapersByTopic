@@ -145,6 +145,17 @@ class PostService extends BaseService {
     }
   }
 
+  async getBlogPosts(params: any = null){
+    try{
+      const res = await this.request().get(`${this.entity}/list_blog/`, {
+        params,
+      })
+      return res.data;
+    } catch (error){
+      return [];
+    }
+  }
+
   async recommendPost(id:string){
     try{
       const res = await this.request().get(`${this.entity}/${id}/recommend/`)

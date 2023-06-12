@@ -162,8 +162,9 @@ class PostService(BaseService):
         return posts
 
     @classmethod
-    def list_blog(cls, params, user_id):
-        ft = Q(user__id=user_id)
+    def list_blog(cls, params):
+        # ft = Q(user__isnull=False)
+        ft = Q()
         ft &= Q(status=PostStatus.PUBLISHED.value)
         if params.getlist('categories'):
             topic_ids = params.getlist('categories')
@@ -178,7 +179,7 @@ class PostService(BaseService):
         if params.get('start_date') and params.get('end_date'):
             ft &= Q(publish_date__range=[params.get('start_date'), params.get('end_date')])
         posts = Posts.objects.annotate(title_lower=Lower('title')).filter(ft).prefetch_related(
-            'category', 'user', 'source', 'post_rating').annotate(avg_rating=Avg("post_rating__star_rating"))
+            'category', 'user', 'source', 'post_rating').annotate(avg_rating=Avg("post_rating__star_rating"))[:50]
         return posts
 
     @classmethod

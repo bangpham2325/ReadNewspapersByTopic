@@ -56,6 +56,10 @@ export interface Actions {
     params: any
   ): void,
 
+  [ActionTypes.FETCH_POST_BLOG](
+    { commit }: AugmentedActionContext,
+    params: any
+  ): void,
   [ActionTypes.RECOMENDATION_POST](
     { commit }: AugmentedActionContext,
     id: string
@@ -130,6 +134,11 @@ export const actions: ActionTree<State, State> & Actions = {
 
   async [ActionTypes.FETCH_POST_NEW]({ commit}, params) {
     let data: any = await PostService.getNewPosts(params)
+    return data
+  },
+
+  async [ActionTypes.FETCH_POST_BLOG]({ commit}, params) {
+    let data: any = await PostService.getBlogPosts(params)
     return data
   },
 
