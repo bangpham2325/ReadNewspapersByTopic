@@ -34,15 +34,15 @@
 						</div>
 					</div>
 
-					<div class="field">
+					<!-- <div class="field">
 						<div class="control">
 							<input class="input" type="text" v-model="title" placeholder="Chủ đề">
 						</div>
-					</div>
+					</div> -->
 
 					<div class="field">
 						<div class="control">
-							<textarea class="textarea" v-model="feedback"
+							<textarea class="textarea" v-model="title"
 								placeholder="Viết nhận xét của bạn tại đây"></textarea>
 						</div>
 					</div>

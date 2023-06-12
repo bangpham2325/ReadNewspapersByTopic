@@ -14,6 +14,7 @@
     </div>
     <div>
       <CommentSection :post="postDetail"></CommentSection>
+      <RatingSection :post="postDetail"></RatingSection>
     </div>
   </div>
 </template>
@@ -26,6 +27,7 @@ import SummarySection from './SummarySection.vue';
 import ContentSection from './ContentSection.vue';
 import RecommendationSection from './RecommendationSection.vue';
 import CommentSection from './CommentSection.vue';
+import RatingSection from './RatingSection.vue';
 import FooterSection from './FooterSection.vue';
 
 @Options({
@@ -34,7 +36,8 @@ import FooterSection from './FooterSection.vue';
     ContentSection,
     RecommendationSection,
     CommentSection,
-    FooterSection
+    FooterSection,
+    RatingSection
   },
 
   data() {

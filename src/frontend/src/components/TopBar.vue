@@ -23,7 +23,7 @@
                       <el-button type="text" class="subtitle is-6 has-text-centered" style="width: 100%;color:#00773e;" @click="newPost">
                         Tin tức mới nhất
                       </el-button>
-                      <el-button type="text" class="subtitle is-6 has-text-centered" style="width: 100%;color:#00773e;" @click="newPost">
+                      <el-button type="text" class="subtitle is-6 has-text-centered" style="width: 100%;color:#00773e;" @click="blogPost">
                         Blog cá nhân
                       </el-button>
                     </div>
@@ -113,6 +113,10 @@ import { ActionTypes } from '@/types/store/ActionTypes';
 
     newPost(){
       this.$router.push('/post/new-post')
+      this.popoverVisible = false
+    },
+    blogPost(){
+      this.$router.push('/post/blog-post')
       this.popoverVisible = false
     },
 

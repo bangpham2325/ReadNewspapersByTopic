@@ -139,6 +139,10 @@ class PostViewSet(BaseViewSet):
     def get_new_post(self, request, *args, **kwargs):
         params = request.query_params
         res_data = PostService.get_list_new_post(params)
+        page = self.paginate_queryset(res_data)
+        if page:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
         serializer = self.get_serializer(res_data, many=True).data
         return Response(serializer, status=status.HTTP_200_OK)
 
@@ -146,8 +150,13 @@ class PostViewSet(BaseViewSet):
     def get_list_blog(self, request, *args, **kwargs):
         params = request.query_params
         res_data = PostService.list_blog(params)
-        serializer = self.get_serializer(res_data, many=True).data
-        return Response(serializer, status=status.HTTP_200_OK)
+        page = self.paginate_queryset(res_data)
+        if page:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(res_data, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     @action(methods=[HttpMethod.GET], detail=False, url_path="get_post_by_author", serializer_class=PostShortSerializer)
     def get_post_by_author(self, request, *args, **kwargs):
