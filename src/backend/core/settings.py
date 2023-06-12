@@ -118,7 +118,7 @@ ROOT_URLCONF = 'core.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'mysite/templates')],
+        'DIRS': [os.path.join(BASE_DIR, 'api_auth/templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -208,6 +208,17 @@ USE_TZ = True
 INTERNAL_IPS = [
     "127.0.0.1"
 ]
+
+# email
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.sendgrid.net'
+EMAIL_HOST_USER = 'apikey'  # this is exactly the value 'apikey'
+EMAIL_HOST_PASSWORD = os.getenv('SENDGRID_API_KEY')
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+# The email you'll be sending emails from
+DEFAULT_FROM_EMAIL = os.getenv('FROM_EMAIL')
+LOGIN_REDIRECT_URL = 'success'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/

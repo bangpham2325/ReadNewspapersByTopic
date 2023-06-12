@@ -31,8 +31,8 @@
       />
     </el-form-item>
 
-    <p :class="['subtitle', 'mt-2', 'is-flex', 'is-justify-content-right']" style="font-size: 1rem">Forgot
-      password?</p>
+    <router-link :class="['subtitle', 'mt-2', 'is-flex', 'is-justify-content-right']" to="/forgot_password" style="font-size: 1rem">Forgot
+      password?</router-link>
 
     <div class="field">
       <p :class="['control', 'is-flex', 'is-justify-content-center']">
