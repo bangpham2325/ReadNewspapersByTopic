@@ -1,9 +1,11 @@
 <template>
-  <el-container class="is-flex has-background-white">
-    <el-header class="background-topbar">
-      <TopBar></TopBar>
-    </el-header>
-    <el-main :class="component2Class">
+    <el-container class="is-flex has-background-white">
+      <el-header>
+        <el-affix>
+          <TopBar></TopBar>
+        </el-affix>
+      </el-header>
+      <el-main :class="component2Class">
       <div class="common-layout">
         <!-- <div class="is-loading-bar has-text-centered" :class="{ 'is-loading': is_loading }">
           <div class="lds-dual-ring"></div>
@@ -11,14 +13,14 @@
         <router-view></router-view>
       </div>
     </el-main>
-    <footer class="footer">
-      <div class="has-text-centered">
-        <p>
-          <strong>Capstone project 2023.</strong> The source code is licensed.
-        </p>
-      </div>
-    </footer>
-  </el-container>
+      <footer class="footer">
+        <div class="has-text-centered">
+          <p>
+            <strong>Capstone project 2023.</strong> The source code is licensed.
+          </p>
+        </div>
+      </footer>
+    </el-container>
 </template>
 
 <script lang="ts">
@@ -79,11 +81,6 @@ export default class BasePage extends Vue {
 </script>
 
 <style lang="scss" scoped>
-.background-topbar {
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  min-height: 100px;
-}
-
 .blog-personal {
   background-image: url('https://res.cloudinary.com/ddrpryfpq/image/upload/v1686509761/evgeni-evgeniev-LPKk3wtkC-g-unsplash_plsmyo.jpg');
   background-size: cover;

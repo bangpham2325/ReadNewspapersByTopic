@@ -162,6 +162,7 @@ import { ActionTypes } from '@/types/store/ActionTypes';
       postLikes: [],
       postHot: {},
       loading: true,
+      categories: [],
     }
   },
 
@@ -171,7 +172,11 @@ import { ActionTypes } from '@/types/store/ActionTypes';
 
     async getPostByLibrary(){
       this.SET_LOADING(true)
-      let data = await this.FETCH_POST_LIBRARY()
+      for (const element of this.userInfo.categories) {
+				if(!this.categories.includes(element.id))
+					this.categories.push(element.id)
+			}
+      let data = await this.FETCH_POST_LIBRARY({categories: this.categories})
       if (data) {
         this.postByLibrary = data
         this.postHot = this.postByLibrary.post_likes[0]
@@ -185,6 +190,11 @@ import { ActionTypes } from '@/types/store/ActionTypes';
     detailPost(post_id: string){
       this.$router.push({ name: 'detail-post', params: { id: post_id } })
     }
+  },
+
+  computed: {
+    ...mapState(["is_loading"]),
+    ...mapGetters("user", ["userInfo"]),
   },
 
   async created(){

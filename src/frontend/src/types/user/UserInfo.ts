@@ -5,4 +5,5 @@ export default interface UserInfo {
   avatar: string,
   bio: string,
   email: string,
+  categories: [],
 }

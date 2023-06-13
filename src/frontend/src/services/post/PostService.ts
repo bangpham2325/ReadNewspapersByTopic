@@ -1,4 +1,5 @@
 import {BaseService} from "@/services/BaseService";
+import qs from 'qs';
 
 class PostService extends BaseService {
   get entity() {
@@ -41,7 +42,12 @@ class PostService extends BaseService {
 
   async getPostByLibrary(params: any = null) {
     try {
-      const response: any = await this.request().get(`${this.entity}/library/`);
+      const response: any = await this.request().get(`${this.entity}/library/`, {
+        params,
+        paramsSerializer: (params) => {
+          return qs.stringify(params, { arrayFormat: 'repeat' });
+        },
+      });
       return response.data;
     } catch (error) {
       return [];
@@ -136,8 +142,12 @@ class PostService extends BaseService {
 
   async getNewPosts(params: any = null){
     try{
+      console.log(params)
       const res = await this.request().get(`${this.entity}/new_post/`, {
         params,
+        paramsSerializer: (params) => {
+          return qs.stringify(params, { arrayFormat: 'repeat' });
+        },
       })
       return res.data;
     } catch (error){

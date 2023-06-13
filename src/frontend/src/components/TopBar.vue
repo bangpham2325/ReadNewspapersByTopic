@@ -20,8 +20,10 @@
                 <div style="margin: 3% 6% 3% 6%;">
                   <div class="tile is-ancestor">
                     <div class="tile is-parent">
-                      <el-button type="text" class="subtitle is-6 has-text-centered" style="width: 100%;color:#00773e;" @click="newPost">
-                        Tin tức mới nhất
+                      <el-button type="text" class="subtitle is-5 has-text-centered" style="width: 100%;color:#00773e;" @click="newPost">
+                        <b>
+                          Tin tức mới nhất
+                        </b>  
                       </el-button>
                       <el-button type="text" class="subtitle is-6 has-text-centered" style="width: 100%;color:#00773e;" @click="blogPost">
                         Blog cá nhân
@@ -148,6 +150,8 @@ export default class TopBar extends Vue {
 .layout{
   padding: 2% 5% 0% 5%;
   background: white;
+  box-shadow: 0px 1px rgba(0, 0, 0, 0.2);
+  min-height: 100px;
 }
 
 .sign {

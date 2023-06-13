@@ -44,7 +44,7 @@ import { ActionTypes } from '@/types/store/ActionTypes';
 		...mapMutations(["SET_LOADING"]),
 		...mapActions("post", [ActionTypes.FETCH_POST_BY_FILTER]),
 
-		async getPostByFilter() {
+		async getPostByFilter(){      
 			this.SET_LOADING(true)
 			const query = {
 				search: this.$route.params.text
