@@ -28,4 +28,5 @@ export const ROUTES = {
   LOGIN: '/login',
   LOGOUT: '/logout',
   REGISTER: '/register',
+  FORGOT_PASSWORD: '/forgot_password',
 }

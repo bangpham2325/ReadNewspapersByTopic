@@ -19,7 +19,7 @@
 
 <script lang="ts">
 import {Options, Vue} from "vue-class-component";
-import TopicItem from "@/types/campaign/TopicItem";
+import TopicItem from "@/types/post/TopicItem";
 
 @Options({
   props: {

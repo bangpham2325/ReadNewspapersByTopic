@@ -8,3 +8,7 @@ class AdminPermission(MyBasePermission):
 
 class UserPermission(MyBasePermission):
     match_any_roles = [Roles.USER.value]
+
+
+class AuthorPermission(MyBasePermission):
+    match_any_roles = [Roles.AUTHOR.value]

@@ -21,6 +21,15 @@ export interface Actions {
     { commit }: AugmentedActionContext,
     params: any
   ): void,
+  [ActionTypes.MY_POSTS](
+    { commit }: AugmentedActionContext,
+    params: any
+  ): void,
+
+  [ActionTypes.FETCH_POSTS_BY_AUTHOR](
+    { commit }: AugmentedActionContext,
+    params: any
+  ): void,
 
   [ActionTypes.FETCH_POST_LIBRARY](
     { commit }: AugmentedActionContext,
@@ -47,6 +56,10 @@ export interface Actions {
     params: any
   ): void,
 
+  [ActionTypes.FETCH_POST_BLOG](
+    { commit }: AugmentedActionContext,
+    params: any
+  ): void,
   [ActionTypes.RECOMENDATION_POST](
     { commit }: AugmentedActionContext,
     id: string
@@ -89,6 +102,16 @@ export const actions: ActionTree<State, State> & Actions = {
     return data
   },
 
+  async [ActionTypes.MY_POSTS]({ commit}, params) {
+    let data: any = await PostService.getMyPosts(params)
+    return data
+  },
+
+  async [ActionTypes.FETCH_POSTS_BY_AUTHOR]({ commit}, params) {
+    let data: any = await PostService.getPostsByAuthor(params)
+    return data
+  },
+
   async [ActionTypes.FETCH_POST_LIBRARY]({ commit }, params) {
     let data: any = await PostService.getPostByLibrary(params)
     return data
@@ -111,6 +134,11 @@ export const actions: ActionTree<State, State> & Actions = {
 
   async [ActionTypes.FETCH_POST_NEW]({ commit}, params) {
     let data: any = await PostService.getNewPosts(params)
+    return data
+  },
+
+  async [ActionTypes.FETCH_POST_BLOG]({ commit}, params) {
+    let data: any = await PostService.getBlogPosts(params)
     return data
   },
 

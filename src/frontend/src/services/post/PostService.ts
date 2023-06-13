@@ -17,6 +17,29 @@ class PostService extends BaseService {
     }
   }
 
+  async getMyPosts(params: any = null){
+    try{
+      const res = await this.request().get(`${this.entity}/my_posts/`, {
+        params,
+      })
+      return res.data;
+    } catch (error){
+      return [];
+    }
+  }
+
+  async getPostsByAuthor(params: any = null){
+    try{
+      console.log(params)
+      const res = await this.request().get(`${this.entity}/get_post_by_author/`, {
+        params,
+      })
+      return res.data;
+    } catch (error){
+      return [];
+    }
+  }
+
   async getPostByLibrary(params: any = null) {
     try {
       const response: any = await this.request().get(`${this.entity}/library/`, {
@@ -125,6 +148,17 @@ class PostService extends BaseService {
         paramsSerializer: (params) => {
           return qs.stringify(params, { arrayFormat: 'repeat' });
         },
+      })
+      return res.data;
+    } catch (error){
+      return [];
+    }
+  }
+
+  async getBlogPosts(params: any = null){
+    try{
+      const res = await this.request().get(`${this.entity}/list_blog/`, {
+        params,
       })
       return res.data;
     } catch (error){

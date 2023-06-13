@@ -1,6 +1,7 @@
 import { BaseService } from "@/services/BaseService";
 import LoginItem from "@/types/login/LoginItem";
 import RegisterItem from "@/types/register/RegisterItem";
+import ForgotItem from "@/types/login/Forgot";
 
 class AuthenticationService extends BaseService{
   get entity() {
@@ -31,6 +32,16 @@ class AuthenticationService extends BaseService{
       const role = data.role
       delete payload['role']
       const response= await this.request().post(`${this.entity}/registers`, payload);
+      return response;
+    } catch (error) {
+      return false;
+    }
+  }
+
+  async forgot_password(data: ForgotItem){
+    try {
+      let payload = data as ForgotItem
+      const response= await this.request().post(`${this.entity}/forgot-password/`, payload);
       return response;
     } catch (error) {
       return false;

@@ -8,7 +8,7 @@ from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
 from django.db.models import Q, Avg, Prefetch
 from rest_framework import status
 from rest_framework.decorators import action
-from api_auth.permissions import AdminPermission, UserPermission
+from api_auth.permissions import AdminPermission, UserPermission, AuthorPermission
 from api_interaction.serializers.bookmark import BookmarkSerializer
 
 from api_user.constants import Roles
@@ -23,12 +23,15 @@ class PostViewSet(BaseViewSet):
     permission_classes = [AllowAny]
     serializer_class = PostSerializer
     permission_map = {
-        "Create": [IsAdminUser],
+        "create": [AuthorPermission, IsAdminUser],
         "get_post_management": [AdminPermission],
         "like_post": [IsAuthenticated],
         "list_bookmark": [IsAuthenticated],
         "update_list_status_post": [AdminPermission],
         "add_bookmark": [IsAuthenticated],
+        "get_post_by_author": [AllowAny],
+        "get_post_management_by_author": [AdminPermission],
+        "list_post_by_author": [AuthorPermission],
 
     }
     serializer_map = {
@@ -61,11 +64,12 @@ class PostViewSet(BaseViewSet):
 
     @action(methods=[HttpMethod.GET], detail=False, url_path="library", serializer_class=PostShortSerializer)
     def get_post_library(self, request, *args, **kwargs):
-        res_data = PostService.get_list_post_by_favourite()
+        params = request.query_params
+        res_data = PostService.get_list_post_by_favourite(params)
         serializer = {"post_favourite": self.get_serializer(res_data, many=True).data}
-        res_data = PostService.get_list_post_by_views()
+        res_data = PostService.get_list_post_by_views(params)
         serializer.update({"post_views": self.get_serializer(res_data, many=True).data})
-        res_data = PostService.get_list_post_by_likes()
+        res_data = PostService.get_list_post_by_likes(params)
         serializer.update({"post_likes": self.get_serializer(res_data, many=True).data})
         return Response(serializer, status=status.HTTP_200_OK)
 
@@ -133,6 +137,52 @@ class PostViewSet(BaseViewSet):
 
     @action(methods=[HttpMethod.GET], detail=False, url_path="new_post", serializer_class=PostShortSerializer)
     def get_new_post(self, request, *args, **kwargs):
-        res_data = PostService.get_list_new_post()
+        params = request.query_params
+        res_data = PostService.get_list_new_post(params)
+        page = self.paginate_queryset(res_data)
+        if page:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
         serializer = self.get_serializer(res_data, many=True).data
         return Response(serializer, status=status.HTTP_200_OK)
+
+    @action(methods=[HttpMethod.GET], detail=False, url_path="list_blog", serializer_class=PostShortSerializer)
+    def get_list_blog(self, request, *args, **kwargs):
+        params = request.query_params
+        res_data = PostService.list_blog(params)
+        page = self.paginate_queryset(res_data)
+        if page:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(res_data, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    @action(methods=[HttpMethod.GET], detail=False, url_path="get_post_by_author", serializer_class=PostShortSerializer)
+    def get_post_by_author(self, request, *args, **kwargs):
+        user_id = request.query_params.get('user_id')
+        res_data = PostService.get_post_by_author(user_id)
+        serializer = self.get_serializer(res_data, many=True).data
+        return Response(serializer, status=status.HTTP_200_OK)
+
+    @action(methods=[HttpMethod.GET], detail=False, url_path="management_author", serializer_class=PostShortSerializer)
+    def get_post_management_by_author(self, request, *args, **kwargs):
+        user_obj = request.user.user
+        params = request.query_params
+        if user_obj.role == Roles.ADMIN.value:
+            res_data = PostService.get_post_management_author(params)
+            page = self.paginate_queryset(res_data)
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+        return Response(data=None, status=status.HTTP_200_OK)
+
+    @action(methods=[HttpMethod.GET], detail=False, url_path="my_posts", serializer_class=PostShortSerializer)
+    def list_my_post(self, request, *args, **kwargs):
+        user_obj = request.user.user
+        params = request.query_params
+        if user_obj.role == Roles.AUTHOR.value:
+            res_data = PostService.list_my_post(params, user_obj.id)
+            page = self.paginate_queryset(res_data)
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+        return Response(data=None, status=status.HTTP_200_OK)

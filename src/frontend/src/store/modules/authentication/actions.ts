@@ -7,6 +7,7 @@ import TokenInfo from "@/types/authentication/TokenInfo";
 import AuthenticationService from "@/services/authentication/AuthenticationService";
 import LoginItem from "@/types/login/LoginItem";
 import RegisterItem from "@/types/register/RegisterItem";
+import ForgotItem from "@/types/login/Forgot";
 
 type AugmentedActionContext = {
   commit<K extends keyof Mutations>(
@@ -45,6 +46,11 @@ export interface Actions {
   [ActionTypes.REGISTER](
     { commit }: AugmentedActionContext,
     payload: RegisterItem
+  ): any,
+
+  [ActionTypes.FORGOT_PASSWORD](
+    { commit }: AugmentedActionContext,
+    payload: ForgotItem
   ): any,
 }
 
@@ -87,6 +93,11 @@ export const actions: ActionTree<State, State> & Actions = {
 
   async [ActionTypes.REGISTER]({ commit }, payload) {
     const response: any = await AuthenticationService.register(payload)
+    return response;
+  },
+
+  async [ActionTypes.FORGOT_PASSWORD]({ commit }, payload) {
+    const response: any = await AuthenticationService.forgot_password(payload)
     return response;
   }
 }

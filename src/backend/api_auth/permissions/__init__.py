@@ -1,1 +1,1 @@
-from .account_permission import AdminPermission, UserPermission
+from .account_permission import AdminPermission, UserPermission,  AuthorPermission

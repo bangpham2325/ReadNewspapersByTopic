@@ -20,6 +20,8 @@ class Posts(TimeStampedModel):
     source = models.OneToOneField(
         Source, related_name="posts", on_delete=models.SET_NULL, null=True, blank=True
     )
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="posts", blank=True, null=True)
+    description = models.TextField(blank=True, null=True)
     likes = models.IntegerField(default=0)
     liked_by = models.ManyToManyField(User, related_name="liked_by", null=True, blank=True)
     publish_date = models.DateTimeField(default=timezone.now)

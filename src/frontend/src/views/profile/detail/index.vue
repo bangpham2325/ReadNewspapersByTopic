@@ -6,9 +6,6 @@
       <el-col :md="8">
         <LeftSection :user="user"></LeftSection>
       </el-col>
-      <el-col :md="16">
-        <RightSection :user="user" :processList="processList"></RightSection>
-      </el-col>
     </el-row>
   </div>
 </template>
@@ -20,11 +17,9 @@ import {ActionTypes} from "@/types/store/ActionTypes";
 import TopSection from "@/views/profile/detail/TopSection.vue";
 import LeftSection from "@/views/profile/detail/LeftSection.vue";
 import TitleBar from "@/components/TitleBar.vue";
-import RightSection from "@/views/profile/detail/RightSection.vue";
 
 @Options({
     components: {
-      RightSection,
       TitleBar,
       TopSection,
       LeftSection
@@ -34,12 +29,10 @@ import RightSection from "@/views/profile/detail/RightSection.vue";
         user: {
           role: "" as String
         } as any,
-        processList: {},
       }
     },
     methods: {
       ...mapActions('user', [ActionTypes.GET_USER_PROFILE]),
-      ...mapActions('campaign', [ActionTypes.FETCH_USER_CAMPAIGNS_PROCESS]),
       ...mapMutations(["SET_LOADING"]),
       async getProfileDetail() {
         let response: any = await this.GET_USER_PROFILE(this.tokenInfo.user_id)
@@ -47,12 +40,6 @@ import RightSection from "@/views/profile/detail/RightSection.vue";
           this.user = response.data
         }
       },
-      async getProcessList() {
-        let response: any = await this.FETCH_USER_CAMPAIGNS_PROCESS()
-        if (response) {
-          this.processList = response.results
-        }
-      }
     },
     computed: {
       ...mapGetters("authentication", ["tokenInfo"]),
@@ -61,7 +48,6 @@ import RightSection from "@/views/profile/detail/RightSection.vue";
     async created() {
       this.SET_LOADING(true)
       await this.getProfileDetail()
-      await this.getProcessList()
       this.SET_LOADING(false)
     }
   },
