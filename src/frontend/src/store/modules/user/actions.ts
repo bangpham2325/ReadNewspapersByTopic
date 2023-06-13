@@ -55,7 +55,8 @@ export const actions: ActionTree<State, State> & Actions = {
         role: response.data.role,
         avatar: response.data.avatar,
         bio: response.data.avatar,
-        email: response.data.account.email
+        email: response.data.account.email,
+        categories: response.data.categories
       }
       commit(MutationTypes.SET_USER_INFO, user);
     }

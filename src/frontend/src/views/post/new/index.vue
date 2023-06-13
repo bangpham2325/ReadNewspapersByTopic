@@ -1,4 +1,5 @@
 <template>
+	<div v-loading="loading">
 	<h2 class="title is-3">Tin tức mới nhất</h2>
 	<div class="tile is-ancestor layout-post">
     <template v-for="post in new_posts">
@@ -40,12 +41,19 @@
       </div>
     </template>
   </div> 
-
+	<div class="is-flex is-justify-content-center mt-4">
+		<el-pagination 
+			background 
+			layout="prev, pager, next" 
+			:total=totalPage
+			@current-change="handleCurrentChange"/>
+	</div>
+	</div>
 </template>
 
 <script lang="ts">
 import {Options, Vue} from 'vue-class-component';
-import {mapActions, mapMutations} from "vuex";
+import {mapActions, mapMutations, mapGetters, mapState} from "vuex";
 import { ActionTypes } from '@/types/store/ActionTypes';
 import {ElMessage} from "element-plus";
 
@@ -53,6 +61,9 @@ import {ElMessage} from "element-plus";
 	data(){
 		return {
 			new_posts: [] as any,
+			totalPage: 10,
+			loading: true, 
+			categories: [],
 		}
 	},
 
@@ -60,11 +71,21 @@ import {ElMessage} from "element-plus";
 		...mapMutations(["SET_LOADING"]),
 		...mapActions("post", [ActionTypes.FETCH_POST_NEW]),
 
-		async getNewPosts(){
+		async getNewPosts(page:any = null){
       this.SET_LOADING(true)
-			let data = await this.FETCH_POST_NEW()
+			let data: any
+			for (const element of this.userInfo.categories) {
+				if(!this.categories.includes(element.id))
+					this.categories.push(element.id)
+			}
+			if(page){
+				data = await this.FETCH_POST_NEW({categories: this.categories, page: page})
+			}
+			else
+				data = await this.FETCH_POST_NEW({categories: this.categories})
 			if (data){
-				this.new_posts = data
+				this.totalPage = Math.ceil(data.count/12)*10
+				this.new_posts = data.results
 			}
 			this.SET_LOADING(false)
 		},
@@ -72,10 +93,30 @@ import {ElMessage} from "element-plus";
 		detailPost(post_id: string){
       this.$router.push({ name: 'detail-post', params: { id: post_id } })
     },
+
+		async handleCurrentChange(currentPage:any) {
+      this.currentPage = currentPage;
+      await this.getNewPosts(this.currentPage)
+			this.scrollToTop()
+    },
+		
+		scrollToTop() {
+			window.scrollTo({
+				top: 0,
+				behavior: 'smooth',
+			});
+		},
+
 	},
+
+	computed: {
+    ...mapState(["is_loading"]),
+    ...mapGetters("user", ["userInfo"]),
+  },
 
 	async created(){
 		await this.getNewPosts()
+		this.loading = false
 	}
 })
 

@@ -1,7 +1,9 @@
 <template>
     <el-container class="is-flex has-background-white">
-      <el-header class="background-topbar">
-        <TopBar></TopBar>
+      <el-header>
+        <el-affix>
+          <TopBar></TopBar>
+        </el-affix>
       </el-header>
       <el-main>
         <div class="common-layout">
@@ -69,8 +71,4 @@ export default class BasePage extends Vue {
 </script>
 
 <style lang="scss" scoped>
-.background-topbar{
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  min-height: 100px;
-}
 </style>
