@@ -12,6 +12,7 @@ _urlpatterns = [
     path(r"registers", csrf_exempt(register_user), name="register_user"),
     path(r"google/", csrf_exempt(GoogleSocialAuthView.as_view())),
     path(r"registers/author", csrf_exempt(register_author), name="register_author"),
+    path(r"forgot-password/", csrf_exempt(forgot_password), name="forgot-password"),
 ]
 
 urlpatterns = router.urls + _urlpatterns

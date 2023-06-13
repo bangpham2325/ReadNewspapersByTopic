@@ -2,6 +2,7 @@ import {createRouter, createWebHistory, RouteRecordRaw} from 'vue-router'
 import HomePage from '@/views/home/index.vue';
 import LoginPage from '@/views/login/index.vue';
 import RegisterPage from '@/views/register/index.vue';
+import ForgotPasswordPage from '@/views/forgot_password/index.vue';
 import BasePage from "@/views/base/index.vue";
 import ProfileBasePage from "@/views/profile/index.vue";
 import ProfileEdit from "@/views/profile/edit/index.vue";
@@ -112,6 +113,11 @@ const routes: Array<RouteRecordRaw> = [
     path: "/register",
     name: "register",
     component: RegisterPage,
+  },
+  {
+    path: "/forgot_password",
+    name: "forgot_password",
+    component: ForgotPasswordPage,
   },
 ];
 const router = createRouter({
