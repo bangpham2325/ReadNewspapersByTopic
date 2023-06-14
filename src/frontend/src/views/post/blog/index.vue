@@ -2,7 +2,7 @@
 	<h1 class="title" style="  text-align: center; font-size: 40px; margin-bottom: 50px;">Blog Cá Nhân</h1>
 	<div class="tile is-ancestor layout-post" v-loading="loading">
 		<div v-for="post in blog_posts">
-			<div class="tile is-parent" @click="detailPost(post.id)">
+			<div class="tile is-parent" @click="detailPost(post.slug)">
 				<div class="tile is-child box card">
 					<div class="card-image">
 						<figure class="image is-3by2">
@@ -94,8 +94,8 @@ import Posts from '@/types/post/PostItem';
 			await this.getPosts(this.currentPage, this.filterStatus)
 			this.scrollToTop()
 		},
-		detailPost(post_id: string) {
-			this.$router.push({ name: 'detail-post', params: { id: post_id } })
+		detailPost(post_slug: string) {
+			this.$router.push({ name: 'detail-post', params: { slug: post_slug } })
 		},
 	},
 	watch: {

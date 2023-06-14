@@ -2,7 +2,7 @@
   <div v-loading="loading">
     <h1 class="title is-2 is-flex">Tin tức nổi bật</h1>
     <div class="tile is-ancestor">
-      <div class="tile is-parent" @click="detailPost(postHot.id)">
+      <div class="tile is-parent" @click="detailPost(postHot.slug)">
         <div class="tile is-child box card">
           <div class="card-image">
             <figure class="image is-2by1" style="height:auto">
@@ -34,7 +34,7 @@
 
       <div class="tile is-5 is-vertical is-parent">
         <div class="tile is-child box card" v-for="post in postLikes" style="display: flex;align-items: center;">
-          <el-row @click="detailPost(post.id)">
+          <el-row @click="detailPost(post.slug)">
             <el-col :span="6" class="mr-5">
               <figure class="image is-1by1" >
                 <img :src=post.thumbnail alt="Placeholder image">
@@ -53,7 +53,7 @@
     <h1 class="title is-3 is-flex mt-6">Bài viết phổ biến</h1>
     <div class="tile is-ancestor layout-post">
       <template v-for="post in postByLibrary.post_views">
-        <div class="tile is-parent" @click="detailPost(post.id)">
+        <div class="tile is-parent" @click="detailPost(post.slug)">
           <div class="tile is-child box card">
             <div class="card-image">
               <figure class="image is-3by2">
@@ -99,7 +99,7 @@
 
     <div class="tile is-ancestor layout-post">
       <template v-for="post in postByLibrary.post_favourite">
-        <div class="tile is-parent" @click="detailPost(post.id)">
+        <div class="tile is-parent" @click="detailPost(post.slug)">
           <div class="tile is-child box card">
             <div class="card-image">
               <figure class="image is-3by2">
@@ -151,6 +151,7 @@ import {mapActions, mapState, mapGetters, mapMutations} from "vuex";
 import TopBar from "@/components/TopBar.vue";
 import {MutationTypes} from "@/types/store/MutationTypes";
 import { ActionTypes } from '@/types/store/ActionTypes';
+import Posts from '@/types/post/PostItem';
 
 @Options({
   components: {
@@ -158,9 +159,9 @@ import { ActionTypes } from '@/types/store/ActionTypes';
   },
   data(){
     return {
-      postByLibrary: [],
-      postLikes: [],
-      postHot: {},
+      postByLibrary: [] as Posts[],
+      postLikes: [] as Posts[],
+      postHot: {} as Posts,
       loading: true,
       categories: [],
     }
@@ -172,11 +173,7 @@ import { ActionTypes } from '@/types/store/ActionTypes';
 
     async getPostByLibrary(){
       this.SET_LOADING(true)
-      for (const element of this.userInfo.categories) {
-				if(!this.categories.includes(element.id))
-					this.categories.push(element.id)
-			}
-      let data = await this.FETCH_POST_LIBRARY({categories: this.categories})
+      let data = await this.FETCH_POST_LIBRARY()
       if (data) {
         this.postByLibrary = data
         this.postHot = this.postByLibrary.post_likes[0]
@@ -187,8 +184,8 @@ import { ActionTypes } from '@/types/store/ActionTypes';
       this.SET_LOADING(false)
     },
 
-    detailPost(post_id: string){
-      this.$router.push({ name: 'detail-post', params: { id: post_id } })
+    detailPost(post_slug: string){
+      this.$router.push({ name: 'detail-post', params: { slug: post_slug } })
     }
   },
 

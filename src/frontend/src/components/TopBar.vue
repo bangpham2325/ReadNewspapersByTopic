@@ -95,7 +95,6 @@ import { ActionTypes } from '@/types/store/ActionTypes';
 
     async getCategory(){
       this.SET_LOADING(true)
-      console.log("bang test")
       let data = await this.FETCH_TOPICS()
       if (data) {
         this.category = data.results

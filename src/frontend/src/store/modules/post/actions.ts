@@ -117,8 +117,8 @@ export const actions: ActionTree<State, State> & Actions = {
     return data
   },
 
-  async [ActionTypes.FETCH_POST_DETAIL]({ commit }, id) {
-    let response: any = await PostService.getPostDetail(id)
+  async [ActionTypes.FETCH_POST_DETAIL]({ commit }, slug) {
+    let response: any = await PostService.getPostDetail(slug)
     return response
   },
 

@@ -61,12 +61,12 @@ const routes: Array<RouteRecordRaw> = [
             component: MyPostByAuthor,
           },
           {
-            path: "detail/:id",
+            path: "detail/:slug",
             name: "detail-post",
             component: PostDetailPage,
           },
           {
-            path: ":name/:id",
+            path: ":name",
             name: "posts-by-category",
             component: PostCategoryPage,
           },

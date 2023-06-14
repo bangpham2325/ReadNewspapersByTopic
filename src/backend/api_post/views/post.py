@@ -10,6 +10,7 @@ from rest_framework import status
 from rest_framework.decorators import action
 from api_auth.permissions import AdminPermission, UserPermission, AuthorPermission
 from api_interaction.serializers.bookmark import BookmarkSerializer
+from django.utils.text import slugify
 
 from api_user.constants import Roles
 from common.constants.api_constants import HttpMethod
@@ -52,7 +53,11 @@ class PostViewSet(BaseViewSet):
 
     def list(self, request, *args, **kwargs):
         params = request.query_params
-        res_data = PostService.get_list_post_by_category(params)
+        if request.user.id is not None:
+            category_ids = request.user.user.categories.values_list('id', flat=True)
+        else:
+            category_ids = None
+        res_data = PostService.get_list_post_by_category(params, category_ids)
         page = self.paginate_queryset(res_data)
 
         if page:
@@ -65,11 +70,15 @@ class PostViewSet(BaseViewSet):
     @action(methods=[HttpMethod.GET], detail=False, url_path="library", serializer_class=PostShortSerializer)
     def get_post_library(self, request, *args, **kwargs):
         params = request.query_params
-        res_data = PostService.get_list_post_by_favourite(params)
+        if request.user.id is not None:
+            category_ids = request.user.user.categories.values_list('id', flat=True)
+        else:
+            category_ids = None
+        res_data = PostService.get_list_post_by_favourite(category_ids)
         serializer = {"post_favourite": self.get_serializer(res_data, many=True).data}
-        res_data = PostService.get_list_post_by_views(params)
+        res_data = PostService.get_list_post_by_views(category_ids)
         serializer.update({"post_views": self.get_serializer(res_data, many=True).data})
-        res_data = PostService.get_list_post_by_likes(params)
+        res_data = PostService.get_list_post_by_likes(category_ids)
         serializer.update({"post_likes": self.get_serializer(res_data, many=True).data})
         return Response(serializer, status=status.HTTP_200_OK)
 
@@ -138,7 +147,11 @@ class PostViewSet(BaseViewSet):
     @action(methods=[HttpMethod.GET], detail=False, url_path="new_post", serializer_class=PostShortSerializer)
     def get_new_post(self, request, *args, **kwargs):
         params = request.query_params
-        res_data = PostService.get_list_new_post(params)
+        if request.user.id is not None:
+            category_ids = request.user.user.categories.values_list('id', flat=True)
+        else:
+            category_ids = None
+        res_data = PostService.get_list_new_post(params, category_ids)
         page = self.paginate_queryset(res_data)
         if page:
             serializer = self.get_serializer(page, many=True)
@@ -186,3 +199,17 @@ class PostViewSet(BaseViewSet):
             serializer = self.get_serializer(page, many=True)
             return self.get_paginated_response(serializer.data)
         return Response(data=None, status=status.HTTP_200_OK)
+
+    @action(methods=[HttpMethod.GET], detail=True, lookup_field="slug", url_path="content",
+            serializer_class=PostSerializer)
+    def slug(self, request, *args, **kwargs):
+        instance = Posts.objects.select_related('category', 'source').prefetch_related(
+                        Prefetch('post_rating', queryset=Rating.objects.select_related('user')),
+                        Prefetch('post_comment', queryset=Comment.objects.select_related('user').prefetch_related(
+                            Prefetch('child_comments', queryset=Comment.objects.select_related('user'))
+                        )),
+                        Prefetch('post_bookmark', queryset=Bookmark.objects.select_related('user'))
+                    )\
+            .prefetch_related('contents', 'keywords').get(slug=kwargs['pk'])
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data, status=status.HTTP_200_OK)

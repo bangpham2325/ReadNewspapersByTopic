@@ -42,11 +42,13 @@ class PostService(BaseService):
         return source_crawl, objs, sources
 
     @classmethod
-    def get_list_post_by_category(cls, params=None):
+    def get_list_post_by_category(cls, params=None, category_ids=None):
         ft = Q(status=PostStatus.PUBLISHED.value)
-        if params.getlist('categories'):
-            topic_ids = params.getlist('categories')
-            ft &= Q(category__id__in=topic_ids)
+        if params.get('categories'):
+            topic_ids = params.get('categories')
+            ft &= Q(category__id=topic_ids)
+        elif category_ids is not None:
+            ft &= Q(category__id__in=category_ids)
         if params.get('search'):
             search_string = params.get('search')
             ft &= (Q(author__contains=search_string) | Q(category__title__contains=search_string) | Q(
@@ -59,41 +61,44 @@ class PostService(BaseService):
         return posts
 
     @classmethod
-    def get_list_post_by_favourite(cls, params=None):
+    def get_list_post_by_favourite(cls, category_ids=None):
         ft = Q(status=PostStatus.PUBLISHED.value)
-        if params.getlist('categories'):
-            topic_ids = params.getlist('categories')
-            ft &= Q(category__id__in=topic_ids)
+        if category_ids is not None:
+            ft &= Q(category__id__in=category_ids)
         posts = Posts.objects.prefetch_related(
             'category', 'user', 'source', 'post_rating').annotate(avg_rating=Avg('post_rating__star_rating')).filter(ft).order_by('-avg_rating')[:8]
         return posts
 
     @classmethod
-    def get_list_post_by_views(cls, params=None):
+    def get_list_post_by_views(cls, category_ids=None):
         ft = Q(status=PostStatus.PUBLISHED.value)
-        if params.getlist('categories'):
-            topic_ids = params.getlist('categories')
-            ft &= Q(category__id__in=topic_ids)
+        if category_ids is not None:
+            ft &= Q(category__id__in=category_ids)
         posts = Posts.objects.filter(ft).prefetch_related(
             'category', 'user', 'source', 'post_rating').annotate(avg_rating=Avg('post_rating__star_rating')).order_by('-views')[:8]
         return posts
 
     @classmethod
-    def get_list_post_by_likes(cls, params=None):
+    def get_list_post_by_likes(cls, category_ids=None):
         ft = Q(status=PostStatus.PUBLISHED.value)
-        if params.getlist('categories'):
-            topic_ids = params.getlist('categories')
-            ft &= Q(category__id__in=topic_ids)
+        if category_ids is not None:
+            ft &= Q(category__id__in=category_ids)
         posts = Posts.objects.prefetch_related(
             'category', 'user', 'source', 'post_rating').annotate(avg_rating=Avg('post_rating__star_rating')).filter(ft).order_by('-likes')[:8]
         return posts
 
     @classmethod
-    def get_list_new_post(cls, params=None):
+    def get_list_new_post(cls, params=None, category_ids=None):
         ft = Q(status=PostStatus.PUBLISHED.value)
-        if params.getlist('categories'):
-            topic_ids = params.getlist('categories')
-            ft &= Q(category__id__in=topic_ids)
+        if params.get('categories'):
+            topic_ids = params.get('categories')
+            ft &= Q(category__id=topic_ids)
+        elif category_ids is not None:
+            ft &= Q(category__id__in=category_ids)
+        if params.get('search'):
+            search_string = params.get('search')
+            ft &= (Q(author__contains=search_string) | Q(category__title__contains=search_string) | Q(
+                title_lower__contains=str(search_string).strip().lower()))
         posts = Posts.objects.prefetch_related(
             'category', 'user', 'source', 'post_rating').annotate(avg_rating=Avg('post_rating__star_rating')).filter(ft).order_by('-publish_date')[:50]
         return posts
@@ -145,9 +150,9 @@ class PostService(BaseService):
     @classmethod
     def list_my_post(cls, params, user_id):
         ft = Q(user__id=user_id)
-        if params.getlist('categories'):
-            topic_ids = params.getlist('categories')
-            ft &= Q(category__id__in=topic_ids)
+        if params.get('categories'):
+            topic_ids = params.get('categories')
+            ft &= Q(category__id=topic_ids)
         if params.get('search'):
             search_string = params.get('search')
             ft &= (Q(author__contains=search_string) | Q(category__title__contains=search_string) | Q(
@@ -166,9 +171,9 @@ class PostService(BaseService):
         # ft = Q(user__isnull=False)
         ft = Q()
         ft &= Q(status=PostStatus.PUBLISHED.value)
-        if params.getlist('categories'):
-            topic_ids = params.getlist('categories')
-            ft &= Q(category__id__in=topic_ids)
+        if params.get('categories'):
+            topic_ids = params.get('categories')
+            ft &= Q(category__id=topic_ids)
         if params.get('search'):
             search_string = params.get('search')
             ft &= (Q(author__contains=search_string) | Q(category__title__contains=search_string) | Q(
