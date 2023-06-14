@@ -2,7 +2,7 @@
 	<h1 class="title is-2">Kết quả</h1>
 
 	<div class="card mb-6" v-for="post in posts">
-		<el-row @click="detailPost(post.id)">
+		<el-row @click="detailPost(post.slug)">
 			<el-col :span="6">
 				<figure class="image is-3by2" style="height:100%;">
 					<img :src=post.thumbnail alt="Placeholder image">
@@ -44,7 +44,7 @@ import { ActionTypes } from '@/types/store/ActionTypes';
 		...mapMutations(["SET_LOADING"]),
 		...mapActions("post", [ActionTypes.FETCH_POST_BY_FILTER]),
 
-		async getPostByFilter(){      
+		async getPostByFilter() {
 			this.SET_LOADING(true)
 			const query = {
 				search: this.$route.params.text
@@ -56,8 +56,8 @@ import { ActionTypes } from '@/types/store/ActionTypes';
 			this.SET_LOADING(false)
 		},
 
-		detailPost(post_id: string) {
-			this.$router.push({ name: 'detail-post', params: { id: post_id } })
+		detailPost(post_slug: string) {
+			this.$router.push({ name: 'detail-post', params: { slug: post_slug } })
 		}
 	},
 

@@ -60,7 +60,7 @@ import FooterSection from './FooterSection.vue';
 
     async getPostDetail(){
       this.SET_LOADING(true)
-      let data = await this.FETCH_POST_DETAIL(this.$route.params.id)
+      let data = await this.FETCH_POST_DETAIL(this.$route.params.slug)
       if (data) {
         this.postDetail = data
       }

@@ -25,7 +25,7 @@
 
     <div class="tile is-ancestor layout-post">
       <template v-for="post in posts">
-        <div :class="['tile', 'is-parent']" @click="clickPost(post.id)">
+        <div :class="['tile', 'is-parent']" @click="clickPost(post.slug, post.id)">
           <div :class="['tile', 'is-child', 'box card', { 'clickedPost': selectedPosts.includes(post.id) }]">
             <div class="card-image">
               <figure class="image is-3by2">
@@ -84,11 +84,12 @@ import { Options, Vue } from 'vue-class-component';
 import { mapActions, mapMutations, mapGetters, mapState } from "vuex";
 import { ActionTypes } from "@/types/store/ActionTypes";
 import { ElMessage } from "element-plus";
+import Posts from '@/types/post/PostItem';
 
 @Options({
   data() {
     return {
-      posts: [],
+      posts: [] as Posts[],
       currentPage: 1,
       filterStatus: 'ALL',
       totalPage: 10,
@@ -119,8 +120,8 @@ import { ElMessage } from "element-plus";
       }
       this.SET_LOADING(false)
     },
-    detailPost(post_id: string) {
-      this.$router.push({ name: 'detail-post', params: { id: post_id } })
+    detailPost(post_slug: string) {
+      this.$router.push({ name: 'detail-post', params: { slug: post_slug } })
     },
 
     async handleRadioChange(type: string) {
@@ -156,9 +157,9 @@ import { ElMessage } from "element-plus";
       this.selectMuti = true
     },
 
-    clickPost(post_id: string) {
+    clickPost(post_slug: string, post_id: string) {
       if (!this.selectMuti)
-        this.detailPost(post_id)
+        this.detailPost(post_slug)
       else {
         if (this.selectedPosts.includes(post_id))
           this.selectedPosts = this.selectedPosts.filter((id: any) => id !== post_id);

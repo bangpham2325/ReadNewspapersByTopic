@@ -8,7 +8,7 @@
 
     <div class="tile is-ancestor layout-post">
       <template v-for="post in posts">
-        <div :class="['tile', 'is-parent']" @click="clickPost(post.id)">
+        <div :class="['tile', 'is-parent']" @click="clickPost(post.slug)">
           <div :class="['tile', 'is-child', 'box card']">
             <div class="card-image">
               <figure class="image is-3by2">
@@ -83,25 +83,25 @@ import { ElMessage } from "element-plus";
     ...mapMutations(["SET_LOADING"]),
     ...mapActions("post", [ActionTypes.FETCH_POSTS_BY_AUTHOR]),
 
-    async getPostByCategory(){
+    async getPostByCategory() {
       this.SET_LOADING(true)
-      let data = await this.FETCH_POSTS_BY_AUTHOR({user_id:this.$route.params.id})
+      let data = await this.FETCH_POSTS_BY_AUTHOR({ user_id: this.$route.params.id })
       if (data) {
         this.posts = data
       }
       this.SET_LOADING(false)
     },
-		clickPost(post_id: string) {
-			this.$router.push({ name: 'detail-post', params: { id: post_id } })
-		},
+    clickPost(post_slug: string) {
+      this.$router.push({ name: 'detail-post', params: { slug: post_slug } })
+    },
   },
 
-  async created(){
+  async created() {
     await this.getPostByCategory()
     this.loading = false
   },
   computed: {
-      ...mapGetters("user", ["userInfo"]),
+    ...mapGetters("user", ["userInfo"]),
   },
 })
 
