@@ -12,3 +12,7 @@ class UserPermission(MyBasePermission):
 
 class AuthorPermission(MyBasePermission):
     match_any_roles = [Roles.AUTHOR.value]
+
+
+class AuthorOrAdminPermission(MyBasePermission):
+    match_any_roles = [Roles.AUTHOR.value, Roles.ADMIN.value]

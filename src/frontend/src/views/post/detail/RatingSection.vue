@@ -46,94 +46,11 @@ import { ROLES } from "@/const/roles";
     };
   },
   methods: {
-    ...mapActions("discussion", [
-      ActionTypes.FETCH_COMMENTS,
-      ActionTypes.CREATE_COMMENT,
-      ActionTypes.REPLY_COMMENT,
-      ActionTypes.UPDATE_COMMENT,
-      ActionTypes.REMOVE_COMMENT]),
     ...mapActions("post", [ActionTypes.FETCH_POST_DETAIL]),
 
     async getPostDetail() {
-      let data = await this.FETCH_POST_DETAIL(this.$route.params.id)
+      let data = await this.FETCH_POST_DETAIL(this.$route.params.slug)
       this.post_comment = data.post_comment
-    },
-    async postComment() {
-      if (this.comment) {
-        let response = await this.CREATE_COMMENT({
-          id: this.$route.params.id,
-          content: this.comment,
-        });
-
-        if (response.status == 201) {
-          this.comment = ''
-          await this.getPostDetail()
-        }
-      } else {
-        ElNotification({
-          message: 'Vui lòng ghi bình luận của bạn!',
-          type: 'warning',
-        })
-      }
-    },
-    replyComment(id: string) {
-      this.open_id = id
-      this.contentReply = ''
-    },
-    async newReply(id: string) {
-      if (this.contentReply) {
-        await this.REPLY_COMMENT({
-          post_id: this.$route.params.id,
-          content: { content: this.contentReply, parent_comment_id: id },
-        }),
-          this.contentReply = ''
-        await this.getPostDetail()
-      } else {
-        ElNotification({
-          message: 'Vui lòng ghi bình luận của bạn!',
-          type: 'warning',
-        })
-      }
-    },
-    editComment(id: string, content: string, object: string) {
-      if (object == 'parent') {
-        this.edit_id = id
-      } else {
-        this.edit_child_id = id
-      }
-      this.contentEdit = content
-    },
-    async updateComment(id: string) {
-      if (this.contentEdit) {
-        await this.UPDATE_COMMENT({
-          post_id: this.$route.params.id,
-          comment_id: id,
-          content: { content: this.contentEdit },
-        }),
-          this.contentEdit = '',
-          this.edit_child_id = '',
-          this.edit_id = ''
-        await this.getPostDetail()
-      } else {
-        ElNotification({
-          message: 'Vui lòng ghi bình luận của bạn!',
-          type: 'warning',
-        })
-      }
-    },
-
-    async delComment(id: string) {
-      const response = await this.REMOVE_COMMENT({
-        post_id: this.$route.params.id,
-        comment_id: id,
-      })
-      if (response.status == 204) {
-        await this.getPostDetail(),
-          ElNotification({
-            message: 'Your comment is removed!',
-            type: 'success',
-          })
-      }
     }
   },
 

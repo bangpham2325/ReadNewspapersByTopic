@@ -42,7 +42,7 @@
 
         <div v-else class="content">
           <p v-if="userInfo.id == comment.user.id" class="title is-4 ml-3 mt-3 name-commenter">Bạn</p>
-          <p v-else-if="comment.user.id == post.user.id" class="title is-4 ml-3 mt-3">Tác giả</p>
+          <p v-else-if="comment.user.id == this.user_post_id" class="title is-4 ml-3 mt-3">Tác giả</p>
           <p v-else class="title is-4 ml-3 mt-3">{{ comment.user.full_name }}</p>
           <p class="subtitle is-5 ml-3 mt-1 comment-content">{{ comment.content }}</p>
           <p>
@@ -80,7 +80,7 @@
 
                 <div v-else class="content">
                   <p v-if="userInfo.id == item.user.id" class="title is-4 ml-3 mt-3">Bạn</p>
-                  <p v-else-if="item.user.id == post.user.id" class="title is-4 ml-3 mt-3"> tác giả</p>
+                  <p v-else-if="item.user.id === this.user_post_id" class="title is-4 ml-3 mt-3"> tác giả</p>
                   <p v-else class="title is-4 ml-3 mt-3">{{ item.user.full_name }}</p>
                   <p class="subtitle is-5 ml-3 mt-1">{{ item.content }}</p>
                   <p>
@@ -131,10 +131,11 @@ import { mapActions, mapGetters, mapState } from "vuex";
 import { ActionTypes } from "@/types/store/ActionTypes";
 import { ElNotification } from "element-plus";
 import { ROLES } from "@/const/roles";
+import Posts from '@/types/post/PostItem';
 
 @Options({
   props: {
-    post: [] as any
+    post: [] as Posts[],
   },
 
   data() {
@@ -147,7 +148,8 @@ import { ROLES } from "@/const/roles";
       contentEdit: "",
       edit_id: "",
       edit_child_id: "",
-      ROLES: ROLES
+      ROLES: ROLES,
+      user_post_id: "",
     };
   },
   methods: {
@@ -160,13 +162,14 @@ import { ROLES } from "@/const/roles";
     ...mapActions("post", [ActionTypes.FETCH_POST_DETAIL]),
 
     async getPostDetail() {
-      let data = await this.FETCH_POST_DETAIL(this.$route.params.id)
+      let data = await this.FETCH_POST_DETAIL(this.$route.params.slug)
       this.post_comment = data.post_comment
+      this.user_post_id = this.post.user.id ? this.post.user.id : ""
     },
     async postComment() {
       if (this.comment) {
         let response = await this.CREATE_COMMENT({
-          id: this.$route.params.id,
+          id: this.post.id,
           content: this.comment,
         });
 
@@ -188,7 +191,7 @@ import { ROLES } from "@/const/roles";
     async newReply(id: string) {
       if (this.contentReply) {
         await this.REPLY_COMMENT({
-          post_id: this.$route.params.id,
+          post_id: this.post.id,
           content: { content: this.contentReply, parent_comment_id: id },
         }),
           this.contentReply = ''
@@ -211,7 +214,7 @@ import { ROLES } from "@/const/roles";
     async updateComment(id: string) {
       if (this.contentEdit) {
         await this.UPDATE_COMMENT({
-          post_id: this.$route.params.id,
+          post_id: this.post.id,
           comment_id: id,
           content: { content: this.contentEdit },
         }),
@@ -229,7 +232,7 @@ import { ROLES } from "@/const/roles";
 
     async delComment(id: string) {
       const response = await this.REMOVE_COMMENT({
-        post_id: this.$route.params.id,
+        post_id: this.post.id,
         comment_id: id,
       })
       if (response.status == 204) {

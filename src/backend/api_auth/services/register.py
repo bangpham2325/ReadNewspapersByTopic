@@ -36,6 +36,7 @@ def register_social_user(provider, user_id, email, name):
         account.save()
         user = dict({
             'account': account,
+            'full_name': name
         })
         User.objects.create(**user)
         token = RefreshToken.for_user(account)
