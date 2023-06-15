@@ -8,7 +8,7 @@ from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
 from django.db.models import Q, Avg, Prefetch
 from rest_framework import status
 from rest_framework.decorators import action
-from api_auth.permissions import AdminPermission, UserPermission, AuthorPermission
+from api_auth.permissions import AdminPermission, UserPermission, AuthorPermission, AuthorOrAdminPermission
 from api_interaction.serializers.bookmark import BookmarkSerializer
 from django.utils.text import slugify
 
@@ -24,7 +24,8 @@ class PostViewSet(BaseViewSet):
     permission_classes = [AllowAny]
     serializer_class = PostSerializer
     permission_map = {
-        "create": [AuthorPermission, IsAdminUser],
+        "create": [AuthorOrAdminPermission],
+        "update": [AuthorOrAdminPermission],
         "get_post_management": [AdminPermission],
         "like_post": [IsAuthenticated],
         "list_bookmark": [IsAuthenticated],
@@ -140,7 +141,8 @@ class PostViewSet(BaseViewSet):
 
     @action(methods=[HttpMethod.GET], detail=True, url_path="recommend", serializer_class=PostShortSerializer)
     def recommend(self, request, *args, **kwargs):
-        data = api_post.services.recommendation.get_recommendations(kwargs['pk'])
+        post_id = Posts.objects.filter(slug=kwargs['pk']).first().id
+        data = api_post.services.recommendation.get_recommendations(post_id)
         serializer = self.get_serializer(data, many=True)
         return Response({'message': serializer.data})
 
