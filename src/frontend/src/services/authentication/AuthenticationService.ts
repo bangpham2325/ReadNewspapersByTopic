@@ -30,9 +30,16 @@ class AuthenticationService extends BaseService{
     try {
       let payload = data as any
       const role = data.role
+      console.log(role)
       delete payload['role']
-      const response= await this.request().post(`${this.entity}/registers`, payload);
-      return response;
+      if(role == 'user'){
+        const response= await this.request().post(`${this.entity}/registers`, payload);
+        return response;
+      }
+      else {
+        const response= await this.request().post(`${this.entity}/registers/author`, payload);
+        return response;
+      }
     } catch (error) {
       return false;
     }
