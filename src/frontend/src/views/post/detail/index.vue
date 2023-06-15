@@ -12,9 +12,15 @@
     <div>
       <RecommendationSection></RecommendationSection>
     </div>
-    <div>
-      <CommentSection :post="postDetail"></CommentSection>
-      <RatingSection :post="postDetail"></RatingSection>
+    <div class="mt-5">
+      <el-tabs v-model="activeName" @tab-click="handleClick">
+        <el-tab-pane label="BÌNH LUẬN" name="BÌNH LUẬN">
+          <CommentSection :post="postDetail"></CommentSection>
+        </el-tab-pane>
+        <el-tab-pane label="ĐÁNH GIÁ" name="ĐÁNH GIÁ">
+          <RatingSection :post="postDetail"></RatingSection>
+        </el-tab-pane>
+      </el-tabs>
     </div>
   </div>
 </template>
@@ -51,6 +57,7 @@ import FooterSection from './FooterSection.vue';
         }
       },
       loading: true,
+      activeName: 'BÌNH LUẬN',
     }
   },
 
@@ -90,5 +97,9 @@ export default class PostDetailPage extends Vue {
 <style lang="scss" scoped>
 .detail-post {
   padding: 0% 20% 0% 20%;
+}
+
+:deep(.el-tabs__item){
+  font-size: 20px !important;
 }
 </style>

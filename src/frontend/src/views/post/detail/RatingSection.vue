@@ -1,7 +1,5 @@
 <template>
   <div class="rating-section">
-    <h2 class="title is-2 mt-6">Đánh Giá</h2>
-
     <div v-for="rating in post.post_rating" :key="rating.id" class="rating-item">
       <div class="rating-info">
         <div class="avatar">

@@ -45,7 +45,6 @@ import { ElMessage } from "element-plus";
       let data = await this.RECOMENDATION_POST(this.$route.params.id)
       if (data)
         this.postCommendation = data.message
-      console.log(this.postCommendation)
       this.SET_LOADING(false)
     },
 
