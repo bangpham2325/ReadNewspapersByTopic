@@ -1,6 +1,4 @@
 <template>
-  <h2 class="title is-2 mt-6">BÌNH LUẬN</h2>
-
   <div class="media mb-6" style="width: 100%" v-if="userInfo.id">
     <figure class="media-left">
       <p class="image is-64x64">

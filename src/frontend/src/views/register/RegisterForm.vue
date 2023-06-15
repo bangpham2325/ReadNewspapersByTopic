@@ -6,11 +6,11 @@
     style="min-height: 520px"
     :rules="rules"
   >
-    <div class="title" style="color: #121221; font-size: 2rem;">Become a member</div>
+    <div class="title" style="color: #121221; font-size: 2rem;">Đăng kí</div>
 
     <el-form-item prop="full_name">
       <el-input
-        placeholder="Full name"
+        placeholder="Họ và tên"
         v-model="registerForm.full_name"
         size="large"
         prefix-icon="UserFilled"
@@ -30,7 +30,7 @@
 
     <el-form-item prop="password">
       <el-input
-        placeholder="Password"
+        placeholder="Mật khẩu"
         v-model="registerForm.password"
         size="large"
         type="password"
@@ -41,7 +41,7 @@
 
     <el-form-item prop="confirmPassword">
       <el-input
-        placeholder="Confirm password"
+        placeholder="Nhập lại mật khẩu"
         v-model="confirmPassword"
         size="large" type="password"
         prefix-icon="EditPen"
@@ -49,10 +49,33 @@
       />
     </el-form-item>
 
+    <p class="subtitle" style="font-size: 1rem">Tài khoản</p>
+    <el-row class="mb-4 is-flex is-justify-content-center">
+      <el-col :span="11">
+        <label class="card">
+          <input name="plan" value="user" class="radio" type="radio" v-model="registerForm.role" checked>
+          <span class="content" align="center">
+            <font-awesome-icon icon="fa-solid fa-graduation-cap" class="mb-2"/>
+            <p class="subtitle mt-1" style="font-size: 0.75rem">Người đọc,<br>tìm kiếm bài báo</p>
+					</span>
+        </label>
+      </el-col>
+      <el-col :span="2"></el-col>
+      <el-col :span="11">
+        <label class="card">
+          <input name="plan" value="author" class="radio" v-model="registerForm.role" type="radio">
+          <span class="content" aria-hidden="true" align="center">
+							<font-awesome-icon icon="fa-solid fa-chalkboard-user" class="mb-2"/>
+							<p class="subtitle mt-1" style="font-size: 0.75rem">Người viết bài,<br>đăng bài viết</p>
+						</span>
+        </label>
+      </el-col>
+    </el-row>
+
     <el-row>
       <label class="checkbox my-3" style="font-size: 1rem">
         <input type="checkbox" v-model="is_agree_term">
-        I agree to the <a href="#"><strong>terms and conditions</strong></a>
+        Tôi đồng ý với <a href="#"><strong style="color:#07B464;">các chính sách và quy định</strong></a>
       </label>
     </el-row>
     <div class="field">
@@ -63,12 +86,12 @@
           size="large"
           :disabled="is_freeze"
         >
-          Sign up
+          Đăng kí
         </el-button>
       </p>
       <p class="subtitle mt-3 is-flex is-justify-content-center" style="font-size: 1rem">
-        Already have an account?
-        <router-link to="/login" class="ml-1">Log in</router-link>
+        Bạn đã có tài khoản?
+        <router-link to="/login" class="ml-1" style="color:#07B464;">Đăng nhập</router-link>
       </p>
     </div>
   </el-form>
@@ -141,7 +164,7 @@ import {ElNotification, FormInstance} from 'element-plus'
           if (response.status == 201) {
             ElNotification({
               title: 'Register successfully',
-              message: 'You already become a member of E-learning. Please login to enter the world of knowledge.',
+              message: 'You already become a member of News Portal. Please login to enter the world of knowledge.',
               type: 'success',
             })
             this.$router.push("/login");
@@ -175,18 +198,6 @@ export default class RegisterForm extends Vue {
   --color-dark-gray: #c4d1e1;
   --radio-border-width: 2px;
   --radio-size: 1.5em;
-}
-
-.flex {
-  display: flex;
-  grid-gap: 1.5em;
-  margin: 0 auto;
-  max-width: 60em;
-  padding: 0;
-
-  @media (min-width: 42em) {
-    grid-template-columns: repeat(3, 1fr);
-  }
 }
 
 .card {
