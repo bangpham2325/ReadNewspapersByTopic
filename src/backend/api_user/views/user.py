@@ -61,4 +61,3 @@ class UserViewSet(BaseViewSet):
         category_ids = request.data.get('category_ids', [])
         UserService.add_categories(instance, category_ids)
         return Response({'message': 'Your changes have been saved.'}, status=status.HTTP_200_OK)
-

@@ -51,7 +51,7 @@ import { RouteLocationNormalized } from 'vue-router';
 		async getPostByCategory() {
 			this.SET_LOADING(true)
 			const query = {
-				categories: this.$route.params.id
+				categories: this.$route.query.id
 			}
 			let data = await this.FETCH_POST_BY_FILTER(query)
 			if (data) {
