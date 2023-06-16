@@ -21,7 +21,9 @@ class NextCommentSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         context = self.context
         instance = super().to_representation(instance)
-        instance['time_comment'] = timesince(datetime.strptime(instance['created_at'], '%Y-%m-%dT%H:%M:%S.%f%z'))
+        time = timesince(datetime.strptime(instance['created_at'], '%Y-%m-%dT%H:%M:%S.%f%z'), time_strings=TIME_STRINGS)
+        time = time.split(",")
+        instance['time_comment'] = time[0].strip() + " trước"
         return instance
 
 

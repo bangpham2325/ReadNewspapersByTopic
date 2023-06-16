@@ -10,9 +10,13 @@
     <div class="media-content">
       <div class="field">
         <p class="control">
-          <textarea rows="3" autosize v-model="comment" class="textarea" placeholder="Add a comment..."
+        <div class="comment-container">
+          <textarea rows="2" autosize v-model="comment" class="textarea" placeholder="Add a comment..."
             @keydown.enter.shift.exact.prevent="" @keydown.enter.exact.prevent="postComment"></textarea>
-          <button class="btn-comment" @click="postComment">Comment</button>
+          <button @click="postComment" class="send-button">
+            <font-awesome-icon :icon="['fas', 'paper-plane']" />
+          </button>
+        </div>
         </p>
       </div>
     </div>
@@ -28,14 +32,17 @@
 
       <div class="media-content">
         <div v-if="edit_id == comment.id" class="field">
-          <p>
-            <el-row>
-              <textarea rows="2" autosize v-model="contentEdit" class="textarea" placeholder="Add a comment..."
-                @keydown.enter.shift.exact.prevent="" @keydown.enter.exact.prevent="updateComment(comment.id)"></textarea>
-              <div class="btn-container-edit">
-                <button class="btn-comment btn-edit" @click="updateComment(comment.id)">Edit</button>
+          <p class="control">
+            <!-- <el-row> -->
+              <div class="comment-container">
+                <textarea rows="2" autosize v-model="contentEdit" class="textarea" placeholder="Add a comment..."
+                  @keydown.enter.shift.exact.prevent=""
+                  @keydown.enter.exact.prevent="updateComment(comment.id)"></textarea>
+                <button @click="updateComment(comment.id)" class="send-button">
+                  <font-awesome-icon :icon="['fas', 'paper-plane']" />
+                </button>
               </div>
-            </el-row>
+            <!-- </el-row> -->
           </p>
 
         </div>
@@ -66,15 +73,17 @@
               </figure>
               <div class="media-content">
                 <div v-if="edit_child_id == item.id" class="field">
-                  <p>
-                    <el-row>
-                      <textarea rows="2" autosize v-model="contentEdit" class="textarea" placeholder="Add a comment..."
-                        @keydown.enter.shift.exact.prevent=""
-                        @keydown.enter.exact.prevent="updateComment(item.id)"></textarea>
-                      <div class="btn-container-edit">
-                        <button class="btn-comment btn-edit" @click="updateComment(item.id)">Edit</button>
+                  <p class="control">
+                    <!-- <el-row> -->
+                      <div class="comment-container">
+                        <textarea rows="2" autosize v-model="contentEdit" class="textarea" placeholder="Add a comment..."
+                          @keydown.enter.shift.exact.prevent=""
+                          @keydown.enter.exact.prevent="updateComment(item.id)"></textarea>
+                        <button @click="updateComment(item.id)" class="send-button">
+                          <font-awesome-icon :icon="['fas', 'paper-plane']" />
+                        </button>
                       </div>
-                    </el-row>
+                    <!-- </el-row> -->
                   </p>
                 </div>
 
@@ -105,15 +114,17 @@
             </figure>
             <div class="media-content">
               <div class="field">
-                <p>
-                  <el-row>
-                    <textarea rows="2" autosize v-model="contentReply" class="textarea" placeholder="Add a comment..."
-                      @keydown.enter.shift.exact.prevent=""
-                      @keydown.enter.exact.prevent="newReply(comment.id)"></textarea>
-                    <div class="btn-container-reply">
-                      <button class="btn-comment btn-reply" @click="newReply(comment.id)">Reply</button>
+                <p class="control">
+                  <!-- <el-row style="width: ;"> -->
+                    <div class="comment-container">
+                      <textarea rows="2" autosize v-model="contentReply" class="textarea" placeholder="Add a comment..."
+                        @keydown.enter.shift.exact.prevent=""
+                        @keydown.enter.exact.prevent="newReply(comment.id)"></textarea>
+                      <button @click="newReply(comment.id)" class="send-button">
+                        <font-awesome-icon :icon="['fas', 'paper-plane']" />
+                      </button>
                     </div>
-                  </el-row>
+                  <!-- </el-row> -->
                 </p>
               </div>
             </div>
@@ -349,5 +360,17 @@ export default class CommentSection extends Vue {
   padding-left: 12px;
   padding-right: 12px;
 
+}
+
+.comment-container {
+  position: relative;
+}
+
+.send-button {
+  position: absolute;
+  bottom: 2px;
+  right: 10px;
+  background-color: transparent;
+  border: 0;
 }
 </style>
