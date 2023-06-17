@@ -57,7 +57,7 @@ class PostService(BaseService):
             ft &= Q(publish_date__range=[params.get('start_date'), params.get('end_date')])
         posts = Posts.objects.annotate(title_lower=Lower('title')).filter(ft).prefetch_related(
             'category', 'user', 'source', 'post_rating').annotate(
-            avg_rating=Avg("post_rating__star_rating"))
+            avg_rating=Avg("post_rating__star_rating")).order_by('-publish_date')
         return posts
 
     @classmethod

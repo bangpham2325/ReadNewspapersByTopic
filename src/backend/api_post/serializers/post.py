@@ -90,7 +90,7 @@ class PostSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         contents = instance.contents.order_by('index')
         context = self.context.get('view')
-        if context.action == 'retrieve':
+        if context.action == ['retrieve', 'slug']:
             instance.views += 1
             instance.save()
         data = super().to_representation(instance)

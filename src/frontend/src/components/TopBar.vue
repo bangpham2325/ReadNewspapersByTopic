@@ -108,7 +108,10 @@ import { ActionTypes } from '@/types/store/ActionTypes';
     },
 
     filterByCategory(topic_name: string, topic_id: string){
-      this.$router.push({ name: 'posts-by-category', params: {name:topic_name, id: topic_id }, query: { id: topic_id }})
+      this.$router.push({ 
+        name: 'posts-by-category', 
+        params: {name:topic_name, id: topic_id }, 
+        query: { id: topic_id }})
       this.popoverVisible = false
     },
 
