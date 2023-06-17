@@ -1,5 +1,5 @@
 <template>
-  <router-view/>
+  <router-view :key="$route.params.name"/>
 </template>
 
 <style lang="scss">

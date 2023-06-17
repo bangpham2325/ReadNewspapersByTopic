@@ -1,4 +1,4 @@
-<template>
+<template :key="$route.params.name">
 	<div v-loading="loading">
 		<h1 class="title is-2">{{ titleCategory }}</h1>
 		<div class="card mb-6" v-for="post in postCategory">
@@ -26,6 +26,8 @@
 				</el-col>
 			</el-row>
 		</div>
+		<Pagination :total="total" :page="query.page" :page_size="query.page_size" @changePage="query.page = $event">
+		</Pagination>
 	</div>
 </template>
 
@@ -34,13 +36,25 @@ import { Options, Vue } from 'vue-class-component';
 import { mapActions, mapMutations } from "vuex";
 import { ActionTypes } from '@/types/store/ActionTypes';
 import { RouteLocationNormalized } from 'vue-router';
+import Pagination from "@/components/Pagination.vue";
 
 @Options({
+	components: {
+		Pagination
+	},
 	data() {
 		return {
 			postCategory: {} as any,
 			titleCategory: this.$route.params.name,
-			loading: true
+			loading: true,
+			total: 0,
+			totalPage: 10,
+			query: {
+				page: 1,
+				page_size: 12,
+				search: "",
+				categories: ""
+			},
 		}
 	},
 
@@ -50,12 +64,10 @@ import { RouteLocationNormalized } from 'vue-router';
 
 		async getPostByCategory() {
 			this.SET_LOADING(true)
-			const query = {
-				categories: this.$route.query.id
-			}
-			let data = await this.FETCH_POST_BY_FILTER(query)
+			let data = await this.FETCH_POST_BY_FILTER(this.query)
 			if (data) {
 				this.postCategory = data.results
+				this.total = data.count as 0
 			}
 			this.SET_LOADING(false)
 		},
@@ -66,13 +78,17 @@ import { RouteLocationNormalized } from 'vue-router';
 	},
 
 	watch: {
-		async $route() {
-			await this.getPostByCategory()
-			this.titleCategory = this.$route.params.name
+		query: {
+			deep: true,
+			handler: async function () {
+				this.$router.replace({ query: this.query }).catch((err: any) => err);
+				await this.getPostByCategory();
+			},
 		}
 	},
 
 	async created() {
+		this.query.categories = this.$route.query.id
 		await this.getPostByCategory()
 		this.loading = false
 	}
