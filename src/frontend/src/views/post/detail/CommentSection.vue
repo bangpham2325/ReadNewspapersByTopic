@@ -143,6 +143,7 @@ import { ActionTypes } from "@/types/store/ActionTypes";
 import { ElNotification } from "element-plus";
 import { ROLES } from "@/const/roles";
 import Posts from '@/types/post/PostItem';
+import { post } from "@/store/modules/post";
 
 @Options({
   props: {
@@ -170,11 +171,12 @@ import Posts from '@/types/post/PostItem';
       ActionTypes.REPLY_COMMENT,
       ActionTypes.UPDATE_COMMENT,
       ActionTypes.REMOVE_COMMENT]),
-    ...mapActions("post", [ActionTypes.FETCH_POST_DETAIL]),
+    ...mapActions("post", [ActionTypes.FETCH_POST_COMMENT_RATING]),
 
     async getPostDetail() {
-      let data = await this.FETCH_POST_DETAIL(this.$route.params.slug)
-      this.post_comment = data.post_comment
+      // console.log("post" + this.post.id)
+      let data = await this.FETCH_POST_COMMENT_RATING(this.$route.params.slug)
+      this.post_comment =  data.post_comment
       this.user_post_id = this.post.user.id ? this.post.user.id : ""
     },
     async postComment() {

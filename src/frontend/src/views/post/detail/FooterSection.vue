@@ -158,7 +158,6 @@ import { faThumbsUp } from '@fortawesome/free-solid-svg-icons';
 
 				if (res.data.detail == 'you have created rating ') {
 					ElMessage('Bạn đã đánh giá bài viết này trước đây!')
-					this.ratingSection = false
 				}
 				else {
 					ElMessage({
@@ -166,6 +165,7 @@ import { faThumbsUp } from '@fortawesome/free-solid-svg-icons';
 						type: 'success',
 					})
 				}
+				this.ratingSection = false
 			}
 			else {
 				this.$router.push("/login")

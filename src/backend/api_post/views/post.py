@@ -1,7 +1,7 @@
 import api_post
 from api_base.views import BaseViewSet
 from api_post.models import Posts
-from api_post.serializers import PostSerializer, PostShortSerializer, PostLikeSerializer
+from api_post.serializers import PostSerializer, PostShortSerializer, PostLikeSerializer, PostRatingCommentSerializer
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
@@ -213,5 +213,17 @@ class PostViewSet(BaseViewSet):
                         Prefetch('post_bookmark', queryset=Bookmark.objects.select_related('user'))
                     )\
             .prefetch_related('contents', 'keywords').get(slug=kwargs['pk'])
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    @action(methods=[HttpMethod.GET], detail=True, lookup_field="slug", url_path="list_comment_rating",
+            serializer_class=PostRatingCommentSerializer)
+    def list_comment_rating(self, request, *args, **kwargs):
+        instance = Posts.objects.select_related('category', 'source').prefetch_related(
+                        Prefetch('post_rating', queryset=Rating.objects.select_related('user')),
+                        Prefetch('post_comment', queryset=Comment.objects.select_related('user').prefetch_related(
+                            Prefetch('child_comments', queryset=Comment.objects.select_related('user'))
+                        ))
+                    ).get(slug=kwargs['pk'])
         serializer = self.get_serializer(instance)
         return Response(serializer.data, status=status.HTTP_200_OK)
