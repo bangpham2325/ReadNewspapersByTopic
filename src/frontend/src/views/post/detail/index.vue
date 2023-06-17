@@ -18,7 +18,7 @@
           <CommentSection :post="postDetail"></CommentSection>
         </el-tab-pane>
         <el-tab-pane label="ĐÁNH GIÁ" name="ĐÁNH GIÁ">
-          <RatingSection :post="postDetail"></RatingSection>
+          <RatingSection :post_prop="postRating"></RatingSection>
         </el-tab-pane>
       </el-tabs>
     </div>
@@ -56,6 +56,7 @@ import FooterSection from './FooterSection.vue';
           id: ""
         }
       },
+      postRating: {},
       loading: true,
       activeName: 'BÌNH LUẬN',
     }
@@ -63,7 +64,7 @@ import FooterSection from './FooterSection.vue';
 
   methods: {
     ...mapMutations(["SET_LOADING"]),
-    ...mapActions("post", [ActionTypes.FETCH_POST_DETAIL]),
+    ...mapActions("post", [ActionTypes.FETCH_POST_DETAIL, ActionTypes.FETCH_POST_COMMENT_RATING]),
 
     async getPostDetail(){
       this.SET_LOADING(true)
@@ -72,6 +73,10 @@ import FooterSection from './FooterSection.vue';
         this.postDetail = data
       }
       this.SET_LOADING(false)
+    },
+    async handleClick(){
+      let data = await this.FETCH_POST_COMMENT_RATING(this.$route.params.slug)
+      this.postRating = data
     }
   },
 

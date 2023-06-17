@@ -90,7 +90,7 @@ class PostSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         contents = instance.contents.order_by('index')
         context = self.context.get('view')
-        if context.action == ['retrieve', 'slug']:
+        if context.action in ['retrieve', 'slug']:
             instance.views += 1
             instance.save()
         data = super().to_representation(instance)
@@ -154,3 +154,30 @@ class PostLikeSerializer(serializers.ModelSerializer):
             "title",
             "likes"
         ]
+
+
+class PostRatingCommentSerializer(serializers.ModelSerializer):
+    post_comment = CommentPostSerializer(many=True, required=False)
+    post_rating = RatingPostSerializer(many=True, required=False)
+
+    class Meta:
+        model = Posts
+        fields = [
+            "id",
+            "title",
+            "slug",
+            "post_comment",
+            "post_rating",
+        ]
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        data['total_comment'] = instance.post_comment.count()
+        data['total_rating'] = instance.post_rating.count()
+        if data['total_comment'] != 0 and data['total_comment'] is not None:
+            result = list(filter(lambda kq: kq['parent_comment'] is None, data['post_comment']))
+            data['post_comment'] = result
+        if data['total_rating'] != 0 and data['total_rating'] is not None:
+            data['post_rating'] = sorted(data['post_rating'], key=lambda d: d['created_at'], reverse=True)
+
+        return data

@@ -60,6 +60,15 @@ class PostService extends BaseService {
     }
   }
 
+  async getPostCommentRating(slug:string){
+    try{
+      const response: any = await this.request().get(`${this.entity}/${slug}/list_comment_rating/`);
+      return response.data;
+    } catch(error) {
+      return null;
+    }
+  }
+
   async getPostByFiter(params: any = null){
     try {
       const res: any = await this.request().get(`${this.entity}/`, {

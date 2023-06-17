@@ -41,6 +41,11 @@ export interface Actions {
     id: string
   ): void,
 
+  [ActionTypes.FETCH_POST_COMMENT_RATING](
+    { commit }: AugmentedActionContext,
+    id: string
+  ): void,
+
   [ActionTypes.FETCH_POST_BY_FILTER](
     { commit }: AugmentedActionContext,
     params: any
@@ -119,6 +124,11 @@ export const actions: ActionTree<State, State> & Actions = {
 
   async [ActionTypes.FETCH_POST_DETAIL]({ commit }, slug) {
     let response: any = await PostService.getPostDetail(slug)
+    return response
+  },
+
+  async [ActionTypes.FETCH_POST_COMMENT_RATING]({ commit }, slug) {
+    let response: any = await PostService.getPostCommentRating(slug)
     return response
   },
 
