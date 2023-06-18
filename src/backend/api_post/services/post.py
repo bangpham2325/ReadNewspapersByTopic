@@ -51,7 +51,7 @@ class PostService(BaseService):
             ft &= Q(category__id__in=category_ids)
         if params.get('search'):
             search_string = params.get('search')
-            ft &= (Q(author__contains=search_string) | Q(category__title__contains=search_string) | Q(
+            ft &= (Q(author__icontains=search_string) | Q(category__title__icontains=search_string) | Q(
                 title_lower__contains=str(search_string).strip().lower()))
         if params.get('start_date') and params.get('end_date'):
             ft &= Q(publish_date__range=[params.get('start_date'), params.get('end_date')])

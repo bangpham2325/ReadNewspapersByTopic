@@ -31,14 +31,13 @@
       />
     </el-form-item>
 
-    <router-link :class="['subtitle', 'mt-2', 'is-flex', 'is-justify-content-right']" to="/forgot_password" style="font-size: 1rem">Forgot
-      password?</router-link>
+    <router-link :class="['subtitle', 'mt-2', 'is-flex', 'is-justify-content-right']" to="/forgot_password" style="font-size: 1rem">Quên mật khẩu?</router-link>
 
     <div class="field">
       <p :class="['control', 'is-flex', 'is-justify-content-center']">
         <el-button class="button is-dark is-fullwidth mt-2" @click="onLogin($refs.loginFormRef)" size="large"
                    :disabled="is_freeze">
-          Login
+          Đăng Nhập
         </el-button>
       </p>
       <p :class="['control', 'is-flex', 'is-justify-content-center']">
@@ -47,7 +46,7 @@
       
       <p class="subtitle mt-3 is-flex is-justify-content-center" style="font-size: 1rem">
         New to N-Portal?
-        <router-link class="ml-1" to="/register">Sign up!</router-link>
+        <router-link class="ml-1" to="/register">Đăng Ký!</router-link>
       </p>
     </div>
   </el-form>
@@ -124,7 +123,7 @@ declare const gapi: any;
       if (response_data.status == 200) {
             const user_info: any = await this.GET_USER_INFO(this.tokenInfo.user_id)
             if (user_info.status == 200) {
-              this.$router.push("/")
+              this.$router.push("/category")
               return
             }
           } else {

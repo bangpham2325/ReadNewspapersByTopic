@@ -16,6 +16,7 @@ class User(TimeStampedModel):
     birthday = models.DateField(null=True, blank=True)
     categories = models.ManyToManyField(blank=True, null=True, related_name='user', to='api_post.Category')
     account = models.OneToOneField(Account, on_delete=models.CASCADE, related_name="user")
+    bio = models.TextField(null=True)
 
     class Meta:
         db_table = "users"

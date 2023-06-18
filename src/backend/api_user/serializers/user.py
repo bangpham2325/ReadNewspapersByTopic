@@ -23,7 +23,7 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'full_name', 'role', 'avatar', 'address',
-                  'phone', 'birthday', 'account', 'category_ids', 'categories']
+                  'phone', 'birthday', 'account', 'category_ids', 'categories', 'bio']
 
         extra_kwargs = {
             'full_name': {'required': False},
@@ -32,6 +32,7 @@ class UserSerializer(serializers.ModelSerializer):
             'birthday': {'required': False},
             'category_ids': {'required': False},
             'categories': {'required': False},
+            'bio': {'required': False}
         }
 
 

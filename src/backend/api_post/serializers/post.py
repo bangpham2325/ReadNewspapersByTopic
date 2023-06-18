@@ -68,6 +68,7 @@ class PostSerializer(serializers.ModelSerializer):
             "views",
             "user",
             "user_id",
+            "description"
         ]
         extra_kwargs = {
             'thumbnail': {'required': False},
@@ -75,6 +76,7 @@ class PostSerializer(serializers.ModelSerializer):
             'summary': {'required': False},
             'status': {'required': False},
             'publish_date': {'required': False},
+            'description': {'required': False},
         }
 
     def to_internal_value(self, data):
