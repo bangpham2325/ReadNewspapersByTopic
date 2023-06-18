@@ -17,7 +17,8 @@
 
       <p class="subtitle mt-3 is-flex is-justify-content-center" style="font-size: 1rem">
         New to N-Portal?
-        <router-link class="ml-1" to="/register">Sign up!</router-link>
+        <router-link class="ml-2" to="/login">Đăng Nhập</router-link>
+        <router-link class="ml-5" to="/register">Đăng Ký!</router-link>
       </p>
     </div>
   </el-form>

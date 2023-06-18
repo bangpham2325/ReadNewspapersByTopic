@@ -10,6 +10,7 @@ from rest_framework import status
 from rest_framework.decorators import action
 from api_user.services import UserService
 from common.constants.api_constants import HttpMethod
+from django.contrib.auth.hashers import check_password, make_password
 
 
 class UserViewSet(BaseViewSet):
@@ -61,3 +62,13 @@ class UserViewSet(BaseViewSet):
         category_ids = request.data.get('category_ids', [])
         UserService.add_categories(instance, category_ids)
         return Response({'message': 'Your changes have been saved.'}, status=status.HTTP_200_OK)
+
+    @action(methods=[HttpMethod.PATCH], detail=False, url_path="change_password", serializer_class=UserSerializer)
+    def change_password(self, request, *args, **kwargs):
+        account = request.user
+        if account:
+            if check_password(request.data["old_password"], account.password):
+                account.password = make_password(request.data["new_password"])
+                account.save()
+                return Response({'success': True, 'message': 'Changed password successfully!'}, status=status.HTTP_200_OK)
+        return Response({"details": "Incorrect username! Change password unsuccessfully."}, status=status.HTTP_400_BAD_REQUEST)

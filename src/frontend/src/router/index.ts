@@ -12,6 +12,7 @@ import PostCategoryPage from "@/views/post/category/index.vue";
 import SearchPage from "@/views/post/search/index.vue";
 import BookmarkPage from "@/views/post/bookmark/index.vue";
 import ManagementPage from "@/views/post/management/index.vue";
+import CrawlPage from "@/views/post/crawl/index.vue";
 import CategoryPage from "@/views/category/index.vue";
 import NewPostPage from "@/views/post/new/index.vue";
 import BlogPostPage from "@/views/post/blog/index.vue";
@@ -54,6 +55,11 @@ const routes: Array<RouteRecordRaw> = [
             path: "my-posts",
             name: "my-posts-management",
             component: ManagementPage,
+          },
+          {
+            path: "crawl",
+            name: "crawl",
+            component: CrawlPage,
           },
           {
             path: "my-posts-by-author/:id",
