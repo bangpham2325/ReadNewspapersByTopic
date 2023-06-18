@@ -129,7 +129,6 @@ import { ElMessage } from "element-plus";
 			}
 		},
 		clickPostByAuthor(user_id: string) {
-			console.log("idne: " + user_id)
 			this.$router.push({ name: 'my-posts-by-author', params: { id: user_id } })
 		},
 	},

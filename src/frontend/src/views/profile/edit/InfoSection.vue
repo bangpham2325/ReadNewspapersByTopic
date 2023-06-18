@@ -1,29 +1,36 @@
 <template>
   <el-form style="width:100%;" label-width="100px" size="large" v-model="editForm">
-    <el-form-item label="Full name">
-      <el-input placeholder="Please fill your name" v-model="editForm.full_name" />
+    <el-form-item label="Họ và tên">
+      <el-input placeholder="Điền họ và tên" v-model="editForm.full_name" />
     </el-form-item>
 
     <el-form-item label="Email">
-      <el-input placeholder="Please fill your email" disabled v-model="editForm.account.email" />
+      <el-input placeholder="Điền email" disabled v-model="editForm.account.email" />
     </el-form-item>
 
-    <el-form-item label="Address">
-      <el-input placeholder="Please fill your address" v-model="editForm.address" />
+    <el-form-item label="Địa chỉ">
+      <el-input placeholder="Điền địa chỉ" v-model="editForm.address" />
     </el-form-item>
 
-    <el-form-item label="Birthday">
-      <el-date-picker v-model="editForm.birthday" type="date" placeholder="Pick your birthday" style="width: 100%"
+    <el-form-item label="Ngày sinh">
+      <el-date-picker v-model="editForm.birthday" type="date" placeholder="Chọn ngày tháng năm sinh" style="width: 100%"
         format="DD/MM/YYYY" value-format="YYYY-MM-DD" />
     </el-form-item>
 
-    <el-form-item label="Bio">
-      <el-input placeholder="Introduction about yourself" type="textarea" v-model="editForm.bio" />
+    <el-form-item label="Giới thiệu">
+      <el-input placeholder="Giới thiệu về bản thân" type="textarea" v-model="editForm.bio" />
+    </el-form-item>
+
+    <el-form-item label="Chủ đề">
+      <el-tag v-for="topic in userInfo.categories" :key="topic" class="ml-2" type="warning">{{ topic.title }}</el-tag>
+      <el-button type="warning" plain class="ml-2" size="small" @click="changeTopic">
+        + Thay đổi</el-button>
     </el-form-item>
 
     <el-form-item>
-      <el-button type="success" round @click="onSubmit">Update</el-button>
-      <el-button round @click="$router.go(-1)">Cancel</el-button>
+      <el-button type="success" round @click="onSubmit">Cập nhật</el-button>
+      <el-button type="info" round @click="gotoPW">Thay đổi mật khẩu</el-button>
+      <el-button round @click="$router.go(-1)">Hủy bỏ</el-button>
     </el-form-item>
   </el-form>
 </template>
@@ -80,10 +87,19 @@ import { ElNotification } from 'element-plus'
           type: 'error',
         })
       }
+    },
+
+    gotoPW(){
+      this.$router.push("/change-password")
+    },
+
+    changeTopic(){
+      this.$router.push("/category")
     }
   },
   computed: {
-    ...mapGetters("authentication", ["tokenInfo"])
+    ...mapGetters("authentication", ["tokenInfo"]),
+    ...mapGetters("user", ["userInfo"]),
   },
 })
 

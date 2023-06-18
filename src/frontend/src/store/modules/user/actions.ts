@@ -79,7 +79,26 @@ export const actions: ActionTree<State, State> & Actions = {
   },
 
   async [ActionTypes.UPDATE_USER_CATEGORY]({ commit }, params) {
-    let response: any = await UserService.updateUserCategory(params)
+    let response: any = await UserService.updateUserCategory(params.category_ids)
+    let infoUser: any = await UserService.getUserInfo(params.user_id)
+    if (infoUser?.status == 200) {
+      let user: UserInfo = {
+        id: infoUser.data.id,
+        full_name: infoUser.data.full_name,
+        role: infoUser.data.role,
+        avatar: infoUser.data.avatar,
+        bio: infoUser.data.avatar,
+        email: infoUser.data.account.email,
+        categories: infoUser.data.categories
+      }
+      commit(MutationTypes.SET_USER_INFO, user);
+    }
+
+    return response
+  },
+
+  async [ActionTypes.UPDATE_USER_PASSWORD]({ commit }, payload) {
+    let response: any = await UserService.updateUserPassword(payload)
     return response
   },
 }

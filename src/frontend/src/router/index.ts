@@ -16,6 +16,8 @@ import CategoryPage from "@/views/category/index.vue";
 import NewPostPage from "@/views/post/new/index.vue";
 import BlogPostPage from "@/views/post/blog/index.vue";
 import MyPostByAuthor from "@/views/post/mypostbyauthor/index.vue";
+import EditPost from "@/views/post/edit/index.vue";
+import ChangePassword from "@/views/change_password/index.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -90,7 +92,17 @@ const routes: Array<RouteRecordRaw> = [
             name: "blog-post",
             component: BlogPostPage
           },
+          {
+            path: "edit-post",
+            name: "edit-post",
+            component: EditPost
+          },
         ]
+      },
+      {
+        path: "/change-password",
+        name: "change-password",
+        component: ChangePassword,
       },
     ]
   },

@@ -30,7 +30,6 @@ class PostService extends BaseService {
 
   async getPostsByAuthor(params: any = null){
     try{
-      console.log(params)
       const res = await this.request().get(`${this.entity}/get_post_by_author/`, {
         params,
       })

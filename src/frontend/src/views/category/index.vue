@@ -22,7 +22,7 @@
 
 <script lang="ts">
 import {Options, Vue} from 'vue-class-component';
-import {mapActions, mapMutations} from "vuex";
+import {mapActions, mapMutations, mapGetters} from "vuex";
 import { ActionTypes } from '@/types/store/ActionTypes';
 import {ElMessage} from "element-plus";
 
@@ -56,7 +56,7 @@ import {ElMessage} from "element-plus";
     },
 
     async addTopicUser(){
-      let res = await this.UPDATE_USER_CATEGORY({category_ids: this.selectedList})
+      let res = await this.UPDATE_USER_CATEGORY({user_id: this.userInfo.id, category_ids: {category_ids: this.selectedList}})
       if(res.status == 200)
         this.$router.push('/home')
       else
@@ -64,8 +64,15 @@ import {ElMessage} from "element-plus";
     }
   },
 
+  computed: {
+    ...mapGetters("user", ["userInfo"]),
+  },
+
 	async created() {
     await this.getCategory()
+    if(this.userInfo.categories.length != 0)
+      for (const cate of this.userInfo.categories)
+        this.selectedList.push(cate.id)
   },
 })
 
