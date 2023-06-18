@@ -39,7 +39,6 @@ import { ROLES } from "@/const/roles";
     ...mapMutations("user", [MutationTypes.CLEAR_USER_INFO]),
 
     goToHome() {
-      console.log(this.userInfo.role)
       switch (this.userInfo.role) {
         case ROLES.ADMIN: this.$router.push("/post/management"); break;
         case ROLES.AUTHOR: this.$router.push("post/my-posts"); break;
