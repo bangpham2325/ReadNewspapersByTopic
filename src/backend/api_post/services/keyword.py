@@ -13,3 +13,13 @@ class KeywordService(BaseService):
                 keyword_data.append(item)
         keyword_objs = (Keyword(**keyword) for keyword in keyword_data)
         return keyword_objs
+
+    @classmethod
+    def create_list_keyword_for_post(cls, data, post_id):
+        keyword_data = []
+        for keyword in data:
+            item = {"post_id": post_id, "keyword": keyword.get("keyword")}
+            keyword_data.append(item)
+        keyword_objs = (Keyword(**keyword) for keyword in keyword_data)
+        Keyword.objects.bulk_create(keyword_objs, ignore_conflicts=True)
+        return keyword_objs
