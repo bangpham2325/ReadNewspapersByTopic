@@ -16,6 +16,7 @@ export class Http {
       baseURL: env.API_URL ? `${env.BASE_URL}${env.API_URL}` : '/api/v1',
       headers: {
         "Content-type": "application/json",
+        "ngrok-skip-browser-warning": "true"
       }
     });
 
