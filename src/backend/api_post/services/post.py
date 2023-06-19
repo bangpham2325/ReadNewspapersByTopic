@@ -12,10 +12,12 @@ from django.db.models import Avg
 class PostService(BaseService):
     @classmethod
     def create_post(cls, data):
-        # categories = data.pop('category')[0]
+        keyword = data.pop('keywords')
         post_obj = Posts(**data)
         post_obj.slug = slugify(f"{post_obj.title} {post_obj.id.hex[:5]}")
         post_obj.save()
+        from api_post.services import KeywordService
+        KeywordService.create_list_keyword_for_post(keyword, post_obj.id)
         return post_obj
 
     @classmethod
