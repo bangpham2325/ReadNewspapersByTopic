@@ -13,6 +13,7 @@ from django.utils.timesince import timesince
 from api_post.constants.timestring import TIME_STRINGS
 from api_user.serializers import UserShortSerializer
 from api_user.models import User
+from django.utils.text import slugify
 
 class PublishDateField(serializers.Field):
     def to_representation(self, value):
@@ -81,9 +82,13 @@ class PostSerializer(serializers.ModelSerializer):
 
     def to_internal_value(self, data):
         context = self.context.get('view')
-        if context and context.action in ['create']:
+        if context and context.action in ['create', 'update']:
             avatar = context.request.FILES.get('thumbnail')
             avatar_link = PostService.upload_avatar(avatar)
+            keywords = data.pop('keywords') if "keywords" in data else []
+            keywords_data = [{'keyword': keyword} for keyword in keywords]
+            data = data.dict()
+            data.update({'keywords': keywords_data})
             data.update({'thumbnail': avatar_link})
             data.update({'user_id': context.request.user.user.id})
         data_res = super().to_internal_value(data)
@@ -91,6 +96,14 @@ class PostSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         return PostService.create_post(validated_data)
+
+    def update(self, instance, validated_data):
+        validated_data.pop('keywords') if "keywords" in validated_data else []
+        if 'title' in validated_data:
+            instance.slug = slugify(f"{instance.title} {instance.id.hex[:5]}")
+            data_res = super().update(instance, validated_data)
+            return data_res
+        return super().update(instance, validated_data)
 
     def to_representation(self, instance):
         contents = instance.contents.order_by('index')

@@ -15,7 +15,7 @@ export class Http {
     this.instance = axios.create({
       baseURL: env.API_URL ? `${env.BASE_URL}${env.API_URL}` : '/api/v1',
       headers: {
-        "Content-type": "application/json",
+        "Content-type": "application/json"
       }
     });
 
