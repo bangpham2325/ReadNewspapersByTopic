@@ -82,6 +82,9 @@ class PostSerializer(serializers.ModelSerializer):
     def to_internal_value(self, data):
         context = self.context.get('view')
         if context and context.action in ['create']:
+            avatar = context.request.FILES.get('thumbnail')
+            avatar_link = PostService.upload_avatar(avatar)
+            data.update({'thumbnail': avatar_link})
             data.update({'user_id': context.request.user.user.id})
         data_res = super().to_internal_value(data)
         return data_res
