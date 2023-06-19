@@ -1,7 +1,23 @@
 <template>
-	<h1 class="title is-2">Kết quả</h1>
+	<el-row>
+		<el-col :span="12">
+			<h1 class="title is-2">Kết quả</h1>
+		</el-col>
 
-	<div class="card mb-6" v-for="post in posts">
+		<el-col :span="12" class="is-flex is-justify-content-right">
+			<div class="block mt-2">
+				<el-date-picker
+				v-model="time"
+				type="daterange"
+				start-placeholder="Ngày"
+				end-placeholder="Ngày"
+				@change="filterByDate"
+				/>
+			</div>
+		</el-col>
+	</el-row>
+
+	<div class="card mb-6" v-for="post in posts" v-loading="loading">
 		<el-row @click="detailPost(post.slug)">
 			<el-col :span="6">
 				<figure class="image is-3by2" style="height:100%;">
@@ -37,6 +53,10 @@ import { ActionTypes } from '@/types/store/ActionTypes';
 	data() {
 		return {
 			posts: {} as any,
+			time: '',
+			loading: true,
+			start_date: '',
+			end_date: '',
 		}
 	},
 
@@ -45,7 +65,8 @@ import { ActionTypes } from '@/types/store/ActionTypes';
 		...mapActions("post", [ActionTypes.FETCH_POST_BY_FILTER]),
 
 		async getPostByFilter() {
-			this.SET_LOADING(true)
+			this.time = ''
+			this.loading = true
 			const query = {
 				search: this.$route.params.text
 			}
@@ -53,11 +74,26 @@ import { ActionTypes } from '@/types/store/ActionTypes';
 			if (data) {
 				this.posts = data.results
 			}
-			this.SET_LOADING(false)
+			this.loading = false
 		},
 
 		detailPost(post_slug: string) {
 			this.$router.push({ name: 'detail-post', params: { slug: post_slug } })
+		},
+
+		async filterByDate(){
+			this.loading = true
+			this.start_date = this.time[0].toLocaleDateString('en-CA')
+			this.end_date = this.time[1].toLocaleDateString('en-CA')
+			let data = await this.FETCH_POST_BY_FILTER({
+				search: this.$route.params.text,
+				start_date: this.start_date,
+				end_date: this.end_date
+			})
+			if (data) {
+				this.posts = data.results
+				this.loading = false
+			}
 		}
 	},
 
@@ -69,6 +105,7 @@ import { ActionTypes } from '@/types/store/ActionTypes';
 
 	async created() {
 		await this.getPostByFilter()
+		this.loading = false
 	}
 
 })

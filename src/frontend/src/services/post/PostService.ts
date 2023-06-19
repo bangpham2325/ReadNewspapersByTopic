@@ -175,6 +175,24 @@ class PostService extends BaseService {
       return [];
     }
   }
+
+  async addUserPost(post: any){
+    try{
+      const res = await this.request().post(`${this.entity}/`, post)
+      return res
+    }catch(error) {
+      return [];
+    }
+  }
+
+  async updateUserPost(slug: string, post: any){
+    try{
+      const res = await this.request().put(`${this.entity}/${slug}`, post)
+      return res
+    }catch(error) {
+      return [];
+    }
+  }
 }
 
 export default new PostService();
