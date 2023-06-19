@@ -99,6 +99,16 @@ export interface Actions {
     { commit }: AugmentedActionContext,
     id: string
   ): void,
+
+  [ActionTypes.ADD_USER_POST](
+    { commit }: AugmentedActionContext,
+    params: any
+  ): void,
+
+  [ActionTypes.UPDATE_USER_POST](
+    { commit }: AugmentedActionContext,
+    params: any
+  ): void,
 }
 
 export const actions: ActionTree<State, State> & Actions = {
@@ -184,6 +194,16 @@ export const actions: ActionTree<State, State> & Actions = {
 
   async [ActionTypes.DELETE_POST]({ commit }, id) {
     let response: any = await PostService.deletePost(id)
+    return response
+  },
+
+  async [ActionTypes.ADD_USER_POST]({ commit }, params) {
+    let response: any = await PostService.addUserPost(params)
+    return response
+  },
+
+  async [ActionTypes.UPDATE_USER_POST]({ commit }, params) {
+    let response: any = await PostService.updateUserPost(params.slug, params.data)
     return response
   },
 }

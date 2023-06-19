@@ -92,9 +92,9 @@ import { ElMessage } from "element-plus";
 		},
 
 		async statusPost(status: string) {
-			if (status === "PUBLISHED" && this.userInfo.role == "AUTHOR") {
-				status = "PENDING"
-			}
+			// if (status === "PUBLISHED" && this.userInfo.role == "AUTHOR") {
+			// 	status = "PENDING"
+			// }
 			let res = await this.UPDATE_STATUS_POST({ id: this.postDetail.id, status: { status: status } })
 			if (res.status == 200) {
 				window.location.reload();

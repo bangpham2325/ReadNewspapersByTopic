@@ -1,6 +1,22 @@
 <template :key="$route.params.name">
+	<el-row>
+		<el-col :span="12">
+			<h1 class="title is-2">{{ titleCategory }}</h1>
+		</el-col>
+
+		<el-col :span="12" class="is-flex is-justify-content-right">
+			<div class="block mt-2">
+				<el-date-picker
+				v-model="time"
+				type="daterange"
+				start-placeholder="Ngày"
+				end-placeholder="Ngày"
+				@change="filterByDate"
+				/>
+			</div>
+		</el-col>
+	</el-row>
 	<div v-loading="loading">
-		<h1 class="title is-2">{{ titleCategory }}</h1>
 		<div class="card mb-6" v-for="post in postCategory">
 			<el-row @click="detailPost(post.slug)">
 				<el-col :span="6">
@@ -35,7 +51,6 @@
 import { Options, Vue } from 'vue-class-component';
 import { mapActions, mapMutations } from "vuex";
 import { ActionTypes } from '@/types/store/ActionTypes';
-import { RouteLocationNormalized } from 'vue-router';
 import Pagination from "@/components/Pagination.vue";
 
 @Options({
@@ -46,7 +61,10 @@ import Pagination from "@/components/Pagination.vue";
 		return {
 			postCategory: {} as any,
 			titleCategory: this.$route.params.name,
+			time: '',
 			loading: true,
+			start_date: '',
+			end_date: '',
 			total: 0,
 			totalPage: 10,
 			query: {
@@ -74,6 +92,25 @@ import Pagination from "@/components/Pagination.vue";
 
 		detailPost(post_slug: string) {
 			this.$router.push({ name: 'detail-post', params: { slug: post_slug } })
+		},
+
+		async filterByDate(){
+			this.loading = true
+			this.start_date = this.time[0].toLocaleDateString('en-CA')
+			this.end_date = this.time[1].toLocaleDateString('en-CA')
+			let data = await this.FETCH_POST_BY_FILTER({
+				page: 1,
+				page_size: 12,
+				search: "",
+				categories: "",
+				start_date: this.start_date,
+				end_date: this.end_date
+			})
+			if (data) {
+				this.postCategory = data.results
+				this.total = data.count as 0
+				this.loading = false
+			}
 		}
 	},
 

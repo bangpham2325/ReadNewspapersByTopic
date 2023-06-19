@@ -4,7 +4,10 @@
       <SummarySection :postDetail="postDetail"></SummarySection>
     </div>
     <div>
-      <ContentSection :contents="postDetail.contents"></ContentSection>
+      <ContentSection v-if="!postDetail.description" :contents="postDetail.contents"></ContentSection>
+      <div v-else>
+        <div v-html="postDetail.description"></div>
+      </div>
     </div>
     <div>
       <FooterSection :postDetail="postDetail"></FooterSection>

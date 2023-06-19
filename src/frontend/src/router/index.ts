@@ -16,6 +16,7 @@ import CategoryPage from "@/views/category/index.vue";
 import NewPostPage from "@/views/post/new/index.vue";
 import BlogPostPage from "@/views/post/blog/index.vue";
 import MyPostByAuthor from "@/views/post/mypostbyauthor/index.vue";
+import AddPost from "@/views/post/add/index.vue";
 import EditPost from "@/views/post/edit/index.vue";
 import ChangePassword from "@/views/change_password/index.vue";
 
@@ -73,7 +74,7 @@ const routes: Array<RouteRecordRaw> = [
             component: PostCategoryPage,
           },
           {
-            path: ":text",
+            path: "search/:text",
             name: "searchpage",
             component: SearchPage,
           },
@@ -93,9 +94,14 @@ const routes: Array<RouteRecordRaw> = [
             component: BlogPostPage
           },
           {
-            path: "edit-post",
+            path: "edit-post/:slug",
             name: "edit-post",
             component: EditPost
+          },
+          {
+            path: "add-post",
+            name: "add-post",
+            component: AddPost
           },
         ]
       },

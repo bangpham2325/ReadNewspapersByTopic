@@ -1,35 +1,39 @@
 <template>
-  <div v-loading="loading">
-    <el-row>
-      <el-col :span=12>
-        <h1 class="title is-3 is-flex">Tất cả bài viết</h1>
-      </el-col>
-      <el-col :span=12>
-        <div class="is-flex is-justify-content-right">
-          <el-radio-group v-model="filterStatus" size="large">
-            <el-radio-button label="ALL" @change="handleRadioChange('ALL')" />
-            <el-radio-button label="DRAFT" @change="handleRadioChange('DRAFT')" />
-            <el-radio-button label="PENDING" @change="handleRadioChange('PENDING')" />
-            <el-radio-button label="PUBLISHED" @change="handleRadioChange('PUBLISHED')" />
-          </el-radio-group>
-          <button v-if="(this.filterStatus == 'DRAFT' || this.filterStatus == 'PENDING') && this.userInfo.role == 'ADMIN' && !this.selectMuti"
-            class="button is-primary ml-4" style="background-color: #00773e;" @click="selectMulPost">Chọn nhiều
-            bài</button>
-          <button v-if="this.selectMuti" class="button is-primary ml-4" style="background-color: #00773e;"
-            @click="publishPosts">Đăng bài</button>
-          <button v-if="this.selectMuti" class="button is-dark ml-4" @click="this.selectMuti = false">Hủy chọn
-            nhiều</button>
-        </div>
-      </el-col>
-    </el-row>
+  <el-row>
+    <el-col :span=12>
+      <h1 class="title is-3 is-flex">Tất cả bài viết</h1>
+    </el-col>
+    <el-col :span=12>
+      <div class="is-flex is-justify-content-right">
+        <el-radio-group v-model="filterStatus" size="large">
+          <el-radio-button label="ALL" @change="handleRadioChange('ALL')" />
+          <el-radio-button label="DRAFT" @change="handleRadioChange('DRAFT')" />
+          <el-radio-button label="PENDING" @change="handleRadioChange('PENDING')" />
+          <el-radio-button label="PUBLISHED" @change="handleRadioChange('PUBLISHED')" />
+        </el-radio-group>
+        <button v-if="(this.filterStatus == 'DRAFT' || this.filterStatus == 'PENDING') && this.userInfo.role == 'ADMIN' && !this.selectMuti"
+          class="button is-primary ml-4" style="background-color: #00773e;" @click="selectMulPost">Chọn nhiều
+          bài</button>
+        <button v-if="this.selectMuti" class="button is-primary ml-4" style="background-color: #00773e;"
+          @click="publishPosts">Đăng bài</button>
+        <button v-if="this.selectMuti" class="button is-dark ml-4" @click="this.selectMuti = false">Hủy chọn
+          nhiều</button>
+        <button v-if="this.userInfo.role == 'AUTHOR'" class="button is-primary ml-4" style="background-color: #00773e;" @click="addPost">
+          Tạo bài viết
+        </button>
+      </div>
+    </el-col>
+  </el-row>
 
+  <div v-loading="loading">
     <div class="tile is-ancestor layout-post">
       <template v-for="post in posts">
-        <div :class="['tile', 'is-parent']" @click="clickPost(post.slug, post.id)">
+        <div :class="['tile', 'is-parent']" @click="clickPost(post.slug, post.id, post.status)">
           <div :class="['tile', 'is-child', 'box card', { 'clickedPost': selectedPosts.includes(post.id) }]">
             <div class="card-image">
               <figure class="image is-3by2">
-                <img :src=post.thumbnail alt="Placeholder image">
+                <img v-if="post.thumbnail" :src=post.thumbnail alt="Placeholder image">
+                <img v-else src="https://bulma.io/images/placeholders/800x480.png">
               </figure>
             </div>
             <div class="card-content">
@@ -37,7 +41,7 @@
                 <el-col :span="12">
                   <el-row>
                     <el-tag v-if="post.status == 'DRAFT'" type="info" effect="dark">{{ post?.status }}</el-tag>
-                    <el-tag v-else-if="post.status == 'PENDING'" type="primary" effect="dark">{{ post?.status }}</el-tag>
+                    <el-tag v-else-if="post.status == 'PENDING'" type="warning" effect="dark">{{ post?.status }}</el-tag>
                     <el-tag v-else type="success" effect="dark">{{ post?.status }}</el-tag>
                   </el-row>
                 </el-col>
@@ -107,10 +111,10 @@ import Posts from '@/types/post/PostItem';
       this.SET_LOADING(true)
       let data: any
       if (this.userInfo.role === "ADMIN") {
-          data = await this.FETCH_POSTS({page: page, status: status});
+        data = await this.FETCH_POSTS({page: page, status: status});
       } 
       else if (this.userInfo.role === "AUTHOR") {
-          data = await this.MY_POSTS({page: page, status: status});
+        data = await this.MY_POSTS({page: page, status: status});
       }
 
 
@@ -122,6 +126,10 @@ import Posts from '@/types/post/PostItem';
     },
     detailPost(post_slug: string) {
       this.$router.push({ name: 'detail-post', params: { slug: post_slug } })
+    },
+
+    addPost(){
+      this.$router.push("/post/add-post/")
     },
 
     async handleRadioChange(type: string) {
@@ -157,9 +165,13 @@ import Posts from '@/types/post/PostItem';
       this.selectMuti = true
     },
 
-    clickPost(post_slug: string, post_id: string) {
-      if (!this.selectMuti)
-        this.detailPost(post_slug)
+    clickPost(post_slug: string, post_id: string, post_status: string) {
+      if (!this.selectMuti){
+        if(post_status == 'DRAFT' && this.userInfo.role == 'AUTHOR')
+          this.$router.push({ name: 'edit-post', params: { slug: post_slug }})
+        else
+          this.detailPost(post_slug)
+      }
       else {
         if (this.selectedPosts.includes(post_id))
           this.selectedPosts = this.selectedPosts.filter((id: any) => id !== post_id);

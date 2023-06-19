@@ -11,22 +11,22 @@
 							</figure>
 						</div>
 						<div class="dropdown-menu" id="dropdown-menu" role="menu">
-							<div class="dropdown-content">
+							<div class="dropdown-content has-text-left">
 								<router-link to="/post/management" class="dropdown-item ml-3" v-if="this.userInfo.role == 'ADMIN'">
 									Dashboard
 								</router-link>
-								<router-link to="/post/my-posts" class="dropdown-item ml-2" v-if="this.userInfo.role == 'AUTHOR'">
-								    My Posts
+								<router-link to="/post/my-posts" class="dropdown-item" v-if="this.userInfo.role == 'AUTHOR'">
+								    Bài viết của tôi
 								</router-link>
 								<router-link to="/profile/edit" class="dropdown-item">
-									Profile
+									Thông tin cá nhân
 								</router-link>
 								<router-link to="/post/saved" class="dropdown-item">
-									Saved
+									Đã lưu
 								</router-link>
 								<hr class="dropdown-divider">
 								<router-link to="/logout" class="dropdown-item">
-									Log Out
+									Đăng xuất
 								</router-link>
 							</div>
 						</div>
