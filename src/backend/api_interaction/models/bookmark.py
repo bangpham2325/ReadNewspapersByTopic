@@ -9,7 +9,7 @@ from django.utils import timezone
 class Bookmark(TimeStampedModel):
     bookmark_date = models.DateTimeField(default=timezone.now)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_bookmark")
-    post = models.OneToOneField(Posts, on_delete=models.CASCADE, related_name="post_bookmark")
+    post = models.ForeignKey(Posts, on_delete=models.CASCADE, related_name="post_bookmark")
 
     class Meta:
         db_table = "bookmark"
