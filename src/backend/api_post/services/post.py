@@ -130,11 +130,13 @@ class PostService(BaseService):
                 title_lower__contains=str(search_string).strip().lower()))
         if params.get('status'):
             status_string = params.get('status')
+            if status_string == 'DRAFT':
+                ft &= Q(user__isnull=True)
             ft &= Q(status=status_string)
         if params.get('start_date') and params.get('end_date'):
             ft &= Q(publish_date__range=[params.get('start_date'), params.get('end_date')])
         posts = Posts.objects.annotate(title_lower=Lower('title')).filter(ft).prefetch_related(
-            'category', 'user', 'source', 'post_rating').annotate(avg_rating=Avg("post_rating__star_rating"))
+            'category', 'user', 'source', 'post_rating').annotate(avg_rating=Avg("post_rating__star_rating")).order_by('-created_at')
         return posts
 
     @classmethod
@@ -151,7 +153,7 @@ class PostService(BaseService):
         if params.get('start_date') and params.get('end_date'):
             ft &= Q(publish_date__range=[params.get('start_date'), params.get('end_date')])
         posts = Posts.objects.annotate(title_lower=Lower('title')).filter(ft).prefetch_related(
-            'category', 'user', 'source', 'post_rating').annotate(avg_rating=Avg("post_rating__star_rating"))
+            'category', 'user', 'source', 'post_rating').annotate(avg_rating=Avg("post_rating__star_rating")).order_by('-created_at')
         return posts
 
     @classmethod
@@ -170,13 +172,12 @@ class PostService(BaseService):
         if params.get('start_date') and params.get('end_date'):
             ft &= Q(publish_date__range=[params.get('start_date'), params.get('end_date')])
         posts = Posts.objects.annotate(title_lower=Lower('title')).filter(ft).prefetch_related(
-            'category', 'user', 'source', 'post_rating').annotate(avg_rating=Avg("post_rating__star_rating"))
+            'category', 'user', 'source', 'post_rating').annotate(avg_rating=Avg("post_rating__star_rating")).order_by('-created_at')
         return posts
 
     @classmethod
     def list_blog(cls, params):
-        # ft = Q(user__isnull=False)
-        ft = Q()
+        ft = Q(user__isnull=False)
         ft &= Q(status=PostStatus.PUBLISHED.value)
         if params.get('categories'):
             topic_ids = params.get('categories')
@@ -191,7 +192,7 @@ class PostService(BaseService):
         if params.get('start_date') and params.get('end_date'):
             ft &= Q(publish_date__range=[params.get('start_date'), params.get('end_date')])
         posts = Posts.objects.annotate(title_lower=Lower('title')).filter(ft).prefetch_related(
-            'category', 'user', 'source', 'post_rating').annotate(avg_rating=Avg("post_rating__star_rating"))[:50]
+            'category', 'user', 'source', 'post_rating').annotate(avg_rating=Avg("post_rating__star_rating")).order_by('-created_at')[:50]
         return posts
 
     @classmethod
@@ -217,7 +218,7 @@ class PostService(BaseService):
         if params.get('start_date') and params.get('end_date'):
             ft &= Q(publish_date__range=[params.get('start_date'), params.get('end_date')])
         posts = Posts.objects.annotate(title_lower=Lower('title')).filter(ft).prefetch_related(
-            'category', 'user', 'source', 'post_rating').annotate(avg_rating=Avg("post_rating__star_rating"))
+            'category', 'user', 'source', 'post_rating').annotate(avg_rating=Avg("post_rating__star_rating")).order_by('-created_at')
         if params.getlist('categories'):
             topic_ids = params.getlist('categories')
             posts = posts.filter(category__id__in=topic_ids)
