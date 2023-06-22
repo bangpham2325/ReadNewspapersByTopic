@@ -13,7 +13,7 @@
 			<p class="my-5">{{ line.text }}</p>
 			<div v-if="line.below_img">
 				<figure class="image is-2by1 my-6">
-					<img :src=content.image>
+					<img :src=content.image class="custom-image">
 				</figure>
 				<p class="subtitle is-6 is-flex is-justify-content-center has-text-centered"><b><i>{{ content.description_img }}</i></b></p>
 			</div>
@@ -36,6 +36,10 @@ export default class ContentSection extends Vue {
 }
 </script>
 
-<style>
-
+<style lang="scss" scoped>
+.custom-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
 </style>

@@ -2,7 +2,7 @@
   <div v-if="postCommendation.length != 0">
     <h2 class="title is-2 my-6">ĐỪNG BỎ LỠ</h2>
 
-    <el-carousel :interval="5000" type="card" height="300px" v-if="postCommendation.length >= 3">
+    <el-carousel :interval="10000" type="card" height="300px" v-if="postCommendation.length >= 3">
       <el-carousel-item v-for="item in postCommendation" :key="item">
         <div class="carousel-item-container" @click="detailPost(item.slug)">
           <img :src="item.thumbnail" :alt="item.title" />
@@ -11,7 +11,7 @@
       </el-carousel-item>
     </el-carousel>
 
-    <el-carousel :interval="5000" arrow="always" height="330px" v-else>
+    <el-carousel :interval="10000" arrow="always" height="330px" v-else>
       <el-carousel-item v-for="item in postCommendation" :key="item">
         <div class="carousel-item-container" style="display: flex;flex-direction: column;align-items: center;"
           @click="detailPost(item.slug)">
@@ -78,4 +78,5 @@ export default class RecommendationSection extends Vue {
 .carousel-item-container {
   position: relative;
 }
+
 </style>

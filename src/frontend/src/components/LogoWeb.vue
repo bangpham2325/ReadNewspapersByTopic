@@ -3,6 +3,11 @@
 		<div class="logo is-flex is-justify-content-left">
 		  <div class="logo__icon">N</div>
 		  <div class="logo__text">Portal</div>
+		  <router-link to="/post/blog-post">
+			<el-button type="text" class="subtitle is-5 ml-6" style="width: 100%;color:#121212;">
+			  Blog
+			</el-button>
+		  </router-link>
 		</div>
 	</router-link>
 </template>

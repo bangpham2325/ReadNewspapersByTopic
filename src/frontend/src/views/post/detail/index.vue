@@ -21,7 +21,7 @@
           <CommentSection :post="postDetail"></CommentSection>
         </el-tab-pane>
         <el-tab-pane label="ĐÁNH GIÁ" name="ĐÁNH GIÁ">
-          <RatingSection :post_prop="postRating"></RatingSection>
+          <RatingSection :post_rating="postRating"></RatingSection>
         </el-tab-pane>
       </el-tabs>
     </div>
@@ -30,7 +30,7 @@
 
 <script lang="ts">
 import {Options, Vue} from 'vue-class-component';
-import {mapActions, mapState, mapGetters, mapMutations} from "vuex";
+import {mapActions, mapMutations} from "vuex";
 import { ActionTypes } from '@/types/store/ActionTypes';
 import SummarySection from './SummarySection.vue';
 import ContentSection from './ContentSection.vue';
@@ -56,7 +56,7 @@ import FooterSection from './FooterSection.vue';
           title: ""
         },
         user: {
-          id: ""
+          id: '',
         }
       },
       postRating: {},
@@ -79,7 +79,7 @@ import FooterSection from './FooterSection.vue';
     },
     async handleClick(){
       let data = await this.FETCH_POST_COMMENT_RATING(this.$route.params.slug)
-      this.postRating = data
+      this.postRating = data.post_rating
     }
   },
 

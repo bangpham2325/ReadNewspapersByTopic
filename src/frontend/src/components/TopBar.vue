@@ -25,9 +25,6 @@
                           Tin tức mới nhất
                         </b>  
                       </el-button>
-                      <el-button type="text" class="subtitle is-6 has-text-centered" style="width: 100%;color:#00773e;" @click="blogPost">
-                        Blog cá nhân
-                      </el-button>
                     </div>
                     <div class="tile is-parent" v-for="(topic, index) in category" :key="index">
                       <el-button type="text" class="subtitle is-6 has-text-centered" style="width: 100%;color:#00773e;" @click="filterByCategory(topic.title, topic.id)">
@@ -119,10 +116,10 @@ import { ActionTypes } from '@/types/store/ActionTypes';
       this.$router.push('/post/new-post')
       this.popoverVisible = false
     },
-    blogPost(){
-      this.$router.push('/post/blog-post')
-      this.popoverVisible = false
-    },
+    // blogPost(){
+    //   this.$router.push('/post/blog-post')
+    //   this.popoverVisible = false
+    // },
 
   },
   computed: {

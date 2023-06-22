@@ -40,7 +40,7 @@
           Đăng Nhập
         </el-button>
       </p>
-      <p :class="['control', 'is-flex', 'is-justify-content-center']">
+      <p :class="['control', 'is-flex', 'is-justify-content-center', 'mt-1']">
         <GoogleLogin :callback="googleLogin"/>
       </p>
       

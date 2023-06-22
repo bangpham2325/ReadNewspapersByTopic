@@ -222,8 +222,14 @@
 				formData.append("summary", this.summary);
 				formData.append("description", this.content);
 				formData.append("category_ids", this.selectedCate.id);
-				formData.append("thumbnail", this.background?.raw)
-				formData.append("keywords", this.hashTag);
+				if(this.background)
+					formData.append("thumbnail", this.background?.raw)
+				if(this.hashTag.length != 0)
+					this.hashTag.map((tag: any) => {
+						formData.append("keywords", tag.keyword ? tag.keyword : "")
+					})
+				else 
+					formData.append("keywords", "")
 
 				if(!this.selectedCate.id || !this.title){
 					if(!this.title)
@@ -235,7 +241,7 @@
 				}
 				else{
 					if(type == 'SAVE'){
-						let res: any = await this.UPDATE_USER_POST({slug: this.$route.params.slug, data: formData})
+						let res: any = await this.UPDATE_USER_POST({id: this.id, data: formData})
 						status = res.status
 					}
 					else {

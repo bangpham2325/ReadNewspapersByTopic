@@ -185,9 +185,9 @@ class PostService extends BaseService {
     }
   }
 
-  async updateUserPost(slug: string, post: any){
+  async updateUserPost(id: string, post: any){
     try{
-      const res = await this.request().put(`${this.entity}/${slug}`, post)
+      const res = await this.request().put(`${this.entity}/${id}/`, post)
       return res
     }catch(error) {
       return [];
