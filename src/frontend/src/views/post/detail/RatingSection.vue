@@ -1,13 +1,12 @@
 <template>
   <div class="rating-section">
-    <div v-for="rating in post_prop.post_rating" :key="rating.id" class="rating-item">
+    <div v-for="rating in post_rating" :key="rating" class="rating-item">
       <div class="rating-info">
         <div class="avatar">
           <img class="is-rounded" v-if="rating.user.avatar" :src="rating.user.avatar" alt="User Avatar">
           <img v-else src="@/assets/vectors/default_avatar.svg" alt="Default Avatar">
         </div>
         <div class="rating-details">
-          <!-- <h3 class="rating-title">Title: {{ rating.title }}</h3> -->
           <div class="rating-meta">
             <span class="user-name">{{ rating.user.full_name }}</span>
             <span class="date">{{ rating.time_rating }}</span>
@@ -29,18 +28,13 @@ import { ROLES } from "@/const/roles";
 
 @Options({
   props: {
-    post_prop: [] as any
+    post_rating: [],
   },
-
   data() {
     return {
-      post_rating: [] as any,
       status: false,
       ROLES: ROLES
     };
-  },
-  methods: {
-    ...mapActions("post", [ActionTypes.FETCH_POST_COMMENT_RATING]),
   },
 
   computed: {
@@ -48,20 +42,12 @@ import { ROLES } from "@/const/roles";
     ...mapState("user", ["userInfo"])
   },
 
-  // watch: {
-  //   async post() {
-  //     await this.getPostDetail()
-  //   }
-  // },
+  watch: {
+    post_rating(newPropValue){
+      console.log('Child prop updated:', newPropValue);
+    }
+  }
 
-  // async created() {
-  //   this.unwatchRating = this.$watch('post', (newVal: any) => {
-  //     if (newVal) {
-  //       this.post_rating = { ...newVal.post_rating }
-  //       this.unwatchRating();
-  //     }
-  //   });
-  // }
 })
 export default class RatingSection extends Vue {
 }

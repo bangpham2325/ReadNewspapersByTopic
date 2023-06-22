@@ -12,7 +12,7 @@
 						</div>
 						<div class="dropdown-menu" id="dropdown-menu" role="menu">
 							<div class="dropdown-content has-text-left">
-								<router-link to="/post/management" class="dropdown-item ml-3" v-if="this.userInfo.role == 'ADMIN'">
+								<router-link to="/post/management" class="dropdown-item" v-if="this.userInfo.role == 'ADMIN'">
 									Dashboard
 								</router-link>
 								<router-link to="/post/my-posts" class="dropdown-item" v-if="this.userInfo.role == 'AUTHOR'">

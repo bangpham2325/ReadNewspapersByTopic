@@ -1,18 +1,13 @@
 <template>
-	<el-row v-if="postDetail.status == 'PUBLISHED' || postDetail.status == 'PENDING'"
-		class="is-flex is-justify-content-right mb-6">
-		<button v-if="userInfo?.id === postDetail.user?.id" class="button is-dark" @click="statusPost('DRAFT')">Ẩn bài
+	<el-row v-if="userInfo.id" class="is-flex is-justify-content-right mb-6">
+		<button v-if="userInfo?.role === 'ADMIN' && postDetail.status == 'PUBLISHED'" class="button is-dark" @click="statusPost('DRAFT')">Ẩn bài
 			viết</button>
+		<button v-if="userInfo?.id === postDetail.user?.id && postDetail.status == 'PENDING'" class="button is-dark ml-2"
+		@click="statusPost('DRAFT')">Hủy đăng bài viết</button>
 		<button v-if="userInfo?.role === 'ADMIN' && postDetail.status == 'PENDING'" class="button is-dark"
 			@click="statusPost('PUBLISHED')">Đăng bài viết</button>
-		<button v-if="userInfo?.role === 'ADMIN' || userInfo?.id === postDetail.user?.id" class="button is-danger ml-2"
+		<button v-if="userInfo?.role === 'ADMIN'" class="button is-danger ml-2"
 			@click="deletePost">Xóa bài viết</button>
-	</el-row>
-
-	<el-row v-else class="is-flex is-justify-content-right mb-6">
-		<button v-if="this.userInfo.role === 'ADMIN' || this.userInfo.role === 'AUTHOR'" class="button is-primary"
-			style="background-color: #00773e;" @click="statusPost('PUBLISHED')">Đăng bài viết</button>
-		<button class="button is-danger ml-2" @click="deletePost">Xóa bài viết</button>
 	</el-row>
 
 	<el-row>
@@ -35,7 +30,7 @@
 
 	<p class="title is-5" style="color:#00773e">{{ postDetail.category.title }}</p>
 	<h1 class="title is-2">{{ postDetail?.title }}</h1>
-	<p class="subtitle is-5" style="color:#808080">{{ postDetail.summary }}</p>
+	<p class="subtitle is-5 mt-1" style="color:#808080">{{ postDetail.summary }}</p>
 
 	<el-row>
 		<el-col :span="12">
@@ -62,7 +57,7 @@
 
 		<el-col :span=" 12 ">
 			<el-row class="is-flex is-justify-content-right">
-				<el-button type="text" icon="Connection" style="color:#00773e;font-size: 17px;" size="large"
+				<el-button v-if="userInfo?.id === postDetail.user?.id" type="text" icon="Connection" style="color:#00773e;font-size: 17px;" size="large"
 					@click=" openSource ">Nguồn</el-button>
 				<el-button type="text" icon="View" style="color:#00773e;" size="large">{{ postDetail.views }}</el-button>
 				<el-button type="text" icon="ChatLineRound" style="color:#00773e;" size="large">{{ postDetail.total_comment
@@ -92,9 +87,6 @@ import { ElMessage } from "element-plus";
 		},
 
 		async statusPost(status: string) {
-			// if (status === "PUBLISHED" && this.userInfo.role == "AUTHOR") {
-			// 	status = "PENDING"
-			// }
 			let res = await this.UPDATE_STATUS_POST({ id: this.postDetail.id, status: { status: status } })
 			if (res.status == 200) {
 				window.location.reload();

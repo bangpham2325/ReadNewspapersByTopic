@@ -59,7 +59,7 @@
                 <el-col :span="14">
                   <el-row>
                     <el-avatar :size="40" class="mt-1">
-                      <img src="https://res.cloudinary.com/ddrpryfpq/image/upload/v1686416519/anh_ggjqgg.jpg">
+                      <img :src="post.user.avatar">
                     </el-avatar>
                     <p class="title is-6 mt-4 ml-4" style="color:#00773e;">{{ post?.author }}</p>
                   </el-row>
@@ -85,7 +85,7 @@
 
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
-import { mapActions, mapMutations, mapGetters, mapState } from "vuex";
+import { mapActions, mapMutations, mapGetters } from "vuex";
 import { ActionTypes } from "@/types/store/ActionTypes";
 import { ElMessage } from "element-plus";
 import Posts from '@/types/post/PostItem';

@@ -203,7 +203,7 @@ export const actions: ActionTree<State, State> & Actions = {
   },
 
   async [ActionTypes.UPDATE_USER_POST]({ commit }, params) {
-    let response: any = await PostService.updateUserPost(params.slug, params.data)
+    let response: any = await PostService.updateUserPost(params.id, params.data)
     return response
   },
 }

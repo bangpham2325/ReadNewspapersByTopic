@@ -203,7 +203,10 @@ import { ElMessage } from "element-plus";
 			formData.append("description", this.content);
 			formData.append("category_ids", this.selectedCate.id);
 			formData.append("thumbnail", this.background?.raw)
-			formData.append('keywords', JSON.stringify(this.hashTag));
+
+			this.hashTag.map((tag: any) => {
+        formData.append("keywords", tag.keyword ? tag.keyword : "")
+      })
 
 			if(!this.selectedCate.id || !this.title){
         if(!this.title)
