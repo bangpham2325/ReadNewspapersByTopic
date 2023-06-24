@@ -141,8 +141,8 @@ class PostViewSet(BaseViewSet):
 
     @action(methods=[HttpMethod.GET], detail=True, url_path="recommend", serializer_class=PostShortSerializer)
     def recommend(self, request, *args, **kwargs):
-        post_id = Posts.objects.filter(slug=kwargs['pk']).first().id
-        data = api_post.services.recommendation.get_recommendations(post_id)
+        post = Posts.objects.filter(slug=kwargs['pk']).first()
+        data = api_post.services.recommendation.get_recommendations(post.id, post.category)
         serializer = self.get_serializer(data, many=True)
         return Response({'message': serializer.data})
 
