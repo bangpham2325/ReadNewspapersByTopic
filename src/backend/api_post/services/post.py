@@ -51,6 +51,7 @@ class PostService(BaseService):
     @classmethod
     def get_list_post_by_category(cls, params=None, category_ids=None):
         ft = Q(status=PostStatus.PUBLISHED.value)
+        ft &= Q(user__isnull=True)
         if params.get('categories'):
             topic_ids = params.get('categories')
             ft &= Q(category__id=topic_ids)
@@ -70,6 +71,7 @@ class PostService(BaseService):
     @classmethod
     def get_list_post_by_favourite(cls, category_ids=None):
         ft = Q(status=PostStatus.PUBLISHED.value)
+        ft &= Q(user__isnull=True)
         if category_ids is not None:
             ft &= Q(category__id__in=category_ids)
         posts = Posts.objects.prefetch_related(
@@ -79,6 +81,7 @@ class PostService(BaseService):
     @classmethod
     def get_list_post_by_views(cls, category_ids=None):
         ft = Q(status=PostStatus.PUBLISHED.value)
+        ft &= Q(user__isnull=True)
         if category_ids is not None:
             ft &= Q(category__id__in=category_ids)
         posts = Posts.objects.filter(ft).prefetch_related(
@@ -88,6 +91,7 @@ class PostService(BaseService):
     @classmethod
     def get_list_post_by_likes(cls, category_ids=None):
         ft = Q(status=PostStatus.PUBLISHED.value)
+        ft &= Q(user__isnull=True)
         if category_ids is not None:
             ft &= Q(category__id__in=category_ids)
         posts = Posts.objects.prefetch_related(
@@ -97,6 +101,7 @@ class PostService(BaseService):
     @classmethod
     def get_list_new_post(cls, params=None, category_ids=None):
         ft = Q(status=PostStatus.PUBLISHED.value)
+        ft &= Q(user__isnull=True)
         if params.get('categories'):
             topic_ids = params.get('categories')
             ft &= Q(category__id=topic_ids)
