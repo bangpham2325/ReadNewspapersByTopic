@@ -91,24 +91,9 @@
 						:key="tag"
 						class="mx-1"
 						closable
-						:disable-transitions="false"
-						@close="handleClose(tag)"
-					>
+						:disable-transitions="false">
 						{{ tag.keyword }}
 					</el-tag>
-					<el-input
-						v-if="inputVisible"
-						v-model="inputValue"
-						class="ml-1 w-20"
-						style="width:150px;"
-						autofocus="true"
-						size="small"
-						@keyup.enter="handleInputConfirm"
-						@blur="inputVisible=false"
-					/>
-					<el-button v-else class="button-new-tag ml-1" size="small" @click="inputVisible=true">
-						+ Thêm Tag
-					</el-button>
 				</el-card>
 			</el-timeline-item>
 		</el-timeline>
@@ -201,18 +186,6 @@
 				this.SET_LOADING(false)
 			},
 	
-			handleClose(tag: string){
-				this.hashTag.splice(this.hashTag.indexOf(tag), 1)
-			},
-	
-			handleInputConfirm (){
-				if (this.inputValue) {
-					this.hashTag.push({keyword: this.inputValue})
-				}
-				this.inputVisible = false
-				this.inputValue = ''
-			},
-	
 			async UserPost(type: string){
 				this.is_freeze = true
 				let status = 0
@@ -224,13 +197,7 @@
 				formData.append("category_ids", this.selectedCate.id);
 				if(this.background)
 					formData.append("thumbnail", this.background?.raw)
-				if(this.hashTag.length != 0)
-					this.hashTag.map((tag: any) => {
-						formData.append("keywords", tag.keyword ? tag.keyword : "")
-					})
-				else 
-					formData.append("keywords", "")
-
+	
 				if(!this.selectedCate.id || !this.title){
 					if(!this.title)
 						ElMessage.warning('Vui lòng điền tiêu đề cho bài viết.')

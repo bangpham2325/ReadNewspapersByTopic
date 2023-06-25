@@ -34,6 +34,7 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
 app.use(vue3GoogleLogin, {
   clientId: '284448553155-14qt653a7h2f3233uloeq9tfr2jl76lp.apps.googleusercontent.com'
 })
+
 app.use(store).use(router).use(ElementPlus).use(Antd)
 app.component('font-awesome-icon', FontAwesomeIcon)
 app.component('QuillEditor', QuillEditor)

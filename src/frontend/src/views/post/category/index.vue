@@ -16,7 +16,7 @@
 			</div>
 		</el-col>
 	</el-row>
-	<div class="mt-2" v-loading="loading">
+	<div class="mt-5" v-loading="loading">
 		<div class="card mb-6" v-for="post in postCategory">
 			<el-row @click="detailPost(post.slug)">
 				<el-col :span="6">

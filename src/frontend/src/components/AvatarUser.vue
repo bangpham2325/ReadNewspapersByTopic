@@ -15,6 +15,9 @@
 								<router-link to="/post/management" class="dropdown-item" v-if="this.userInfo.role == 'ADMIN'">
 									Dashboard
 								</router-link>
+								<router-link to="/crawl" class="dropdown-item" v-if="this.userInfo.role == 'ADMIN'">
+									Thu thập bài viết
+								</router-link>
 								<router-link to="/post/my-posts" class="dropdown-item" v-if="this.userInfo.role == 'AUTHOR'">
 								    Bài viết của tôi
 								</router-link>
