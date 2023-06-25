@@ -57,9 +57,16 @@
 
               <el-row>
                 <el-col :span="14">
-                  <el-row>
+                  <el-row v-if="post.user">
                     <el-avatar :size="40" class="mt-1">
                       <img :src="post.user.avatar">
+                    </el-avatar>
+                    <p class="title is-6 mt-4 ml-4" style="color:#00773e;">{{ post?.author }}</p>
+                  </el-row>
+
+                  <el-row v-else>
+                    <el-avatar :size="40" class="mt-1">
+                      <img src="@/assets/vectors/default_avatar.svg">
                     </el-avatar>
                     <p class="title is-6 mt-4 ml-4" style="color:#00773e;">{{ post?.author }}</p>
                   </el-row>

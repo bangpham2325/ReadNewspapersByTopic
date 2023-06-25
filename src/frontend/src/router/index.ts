@@ -19,6 +19,7 @@ import MyPostByAuthor from "@/views/post/mypostbyauthor/index.vue";
 import AddPost from "@/views/post/add/index.vue";
 import EditPost from "@/views/post/edit/index.vue";
 import ChangePassword from "@/views/change_password/index.vue";
+import CrawlPage from "@/views/crawl/index.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -26,6 +27,11 @@ const routes: Array<RouteRecordRaw> = [
     name: "home",
     component: BasePage,
     children: [
+      {
+        path: "crawl",
+        name: "crawl-data",
+        component: CrawlPage,
+      },
       {
         path: "home",
         name: "homepage",
