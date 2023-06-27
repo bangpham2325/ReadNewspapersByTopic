@@ -9,12 +9,13 @@ from api_user.constants import Roles
 from django.db.models import Avg
 from api_base.services import CloudinaryService
 
+
 class PostService(BaseService):
     @classmethod
     def create_post(cls, data):
         keyword = data.pop('keywords') if "keywords" in data else []
         post_obj = Posts(**data)
-        post_obj.slug = slugify(f"{post_obj.title} {post_obj.id.hex[:5]}")
+        post_obj.slug = slugify(f"{post_obj.title[:30]} {post_obj.id.hex[:5]}")
         post_obj.save()
         from api_post.services import KeywordService
         KeywordService.create_list_keyword_for_post(keyword, post_obj.id)
