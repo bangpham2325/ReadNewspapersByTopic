@@ -83,9 +83,10 @@ class PostSerializer(serializers.ModelSerializer):
     def to_internal_value(self, data):
         context = self.context.get('view')
         if context and context.action in ['create', 'update']:
-            data = data.dict()
-            keywords = data.pop('keywords') if "keywords" in data else []
+            keywords = data.getlist('keywords') if "keywords" in data else []
             keywords_data = [{'keyword': keyword} for keyword in keywords]
+            data = data.dict()
+            data.pop('keywords') if "keywords" in data else data
             if context.action == 'create':
                 avatar = context.request.FILES.get('thumbnail')
                 avatar_link = PostService.upload_avatar(avatar)
