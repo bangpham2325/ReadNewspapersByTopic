@@ -63,16 +63,18 @@ import axios from 'axios';
 				vietcetera: vietcetera
 			}
 
-			const url = `https://1c15-143-198-221-48.ngrok-free.app/api/v1/newspaper/post/crawl_data/`;
-			while(this.process || this.temp < 5){
+			const url = `https://239e-167-71-199-248.ngrok-free.app/api/v1/newspaper/post/crawl_data/`;
+			while(this.process && this.temp < 3){
 				await axios.get(url,{params}).then(res => {
 					if(res){
-						this.process = !this.process
+						this.process = false
+						console.log(res.data)
 						this.$emit('data-crawl', res.data);
 					}
 				}).catch(err => {
 					this.temp++
 				});
+				if(!this.process) break;
 			}
 		},
 	},
