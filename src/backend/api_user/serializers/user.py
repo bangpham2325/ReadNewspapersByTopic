@@ -39,5 +39,12 @@ class UserSerializer(serializers.ModelSerializer):
 class UserShortSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'full_name', 'role', 'avatar']
+        fields = ['id', 'full_name', 'role', 'avatar', 'bio']
 
+
+class UserShortWithEmailSerializer(UserShortSerializer):
+    email = serializers.EmailField(source='account.email')
+
+    class Meta:
+        model = User
+        fields = ['id', 'full_name', 'role', 'avatar', 'bio', 'email']

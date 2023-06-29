@@ -4,7 +4,11 @@ from api_user.models import Account, User
 from itertools import groupby
 from api_base.services import CloudinaryService
 from api_post.models import Category
+from django.db.models.functions import ExtractMonth
+from django.db.models import Count
 
+MONTH_LIST = ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6', 'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10',
+              'Tháng 11', 'Tháng 12']
 
 class UserService(BaseService):
     @classmethod
@@ -41,3 +45,25 @@ class UserService(BaseService):
         categories = Category.objects.filter(id__in=category_id)
         data.categories.set(categories)
         return data
+
+    @classmethod
+    def report_user_by_role(cls):
+        user_reports = {}
+
+        # Lấy danh sách user theo role và tháng
+        users = User.objects.annotate(month=ExtractMonth('created_at')).filter(month__in=range(1, 13)).values('month',
+                                                                                                              'role').annotate(
+            count=Count('id')).order_by('role')
+
+        # Tạo từ điển báo cáo user theo role và tháng
+        for month in MONTH_LIST:
+            user_report = {}
+            for role in Roles.choices():
+                user_data = next((user for user in users if
+                                  user['role'] == role[0] and user['month'] == MONTH_LIST.index(month) + 1), None)
+                count = user_data['count'] if user_data else 0
+                user_report[role[1]] = count
+
+            user_reports[month] = user_report
+
+        return user_reports
