@@ -102,7 +102,7 @@ class PostSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         validated_data.pop('keywords') if "keywords" in validated_data else []
         if 'title' in validated_data:
-            instance.slug = slugify(f"{instance.title} {instance.id.hex[:5]}")
+            instance.slug = slugify(f"{instance.title[0:30]} {instance.id.hex[:5]}")
             data_res = super().update(instance, validated_data)
             return data_res
         return super().update(instance, validated_data)
