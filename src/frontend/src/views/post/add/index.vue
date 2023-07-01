@@ -223,7 +223,6 @@ import { ElMessage } from "element-plus";
         }
         else {
           let res_data: any = await this.ADD_USER_POST(formData)
-					console.log(res_data)
           let res = await this.UPDATE_STATUS_POST({ id: res_data.data.id, status: { status: 'PENDING' } })
           status = res.status
         }
