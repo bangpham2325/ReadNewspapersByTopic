@@ -8,13 +8,18 @@ from api_post.models import Posts, Category, Source
 from api_user.constants import Roles
 from django.db.models import Avg
 from api_base.services import CloudinaryService
+from django.db.models.functions import ExtractMonth
+from django.db.models import Count
+
+MONTH_LIST = ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6', 'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10',
+              'Tháng 11', 'Tháng 12']
 
 class PostService(BaseService):
     @classmethod
     def create_post(cls, data):
         keyword = data.pop('keywords') if "keywords" in data else []
         post_obj = Posts(**data)
-        post_obj.slug = slugify(f"{post_obj.title} {post_obj.id.hex[:5]}")
+        post_obj.slug = slugify(f"{post_obj.title[:30]} {post_obj.id.hex[:5]}")
         post_obj.save()
         from api_post.services import KeywordService
         KeywordService.create_list_keyword_for_post(keyword, post_obj.id)
@@ -228,3 +233,27 @@ class PostService(BaseService):
             topic_ids = params.getlist('categories')
             posts = posts.filter(category__id__in=topic_ids)
         return posts
+
+    @classmethod
+    def report_post_by_category(cls, month=None):
+        post_reports = {}
+
+        # Lấy tháng hiện tại nếu không có tháng được truyền vào
+        if not month:
+            current_month = datetime.now().month
+        else:
+            current_month = int(month)
+
+        # Lấy danh sách post theo category và tháng
+        posts = Posts.objects.filter(publish_date__month=current_month).values('category').annotate(count=Count('id')).order_by("category")
+
+        # Tạo từ điển báo cáo post theo category
+        post_report = {}
+        for category in Category.objects.all():
+            post_data = next((post for post in posts if post['category'] == category.id), None)
+            count = post_data['count'] if post_data else 0
+            post_report[category.title] = count
+
+        post_reports[MONTH_LIST[current_month-1]] = post_report
+
+        return post_reports

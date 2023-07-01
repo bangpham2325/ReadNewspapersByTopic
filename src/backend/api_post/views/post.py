@@ -227,3 +227,34 @@ class PostViewSet(BaseViewSet):
                     ).get(slug=kwargs['pk'])
         serializer = self.get_serializer(instance)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+    @action(methods=[HttpMethod.GET], detail=False, url_path="admin_report_post", serializer_class=PostShortSerializer)
+    def admin_report_post(self, request, *args, **kwargs):
+        post = Posts.objects.prefetch_related(
+            'category', 'user', 'source', 'post_rating').annotate(avg_rating=Avg("post_rating__star_rating"))
+        report_data = {}
+        month = request.query_params.get("month", "")
+        report = PostService.report_post_by_category(month)
+        report_data.update({"report": report})
+        search_category = request.query_params.get("category", "")
+        search_query = request.query_params.get("q", "")
+        rest_data = post.filter(Q(title__icontains=search_query) and Q(category__title__icontains=search_category)).order_by("-views")
+        page = self.paginate_queryset(rest_data)
+        if page is not None:
+            rest_data = page
+            ordering = request.query_params.get('ordering')
+            if ordering is not None:
+                try:
+                    if ordering.startswith("-"):
+                        ordering = ordering[1:]
+                        rest_data = sorted(page, key=lambda d: getattr(d, ordering), reverse=False)
+                    else:
+                        rest_data = sorted(page, key=lambda d: getattr(d, ordering), reverse=True)
+                except:
+                    pass
+            serializer = self.get_serializer(rest_data, many=True)
+            report_data['posts'] = serializer.data
+            return self.get_paginated_response(report_data)
+        posts = self.get_serializer(report, many=True).data
+        report_data['posts'] = posts
+        return Response(report_data, status=status.HTTP_200_OK)
