@@ -1,11 +1,10 @@
 <template>
-	<el-row style="text-align: center;">
+	<el-row style="text-align: center;margin-left:6%">
 		<el-col :span="span" v-if="selectedSource.includes('Vietnamnet')">
 			<el-progress type="dashboard" :percentage="100" color="#5cb87a">
 				<el-button type="success" icon="Check" circle />
 			</el-progress>
 			<p class="subtitle is-6">Vietnamnet</p>
-			<p class="subtitle is-6">{{ data.vietnamnet.data }}</p>
 		</el-col>
 			
 		<el-col :span="span" v-if="selectedSource.includes('Vietcetera')">
@@ -13,7 +12,6 @@
 				<el-button type="success" icon="Check" circle />
 			</el-progress>
 			<p class="subtitle is-6">Vietcetera</p>
-			<p class="subtitle is-6">{{ data.vietcetera.data }}</p>
 		</el-col>
 
 		<el-col :span="span" v-if="selectedSource.includes('Dantri')">
@@ -21,7 +19,6 @@
 				<el-button type="success" icon="Check" circle />
 			</el-progress>
 			<p class="subtitle is-6">Dantri</p>
-			<p class="subtitle is-6">{{ data.dantri.data }}</p>
 		</el-col>
 
 		<el-col :span="span" v-if="selectedSource.includes('Vnexpress')">
@@ -29,7 +26,6 @@
 				<el-button type="success" icon="Check" circle />
 			</el-progress>
 			<p class="subtitle is-6">Vnexpress</p>
-			<p class="subtitle is-6">{{ data.vnexpress.data }}</p>
 		</el-col>
 	</el-row>
 </template>
@@ -41,12 +37,26 @@ import {Options, Vue} from 'vue-class-component';
 @Options({
 	props: {
 		selectedSource: [],
-		data: [] as any
+		data_crawl: [] as any,
 	},
 	data() {
     return {
 			span: 0,
+			vietnamnet: {},
+			vietcetera: {},
+			dantri: {},
+			vnexpress: {}
 		}
+	},
+	created(){
+		if(this.selectedSource.length == 4)
+			this.span = 6
+		else if (this.selectedSource.length == 3)
+			this.span = 8
+		else if (this.selectedSource.length == 2)
+			this.span = 12
+		else
+			this.span = 24
 	}
 
 })

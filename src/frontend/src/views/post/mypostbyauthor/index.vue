@@ -116,7 +116,6 @@ export default class MyPostByAuthor extends Vue {
   display: grid;
   grid-template-columns: repeat(3, auto);
   grid-gap: 10px;
-  margin: 0 240px;
 }
 
 .el-radio-button {

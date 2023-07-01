@@ -1,6 +1,7 @@
 <template>
+	<p>{{data}} - {{step}}</p>
 	<h1 class="title is-3 my-5" style="margin-left:7%;">Thu thập bài báo</h1>
-  <el-steps :active="step" align-center finish-status="success" class="mr-6">
+  <el-steps :active="step" align-center finish-status="success" class="mr-3">
     <el-step title="Chọn nguồn" description="Lựa chọn trang website" />
     <el-step title="Thu thập" description="Lấy thông tin từ các nguồn" />
     <el-step title="Kết quả" description="Các bài viết đã thu thập được" />
@@ -16,11 +17,11 @@
 		</div>
 
 		<div v-if="step==2" class="space">
-			<ResultSection :selectedSource="source" :data="data"></ResultSection>
+			<ResultSection :selectedSource="source" :data_crawl="data"></ResultSection>
 		</div>
 	
 		<div v-if="step < 2" class="is-flex is-justify-content-center">
-			<button :disabled="source.length==0 || status" class="button is-success is-rounded" @click="confirmSource=true">Tiếp theo</button>
+			<button :disabled="source.length==0 || status" class="button is-success is-rounded" @click="next">Tiếp theo</button>
 		</div>
 	
 		<div v-else class="is-flex is-justify-content-center">
@@ -74,6 +75,12 @@ import ResultSection from './ResultSection.vue';
 		},
 		handleDataCrawl(data: any){
 			this.data = data
+		},
+		next(){
+			if(this.step == 0)
+				this.confirmSource = true
+			else
+				this.step = this.step + 1
 		},
 		crawl(){
 			this.step = this.step + 1

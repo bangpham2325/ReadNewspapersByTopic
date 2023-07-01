@@ -1,19 +1,19 @@
 <template>
-	<div v-if="process" style="margin-left:6%">
-		<el-progress class="is-flex is-justify-content-center" type="dashboard" :percentage="percentage" :color="colors" />
-		<p class="title is-5 is-flex is-justify-content-center">Đang thu thập dữ liệu!</p>
+	<div v-if="process && temp!=3" style="text-align: center;margin-left:6%">
+		<el-progress type="dashboard" :percentage="percentage" :color="colors" />
+		<p class="title is-6">Đang thu thập dữ liệu!</p>
 	</div>
-  <el-row v-if="!process && temp < 5" style="text-align: center;">
+  <div v-if="!process && temp != 3" style="text-align: center;margin-left:6%">
 		<el-progress type="dashboard" :percentage="100" color="#5cb87a">
 			<el-button type="success" icon="Check" circle />
 		</el-progress>
-		<p class="subtitle is-6">Đã thu thập xong!</p>
-	</el-row>
+		<p class="title is-6">Đã thu thập xong!</p>
+	</div>
 
-	<el-row v-if="temp == 5" style="text-align: center;">
+	<div v-if="temp == 3" style="text-align: center;">
 		<el-progress type="dashboard" :percentage="100" status="exception"></el-progress>
-		<p class="subtitle is-6">Đã có lỗi xảy ra. Vui lòng thử lại sau!</p>
-	</el-row>	
+		<p class="title is-6">Đã có lỗi xảy ra. Vui lòng thử lại sau!</p>
+	</div>	
 
 </template>
 
@@ -38,43 +38,41 @@ import axios from 'axios';
 				{ color: '#1989fa', percentage: 80 },
 				{ color: '#6f7ad3', percentage: 100 },
 			],
+			data: [],
 		}
 	},
 
 	methods: {
 		async crawlData() {
-			let vnexpress = false
-			let vietnamnet = false
-			let dantri = false
-			let vietcetera = false
+			const urls: string[] = []
 			if(this.selectedSource.includes('Vietnamnet'))
-				vnexpress = true
+				urls.push(`https://239e-167-71-199-248.ngrok-free.app/api/v1/newspaper/post/crawl_vietnamnet/`)
 			if(this.selectedSource.includes('Vietcetera'))
-				vietnamnet = true
+				urls.push(`https://239e-167-71-199-248.ngrok-free.app/api/v1/newspaper/post/crawl_vietcetera/`)
 			if(this.selectedSource.includes('Dantri'))
-				dantri = true
+				urls.push(`https://239e-167-71-199-248.ngrok-free.app/api/v1/newspaper/post/crawl_dantri/`)
 			if(this.selectedSource.includes('Vnexpress'))	
-				vietcetera = true
+				urls.push(`https://239e-167-71-199-248.ngrok-free.app/api/v1/newspaper/post/crawl_vnexpress/`)
 
-			const params = {
-				vnexpress: vnexpress,
-				vietnamnet: vietnamnet,
-				dantri: dantri,
-				vietcetera: vietcetera
-			}
+			
+			while(this.process){
+				for (const url of urls) {
+					await axios.get(url).then(res => {
+						if(res){
+							this.data.push(res.data.data)
+						}
+					}).catch(err => {
+						this.temp++
+					});
+				}
 
-			const url = `https://239e-167-71-199-248.ngrok-free.app/api/v1/newspaper/post/crawl_data/`;
-			while(this.process && this.temp < 3){
-				await axios.get(url,{params}).then(res => {
-					if(res){
-						this.process = false
-						console.log(res.data)
-						this.$emit('data-crawl', res.data);
-					}
-				}).catch(err => {
-					this.temp++
-				});
-				if(!this.process) break;
+				if(this.data.length != 0){
+					this.process = false
+					this.$emit('data-crawl', this.data);
+					this.$emit('status', this.process);
+				}
+
+				if(!this.process || this.temp == 3) break;
 			}
 		},
 	},
@@ -87,15 +85,6 @@ import axios from 'axios';
 
 	created() {
 		this.crawlData();
-		if(this.selectedSource.length == 4)
-			this.span = 6
-		else if (this.selectedSource.length == 3)
-			this.span = 8
-		else if (this.selectedSource.length == 2)
-			this.span = 12
-		else
-			this.span = 24
-
 		this.$emit('status', this.process);
 	},
 })
