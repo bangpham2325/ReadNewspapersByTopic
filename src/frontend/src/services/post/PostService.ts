@@ -1,5 +1,4 @@
 import {BaseService} from "@/services/BaseService";
-import qs from 'qs';
 
 class PostService extends BaseService {
   get entity() {

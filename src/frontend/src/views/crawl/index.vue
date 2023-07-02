@@ -1,5 +1,4 @@
 <template>
-	<p>{{data}} - {{step}}</p>
 	<h1 class="title is-3 my-5" style="margin-left:7%;">Thu thập bài báo</h1>
   <el-steps :active="step" align-center finish-status="success" class="mr-3">
     <el-step title="Chọn nguồn" description="Lựa chọn trang website" />

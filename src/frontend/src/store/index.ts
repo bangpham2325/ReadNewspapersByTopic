@@ -5,6 +5,7 @@ import { topic } from '@/store/modules/topic';
 import { rating } from './modules/rating';
 import { post } from './modules/post';
 import { discussion } from './modules/discussion';
+import { report } from './modules/report';
 
 import createPersistedState from "vuex-persistedstate";
 
@@ -28,6 +29,7 @@ export default createStore({
     topic,
     rating,
     post,
-    discussion
+    discussion,
+    report
   }
 })
