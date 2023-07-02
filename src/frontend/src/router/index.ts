@@ -20,6 +20,7 @@ import AddPost from "@/views/post/add/index.vue";
 import EditPost from "@/views/post/edit/index.vue";
 import ChangePassword from "@/views/change_password/index.vue";
 import CrawlPage from "@/views/crawl/index.vue";
+import ReportPage from "@/views/report/index.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -117,6 +118,11 @@ const routes: Array<RouteRecordRaw> = [
         component: ChangePassword,
       },
     ]
+  },
+  {
+    path: "/report",
+    name: "report",
+    component: ReportPage,
   },
   {
     path: "/category",
