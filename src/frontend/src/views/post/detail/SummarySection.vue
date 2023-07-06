@@ -17,7 +17,7 @@
 			</el-tooltip>
 		</el-col>
 		<el-col :span="12">
-			<el-row class="is-flex is-justify-content-right" v-if="this.userInfo.role == 'ADMIN'">
+			<el-row class="is-flex is-justify-content-right" v-if="this.userInfo.role == 'ADMIN' || this.userInfo.role == 'AUTHOR'">
 				<el-tag v-if="postDetail.status == 'DRAFT'" type="info" effect="dark" size="large">{{ postDetail?.status
 				}}</el-tag>
 				<el-tag v-else-if="postDetail.status == 'PENDING'" type="warning" effect="dark" size="large">{{
