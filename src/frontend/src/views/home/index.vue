@@ -80,8 +80,8 @@
 
               <el-row>
                 <el-col :span="12">
-                  <el-button type="text" icon="Star" style="color:black;padding:0 !important" size="large" class="title is-6 mt-1" v-if="post.avg_rating != null">{{ post.avg_rating }}</el-button>
-                  <el-button type="text" icon="Star" style="color:black;padding:0 !important" size="large" class="title is-6 mt-1" v-else>0</el-button>
+                  <el-button type="text" icon="Star" style="color:black;padding:0 !important" size="large" class="title is-6 mt-1" v-if="post.avg_rating != null">{{ post.avg_rating }}/5</el-button>
+                  <el-button type="text" icon="Star" style="color:black;padding:0 !important" size="large" class="title is-6 mt-1" v-else>0/5</el-button>
                 </el-col>
                 <el-col :span="12">
                   <el-row class="is-flex is-justify-content-right">
@@ -127,8 +127,8 @@
 
               <el-row>
                 <el-col :span="12">
-                  <el-button type="text" icon="Star" style="color:black;padding:0 !important" size="large" class="title is-6 mt-1" v-if="post.avg_rating != null">{{ post.avg_rating }}</el-button>
-                  <el-button type="text" icon="Star" style="color:black;padding:0 !important" size="large" class="title is-6 mt-1" v-else>0</el-button>
+                  <el-button type="text" icon="Star" style="color:black;padding:0 !important" size="large" class="title is-6 mt-1" v-if="post.avg_rating != null">{{ post.avg_rating }}/5</el-button>
+                  <el-button type="text" icon="Star" style="color:black;padding:0 !important" size="large" class="title is-6 mt-1" v-else>0/5</el-button>
                 </el-col>
                 <el-col :span="12">
                   <el-row class="is-flex is-justify-content-right">
@@ -136,7 +136,6 @@
                   </el-row>
                 </el-col>
               </el-row>
-
             </div>
           </div>
         </div>
