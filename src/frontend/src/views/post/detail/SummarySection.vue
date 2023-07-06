@@ -4,7 +4,7 @@
 			viết</button>
 		<button v-if="userInfo?.id === postDetail.user?.id && postDetail.status == 'PENDING'" class="button is-dark ml-2"
 		@click="statusPost('DRAFT')">Hủy đăng bài viết</button>
-		<button v-if="userInfo?.role === 'ADMIN' && postDetail.status == 'PENDING'" class="button is-dark"
+		<button v-if="userInfo?.role === 'ADMIN' && (postDetail.status == 'PENDING' || postDetail.status == 'DRAFT')" class="button is-success"
 			@click="statusPost('PUBLISHED')">Đăng bài viết</button>
 		<button v-if="userInfo?.role === 'ADMIN'" class="button is-danger ml-2"
 			@click="deletePost">Xóa bài viết</button>
@@ -20,7 +20,7 @@
 			<el-row class="is-flex is-justify-content-right" v-if="this.userInfo.role == 'ADMIN'">
 				<el-tag v-if="postDetail.status == 'DRAFT'" type="info" effect="dark" size="large">{{ postDetail?.status
 				}}</el-tag>
-				<el-tag v-else-if="postDetail.status == 'PENDING'" type="primary" effect="dark" size="large">{{
+				<el-tag v-else-if="postDetail.status == 'PENDING'" type="warning" effect="dark" size="large">{{
 					postDetail?.status }}</el-tag>
 				<el-tag v-else type="success" effect="dark" size="large">{{ postDetail?.status }}</el-tag>
 			</el-row>
