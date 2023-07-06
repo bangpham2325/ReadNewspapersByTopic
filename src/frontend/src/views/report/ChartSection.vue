@@ -76,6 +76,7 @@
       labels: ['Chính Trị Xã Hội', 'Đời Sống', 'Khoa học', 'Kinh doanh', 'Pháp luật', 'Sức khỏe', 'Thế giới', 'Thể thao', 'Văn hóa', 'Vi tính'],
       datasets: [
         {
+          label: 'Số bài viết',
           backgroundColor: '#008394',
           borderRadius: '4',
           data: category_report
@@ -107,7 +108,7 @@ ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale)
   data() {
     return {
       monthOptions: [1,2,3,4,5,6,7,8,9,10,11,12],
-      _month: this.month,
+      _month: 1,
       _year: this.year,
       width: 400,
       height: 100,
