@@ -1,25 +1,26 @@
 <template>
   <div v-if="postCommendation.length != 0">
     <h2 class="title is-2 my-6">ĐỪNG BỎ LỠ</h2>
-
-    <el-carousel :interval="10000" type="card" height="300px" v-if="postCommendation.length >= 3">
-      <el-carousel-item v-for="item in postCommendation" :key="item">
-        <div class="carousel-item-container" @click="detailPost(item.slug)">
-          <img :src="item.thumbnail" :alt="item.title" />
-          <h3 class="title is-6 mt-4">{{ item.title }}</h3>
-        </div>
-      </el-carousel-item>
-    </el-carousel>
-
-    <el-carousel :interval="10000" arrow="always" height="330px" v-else>
-      <el-carousel-item v-for="item in postCommendation" :key="item">
-        <div class="carousel-item-container" style="display: flex;flex-direction: column;align-items: center;"
-          @click="detailPost(item.slug)">
-          <img :src="item.thumbnail" :alt="item.title" />
-          <h3 class="title is-6 mt-4">{{ item.title }}</h3>
-        </div>
-      </el-carousel-item>
-    </el-carousel>
+    <div class="carousel-container">
+      <el-carousel :interval="5000" arrow="always" height="300" >
+        <el-carousel-item v-for="(chunk, index) in postChunks" :key="index">
+          <div class="tile is-ancestor carousel-item">
+              <div v-for="post in chunk" :key="post.id">
+                <div class="tile is-parent" @click="detailPost(post.slug)">
+                  <div class="tile is-child box card" style="min-height:280px">
+                    <div class="card-image">
+                      <figure class="image is-3by2">
+                        <img :src="post.thumbnail" :alt="post.title" alt="Placeholder image">
+                      </figure>
+                      <h3 class="title is-6 mt-4">{{ post.title }}</h3>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </el-carousel-item>
+      </el-carousel>
+    </div>
   </div>
 </template>
 
@@ -32,7 +33,7 @@ import { ElMessage } from "element-plus";
 @Options({
   data() {
     return {
-      postCommendation: [] as any
+      postCommendation: [] as any,
     }
   },
 
@@ -53,6 +54,17 @@ import { ElMessage } from "element-plus";
     },
   },
 
+  computed: {
+    postChunks() {
+      const chunks = [];
+      const postsCopy = [...this.postCommendation];
+      while (postsCopy.length) {
+        chunks.push(postsCopy.splice(0, 3));
+      }
+      return chunks;
+    }
+  },
+
   async created() {
     await this.getPostRecommendation()
   },
@@ -64,19 +76,15 @@ export default class RecommendationSection extends Vue {
 </script>
 
 <style scoped>
-.el-carousel__item h3 {
-  opacity: 0.75;
-  margin: 0;
-  text-align: center;
-  position: absolute;
-  top: 80%;
-  color: white;
-  background-color: rgba(0, 0, 0, 0.9);
-  padding: 5px 10px;
+.carousel-item {
+  display: flex;
+  justify-content: space-between;
 }
 
-.carousel-item-container {
-  position: relative;
+.tile.is-ancestor{
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 10px;
 }
 
 </style>
