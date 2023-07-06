@@ -1,11 +1,11 @@
 <template>
 	<div v-loading="loading">
-		<h1 class="title is-2">Đã lưu</h1>
+		<h1 class="title is-2 mt-3">Đã lưu</h1>
 
 		<div class="card mb-6" v-for="post in posts">
 			<el-row @click="detailPost(post.slug)">
 				<el-col :span="6">
-					<figure class="image is-3by2" style="height:100%;">
+					<figure class="image is-3by2" style="height:auto;">
 						<img :src=post.thumbnail alt="Placeholder image">
 					</figure>
 				</el-col>
@@ -13,15 +13,15 @@
 				<el-col :span="18">
 					<div class="card-content">
 						<p class="title is-5" style="color:#00773e">{{ post.category.title }}</p>
-						<h2 class="title is-3">{{ post.title }}</h2>
-						<p class="subtitle is-5 mt-1" style="color:#808080">{{ post.summary }}</p>
+						<h2 class="title is-4 mb-3">{{ post.title }}</h2>
+						<p class="subtitle is-6 mt-1" style="color:#808080">{{ post.summary }}</p>
 
 						<el-row>
-							<el-avatar :size="60">
+							<el-avatar :size="45">
 								<img
 									src="https://img.vietcetera.com/uploads/avatar-images/12-apr-2023/vu-hoang-long-1681282620604-160x160.jpg" />
 							</el-avatar>
-							<p class="title is-5 mt-4 ml-4">{{ post.author }} - {{ post.publish_date }}</p>
+							<p class="title is-6 mt-4 ml-4">{{ post.author }} - {{ post.publish_date }}</p>
 						</el-row>
 					</div>
 				</el-col>
