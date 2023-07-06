@@ -67,9 +67,14 @@
           ]
       }"
     />
-  
+    <div v-if="bar_loading && month" v-loading="bar_loading" class="progress" style="min-height: 100px">
+      <div class="progress-bar is-primary is-size-7" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">
+        Loading...
+      </div>
+    </div>
+
     <Bar
-    v-else
+    v-if="!bar_loading && month"
     :width="width"
     :height="height"
     :data="{
@@ -108,11 +113,22 @@ ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale)
   data() {
     return {
       monthOptions: [1,2,3,4,5,6,7,8,9,10,11,12],
-      _month: 1,
+      _month: this.month,
       _year: this.year,
       width: 400,
       height: 100,
-      yearOptions: []
+      yearOptions: [],
+      bar_loading: true,
+    }
+  },
+  watch: {
+    category_report: {
+      handler(newValue){
+        if(newValue)
+          this.bar_loading = false
+      },
+      immediate: false,
+      deep: true
     }
   },
   created() {
