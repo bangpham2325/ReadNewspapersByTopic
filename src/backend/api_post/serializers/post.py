@@ -140,7 +140,7 @@ class PostSerializer(serializers.ModelSerializer):
 class PostShortSerializer(serializers.ModelSerializer):
     category = CategorySerializer(required=True)
     source = SourceSerializer(required=True)
-    avg_rating = serializers.IntegerField()  # Add SerializerMethodField for average rating
+    avg_rating = serializers.FloatField()  # Add SerializerMethodField for average rating
     publish_date = PublishDateField()
     user = UserShortSerializer(required=False)
 
