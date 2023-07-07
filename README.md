@@ -5,14 +5,15 @@
 + **Lê Thị Thu Hương : 102190217**
 
 ## Requirements
-Mysql Client 3.5
-Python 3.7 or later
+Mysql Client 2.1
+Python 3.8 or later
+Mysql Server 8.0
 
 # For installing project environment
 
 ## Run following scripts in your terminal:
 
-**Create virtual env:**
+**Create virtual env in windows:**
 ```
 python -m venv env
 ```
@@ -27,12 +28,34 @@ env\Scripts\activate
 env\Scripts\deactivate
 ```
 
+**Create virtual env in ubuntu:**
+```
+python3.8 -m venv env
+```
+
+**Activate virtual env:**
+```
+source env/bin/activate
+```
+
+*(option) If you want to deactivate:*
+```
+deactivate
+```
+
 **Install some requirements:**
 ```
 pip install -r requirements.txt
 ```
 
 @for more information: [link](https://www.tabnine.com/blog/how-to-create-django-projects-in-pycharm-community-edition/)
+
+**Create file .env the same .envexample**
+
+**Install some requirements:**
+```
+pip install -r requirements.txt
+```
 
 # Migration
 **Make migration file on changes:**
@@ -45,31 +68,30 @@ python manage.py makemigrations
 python manage.py migrate
 ```
 
-**Creating a empty migration file manually:**
+**Run server backend:**
 ```
-python manage.py makemigrations <app> --empty
+python manage.py runserver
 ```
 
-#Django
 
-**Creating a new app (module):**
+**Run backend using docker:**
 ```
-python manage.py startapp *module_name*
+docker pull bangpham2325/backend-image:latest
+docker-compose up -d
 ```
+
 
 **Creating a superuser:**
 ```
 python manage.py createsuperuser
 ```
 
-# Dump notes
-
-**Create new app:**
+**Collect static files (only need for `production`):** 
 ```
-python manage.py startapp hello
+python manage.py collectstatic --settings=core.settings
 ```
 
-**
+# Run Front-end
    
 ### Build frontend
 
@@ -93,17 +115,5 @@ python manage.py startapp hello
      npm run watch
      ```
 
-   Collect static files (only need for `production`):
-     ```
-     python manage.py collectstatic --settings=core.settings.production
-     ```
 
-7. Start Server Its recommended running the `development` mode only on your local PC. If you would like to run
-   the `production` mode, you should use docker / use proxy server to host static resource / or add `--insecure`
-   parameter to force serving of static files with the staticfiles app (More
-   detail [here](https://docs.djangoproject.com/en/3.2/ref/contrib/staticfiles/)).
-     ```
-     cd src
-     python3 manage.py runserver --settings=core.settings.development
-     ```
-   
+
