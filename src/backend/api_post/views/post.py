@@ -1,7 +1,7 @@
 import api_post
 from api_base.views import BaseViewSet
 from api_post.models import Posts
-from api_post.serializers import PostSerializer, PostShortSerializer, PostLikeSerializer, PostRatingCommentSerializer
+from api_post.serializers import PostSerializer, PostShortSerializer, PostLikeSerializer, PostRatingCommentSerializer, PostShortManagementSerializer
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, IsAdminUser, AllowAny
@@ -83,7 +83,7 @@ class PostViewSet(BaseViewSet):
         serializer.update({"post_likes": self.get_serializer(res_data, many=True).data})
         return Response(serializer, status=status.HTTP_200_OK)
 
-    @action(methods=[HttpMethod.GET], detail=False, url_path="management", serializer_class=PostShortSerializer)
+    @action(methods=[HttpMethod.GET], detail=False, url_path="management", serializer_class=PostShortManagementSerializer)
     def get_post_management(self, request, *args, **kwargs):
         user_obj = request.user.user
         params = request.query_params
@@ -180,7 +180,7 @@ class PostViewSet(BaseViewSet):
         serializer = self.get_serializer(res_data, many=True).data
         return Response(serializer, status=status.HTTP_200_OK)
 
-    @action(methods=[HttpMethod.GET], detail=False, url_path="management_author", serializer_class=PostShortSerializer)
+    @action(methods=[HttpMethod.GET], detail=False, url_path="management_author", serializer_class=PostShortManagementSerializer)
     def get_post_management_by_author(self, request, *args, **kwargs):
         user_obj = request.user.user
         params = request.query_params

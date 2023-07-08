@@ -201,3 +201,47 @@ class PostRatingCommentSerializer(serializers.ModelSerializer):
             data['post_rating'] = sorted(data['post_rating'], key=lambda d: d['created_at'], reverse=True)
 
         return data
+
+
+class PostShortManagementSerializer(serializers.ModelSerializer):
+    source = SourceSerializer(required=False)
+    category = CategorySerializer(read_only=True, required=False)
+    contents = ContentSerializer(many=True, required=False)
+    keywords = KeywordSerializer(many=True, required=False)
+    publish_date = PublishDateField(required=False)
+    user = UserShortSerializer(required=False)
+
+    class Meta:
+        model = Posts
+        fields = [
+            "id",
+            "title",
+            "slug",
+            "thumbnail",
+            "category",
+            "source",
+            "likes",
+            "summary",
+            "author",
+            "publish_date",
+            "status",
+            "likes",
+            "contents",
+            "keywords",
+            "views",
+            "user",
+            "description"
+        ]
+        extra_kwargs = {
+            'thumbnail': {'required': False},
+            'source': {'required': False},
+            'summary': {'required': False},
+            'status': {'required': False},
+            'publish_date': {'required': False},
+            'description': {'required': False},
+        }
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        data["contents"].sort(key=lambda x: x["index"])
+        return data

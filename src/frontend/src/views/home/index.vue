@@ -35,8 +35,8 @@
       <div class="tile is-5 is-vertical is-parent">
         <div class="tile is-child box card" v-for="post in postLikes" style="display: flex;align-items: center">
           <el-row @click="detailPost(post.slug)">
-            <el-col :span="6" class="mr-5" style="background:#f1f1f1;display: flex;align-items: center">
-              <figure class="image mt-3" style="width: 100%; height:auto">
+            <el-col :span="6" class="mr-5" style="display: flex;align-items: center">
+              <figure class="image" style="width: 100%; height:auto; margin: 0">
                 <img :src=post.thumbnail alt="Placeholder image">
               </figure>
             </el-col>
@@ -98,7 +98,7 @@
     <h1 class="title is-3 is-flex mt-6">Bài viết được yêu thích</h1>
 
     <div class="tile is-ancestor layout-post">
-      <template v-for="post in postByLibrary.post_favourite">
+      <template v-for="post in postByLibrary.post_likes">
         <div class="tile is-parent" @click="detailPost(post.slug)">
           <div class="tile is-child box card">
             <div class="card-image">
@@ -175,9 +175,9 @@ import Posts from '@/types/post/PostItem';
       let data = await this.FETCH_POST_LIBRARY()
       if (data) {
         this.postByLibrary = data
-        this.postHot = this.postByLibrary.post_likes[0]
+        this.postHot = this.postByLibrary.post_favourite[0]
         for(let i = 1; i < 4; i++){
-          this.postLikes[i-1] = this.postByLibrary.post_likes[i]
+          this.postLikes[i-1] = this.postByLibrary.post_favourite[i]
         }
       }
       this.SET_LOADING(false)

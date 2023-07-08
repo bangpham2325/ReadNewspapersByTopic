@@ -61,7 +61,7 @@
                     <el-avatar :size="40" class="mt-1">
                       <img :src="post.user.avatar">
                     </el-avatar>
-                    <p class="title is-6 mt-4 ml-4" style="color:#00773e;">{{ post?.author }}</p>
+                    <p class="title is-6 mt-4 ml-4" style="color:#00773e;">{{ post?.author ? post.author : post.user.full_name }}</p>
                   </el-row>
 
                   <el-row v-else>

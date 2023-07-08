@@ -10,11 +10,16 @@ from django.db.models import Avg
 from api_base.services import CloudinaryService
 from django.db.models.functions import ExtractMonth
 from django.db.models import Count
+from django.utils import timezone
 
 MONTH_LIST = ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6', 'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10',
               'Tháng 11', 'Tháng 12']
 
+
 class PostService(BaseService):
+    def __init__(self):
+        self.month = timezone.now().month
+
     @classmethod
     def create_post(cls, data):
         keyword = data.pop('keywords') if "keywords" in data else []
@@ -77,30 +82,37 @@ class PostService(BaseService):
     def get_list_post_by_favourite(cls, category_ids=None):
         ft = Q(status=PostStatus.PUBLISHED.value)
         ft &= Q(user__isnull=True)
+        ft &= Q(publish_date__month=cls().month)
         if category_ids is not None:
             ft &= Q(category__id__in=category_ids)
         posts = Posts.objects.prefetch_related(
-            'category', 'user', 'source', 'post_rating').annotate(avg_rating=Avg('post_rating__star_rating')).filter(ft).order_by('-avg_rating')[:8]
+            'category', 'user', 'source', 'post_rating').annotate(avg_rating=Avg('post_rating__star_rating'),
+                                                                  num_ratings=Count('post_rating')).filter(ft) \
+            .order_by('-avg_rating', '-num_ratings')[:8]
         return posts
 
     @classmethod
     def get_list_post_by_views(cls, category_ids=None):
         ft = Q(status=PostStatus.PUBLISHED.value)
         ft &= Q(user__isnull=True)
+        ft &= Q(publish_date__month=cls().month)
         if category_ids is not None:
             ft &= Q(category__id__in=category_ids)
         posts = Posts.objects.filter(ft).prefetch_related(
-            'category', 'user', 'source', 'post_rating').annotate(avg_rating=Avg('post_rating__star_rating')).order_by('-views')[:8]
+            'category', 'user', 'source', 'post_rating').annotate(avg_rating=Avg('post_rating__star_rating')).order_by(
+            '-views')[:8]
         return posts
 
     @classmethod
     def get_list_post_by_likes(cls, category_ids=None):
         ft = Q(status=PostStatus.PUBLISHED.value)
         ft &= Q(user__isnull=True)
+        ft &= Q(publish_date__month=cls().month)
         if category_ids is not None:
             ft &= Q(category__id__in=category_ids)
         posts = Posts.objects.prefetch_related(
-            'category', 'user', 'source', 'post_rating').annotate(avg_rating=Avg('post_rating__star_rating')).filter(ft).order_by('-likes')[:8]
+            'category', 'user', 'source', 'post_rating').annotate(avg_rating=Avg('post_rating__star_rating')).filter(
+            ft).order_by('-likes')[:8]
         return posts
 
     @classmethod
@@ -117,7 +129,8 @@ class PostService(BaseService):
             ft &= (Q(author__contains=search_string) | Q(category__title__contains=search_string) | Q(
                 title_lower__contains=str(search_string).strip().lower()))
         posts = Posts.objects.prefetch_related(
-            'category', 'user', 'source', 'post_rating').annotate(avg_rating=Avg('post_rating__star_rating')).filter(ft).order_by('-publish_date')[:50]
+            'category', 'user', 'source', 'post_rating').annotate(avg_rating=Avg('post_rating__star_rating')).filter(
+            ft).order_by('-publish_date')[:50]
         return posts
 
     @classmethod
@@ -125,7 +138,8 @@ class PostService(BaseService):
         ft = Q(status=PostStatus.PUBLISHED.value)
         ft &= Q(user__id=user_id)
         posts = Posts.objects.prefetch_related(
-            'category', 'user', 'source', 'post_rating').annotate(avg_rating=Avg('post_rating__star_rating')).filter(ft).order_by('-publish_date')
+            'category', 'user', 'source', 'post_rating').annotate(avg_rating=Avg('post_rating__star_rating')).filter(
+            ft).order_by('-publish_date')
         return posts
 
     @classmethod
@@ -146,7 +160,8 @@ class PostService(BaseService):
         if params.get('start_date') and params.get('end_date'):
             ft &= Q(publish_date__range=[params.get('start_date'), params.get('end_date')])
         posts = Posts.objects.annotate(title_lower=Lower('title')).filter(ft).prefetch_related(
-            'category', 'user', 'source', 'post_rating').annotate(avg_rating=Avg("post_rating__star_rating")).order_by('-created_at')
+            'category', 'user', 'source', 'post_rating').annotate(avg_rating=Avg("post_rating__star_rating")).order_by(
+            '-created_at')
         return posts
 
     @classmethod
@@ -163,7 +178,8 @@ class PostService(BaseService):
         if params.get('start_date') and params.get('end_date'):
             ft &= Q(publish_date__range=[params.get('start_date'), params.get('end_date')])
         posts = Posts.objects.annotate(title_lower=Lower('title')).filter(ft).prefetch_related(
-            'category', 'user', 'source', 'post_rating').annotate(avg_rating=Avg("post_rating__star_rating")).order_by('-created_at')
+            'category', 'user', 'source', 'post_rating').annotate(avg_rating=Avg("post_rating__star_rating")).order_by(
+            '-created_at')
         return posts
 
     @classmethod
@@ -182,7 +198,8 @@ class PostService(BaseService):
         if params.get('start_date') and params.get('end_date'):
             ft &= Q(publish_date__range=[params.get('start_date'), params.get('end_date')])
         posts = Posts.objects.annotate(title_lower=Lower('title')).filter(ft).prefetch_related(
-            'category', 'user', 'source', 'post_rating').annotate(avg_rating=Avg("post_rating__star_rating")).order_by('-created_at')
+            'category', 'user', 'source', 'post_rating').annotate(avg_rating=Avg("post_rating__star_rating")).order_by(
+            '-created_at')
         return posts
 
     @classmethod
@@ -202,7 +219,8 @@ class PostService(BaseService):
         if params.get('start_date') and params.get('end_date'):
             ft &= Q(publish_date__range=[params.get('start_date'), params.get('end_date')])
         posts = Posts.objects.annotate(title_lower=Lower('title')).filter(ft).prefetch_related(
-            'category', 'user', 'source', 'post_rating').annotate(avg_rating=Avg("post_rating__star_rating")).order_by('-created_at')[:50]
+            'category', 'user', 'source', 'post_rating').annotate(avg_rating=Avg("post_rating__star_rating")).order_by(
+            '-created_at')[:50]
         return posts
 
     @classmethod
@@ -228,7 +246,8 @@ class PostService(BaseService):
         if params.get('start_date') and params.get('end_date'):
             ft &= Q(publish_date__range=[params.get('start_date'), params.get('end_date')])
         posts = Posts.objects.annotate(title_lower=Lower('title')).filter(ft).prefetch_related(
-            'category', 'user', 'source', 'post_rating').annotate(avg_rating=Avg("post_rating__star_rating")).order_by('-created_at')
+            'category', 'user', 'source', 'post_rating').annotate(avg_rating=Avg("post_rating__star_rating")).order_by(
+            '-created_at')
         if params.getlist('categories'):
             topic_ids = params.getlist('categories')
             posts = posts.filter(category__id__in=topic_ids)
@@ -245,7 +264,8 @@ class PostService(BaseService):
             current_month = int(month)
 
         # Lấy danh sách post theo category và tháng
-        posts = Posts.objects.filter(publish_date__month=current_month).values('category').annotate(count=Count('id')).order_by("category")
+        posts = Posts.objects.filter(publish_date__month=current_month).values('category').annotate(
+            count=Count('id')).order_by("category")
 
         # Tạo từ điển báo cáo post theo category
         post_report = {}
@@ -254,6 +274,6 @@ class PostService(BaseService):
             count = post_data['count'] if post_data else 0
             post_report[category.title] = count
 
-        post_reports[MONTH_LIST[current_month-1]] = post_report
+        post_reports[MONTH_LIST[current_month - 1]] = post_report
 
         return post_reports
