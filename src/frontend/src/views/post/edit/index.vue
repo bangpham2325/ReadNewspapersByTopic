@@ -310,6 +310,18 @@ export default class EditPost extends Vue {
 </script>
 
 <style lang="scss" scoped>
+:deep(.ql-align-center){
+	text-align: center;
+}
+
+:deep(.ql-align-right){
+	text-align: right;
+}
+
+:deep(.img-content p img){
+  display: block;
+  margin: auto auto;
+}
 .input-field {
 	border: none;
 	width: 100%;
