@@ -57,7 +57,7 @@
 
 		<el-col :span=" 12 ">
 			<el-row class="is-flex is-justify-content-right">
-				<el-button v-if="userInfo?.id === postDetail.user?.id" type="text" icon="Connection" style="color:#00773e;font-size: 17px;" size="large"
+				<el-button v-if="postDetail.source" type="text" icon="Connection" style="color:#00773e;font-size: 17px;" size="large"
 					@click=" openSource ">Nguồn</el-button>
 				<el-button type="text" icon="View" style="color:#00773e;" size="large">{{ postDetail.views }}</el-button>
 				<el-button type="text" icon="ChatLineRound" style="color:#00773e;" size="large">{{ postDetail.total_comment

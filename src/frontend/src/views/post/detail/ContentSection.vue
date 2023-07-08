@@ -42,4 +42,5 @@ export default class ContentSection extends Vue {
   height: 100%;
   object-fit: contain;
 }
+
 </style>
