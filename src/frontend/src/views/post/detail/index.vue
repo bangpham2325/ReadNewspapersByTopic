@@ -6,7 +6,7 @@
     <div>
       <ContentSection v-if="!postDetail.description" :contents="postDetail.contents"></ContentSection>
       <div v-else>
-        <div v-html="postDetail.description"></div>
+        <div v-html="postDetail.description" class="img-content"></div>
       </div>
     </div>
     <div>
@@ -109,5 +109,18 @@ export default class PostDetailPage extends Vue {
 
 :deep(.el-tabs__item){
   font-size: 20px !important;
+}
+
+:deep(.ql-align-center){
+	text-align: center;
+}
+
+:deep(.ql-align-right){
+	text-align: right;
+}
+
+:deep(.img-content p img){
+  display: block;
+  margin: auto auto;
 }
 </style>
