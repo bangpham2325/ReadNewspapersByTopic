@@ -119,171 +119,231 @@
 				@click="deletePost">Xóa bài viết</button>
 			</div>
 	</div>
-	</template>
+	<div v-loading="loading">
+		<el-affix position="bottom" :offset="70">
+			<div class="is-flex is-justify-content-right">
+				<el-tooltip content="Preview" placement="top-start">
+					<el-button :disabled="!title || !selectedCate.id" type="info" icon="Tickets" circle @click="previewPost=true" size="large"/>
+				</el-tooltip>
+			</div>
+		</el-affix>
 	
-	<script lang="ts">
-	import {Options, Vue} from "vue-class-component";
-	import TextEditor from "@/components/TextEditor.vue";
-	import {mapActions, mapMutations} from "vuex";
-	import { ActionTypes } from '@/types/store/ActionTypes';
-	import CoverImage from "@/components/CoverImage.vue";
-	import { ElMessage } from "element-plus";
+		<el-dialog v-model="previewPost" width="70%">
+			<div style="margin-bottom:50px;">
+				<el-row>
+					<el-col :span="12">
+						<el-tooltip content="0 phút trước" placement="top-start">
+							<p class="title is-6" style="color:#808080">0 phút trước</p>
+						</el-tooltip>
+					</el-col>
+					<el-col :span="12">
+						<el-row class="is-flex is-justify-content-right">
+							<el-tag type="info" effect="dark" size="large">DRAFT</el-tag>
+						</el-row>
+					</el-col>
+				</el-row>
+				<p class="title is-5" style="color:#00773e">{{selectedCate.title }}</p>
+				<h1 class="title is-2">{{ title }}</h1>
+				<p class="subtitle is-5 mt-1" style="color:#808080">{{ summary }}</p>
+				<el-row>
+					<el-col :span="12">
+						<el-row>
+							<el-avatar :size="50">
+								<img :src="userInfo?.avatar"
+									style="object-fit: contain;">
+							</el-avatar>
+							<el-tooltip content="Bài viết của tác giả" placement="top-start">
+								<a class="title is-6 mt-4 ml-4" style="color:#00773e;">
+								{{ userInfo?.full_name }}
+								</a>
+							</el-tooltip>
+						</el-row>
+					</el-col>
+				</el-row>
+			</div>
 	
-	@Options({
-		components: {
-			TextEditor,
-			CoverImage
-		},
+			<div>
+				<div v-html="content"></div>
+			</div>
+			<div>
+				<el-row>
+					<el-col :span="12">
+						<el-tag class="mr-4" size="large" v-for="tag in hashTag">{{ tag.keyword }}</el-tag>
+					</el-col>
+				</el-row>
+			</div>
+		</el-dialog>
+	</div>
+</template>
 	
-		data() {
-			return {
+<script lang="ts">
+import {Options, Vue} from "vue-class-component";
+import TextEditor from "@/components/TextEditor.vue";
+import {mapActions, mapMutations, mapGetters} from "vuex";
+import { ActionTypes } from '@/types/store/ActionTypes';
+import CoverImage from "@/components/CoverImage.vue";
+import { ElMessage } from "element-plus";
+
+@Options({
+	components: {
+		TextEditor,
+		CoverImage
+	},
+
+	data() {
+		return {
+			id: '',
+			category: [],
+			title: '',
+			summary: '',
+			content: '',
+			selectedCate: {
 				id: '',
-				category: [],
-				title: '',
-				summary: '',
-				content: '',
-				selectedCate: {
-					id: '',
-					title: 'Click để chọn'},
-				inputValue: "",
-				hashTag: [],
-				inputVisible: false,
-				is_freeze: false,
-				expandEditor: false,
-				loading: true,
-				image: "",
-				showUpload: true,
-				background: '',
+				title: 'Click để chọn'},
+			inputValue: "",
+			hashTag: [],
+			inputVisible: false,
+			is_freeze: false,
+			expandEditor: false,
+			loading: true,
+			image: "",
+			showUpload: true,
+			background: '',
+			previewPost: false,
+		}
+	},
+
+	methods: {
+		...mapMutations(["SET_LOADING"]),
+		...mapActions("topic", [ActionTypes.FETCH_TOPICS]),
+		...mapActions("post", [ActionTypes.FETCH_POST_DETAIL, ActionTypes.UPDATE_USER_POST, ActionTypes.DELETE_POST, ActionTypes.UPDATE_STATUS_POST]),
+
+		async getPostDetail(){
+		this.SET_LOADING(true)
+		let data = await this.FETCH_POST_DETAIL(this.$route.params.slug)
+		if (data) {
+			this.id = data.id
+			this.title = data.title
+			this.content = data.description
+			this.selectedCate = data.category
+			this.summary = data.summary
+			this.hashTag = data.keywords
+			this.image = data.thumbnail
+		}
+		this.SET_LOADING(false)
+	},
+
+		async getCategory(){
+			this.SET_LOADING(true)
+			let data = await this.FETCH_TOPICS()
+			if (data) {
+				this.category = data.results
 			}
+			this.SET_LOADING(false)
 		},
-	
-		methods: {
-			...mapMutations(["SET_LOADING"]),
-			...mapActions("topic", [ActionTypes.FETCH_TOPICS]),
-			...mapActions("post", [ActionTypes.FETCH_POST_DETAIL, ActionTypes.UPDATE_USER_POST, ActionTypes.DELETE_POST, ActionTypes.UPDATE_STATUS_POST]),
 
-			async getPostDetail(){
-      this.SET_LOADING(true)
-      let data = await this.FETCH_POST_DETAIL(this.$route.params.slug)
-      if (data) {
-				this.id = data.id
-				this.title = data.title
-				this.content = data.description
-				this.selectedCate = data.category
-				this.summary = data.summary
-				this.hashTag = data.keywords
-				this.image = data.thumbnail
-      }
-      this.SET_LOADING(false)
-    },
-	
-			async getCategory(){
-				this.SET_LOADING(true)
-				let data = await this.FETCH_TOPICS()
-				if (data) {
-					this.category = data.results
-				}
-				this.SET_LOADING(false)
-			},
-	
-			async UserPost(type: string){
-				this.is_freeze = true
-				let status = 0
-				let formData = new FormData();
+		async UserPost(type: string){
+			this.is_freeze = true
+			let status = 0
+			let formData = new FormData();
 
-				formData.append("title", this.title);
-				formData.append("summary", this.summary);
-				formData.append("description", this.content);
-				formData.append("category_ids", this.selectedCate.id);
-				if(this.background)
-					formData.append("thumbnail", this.background?.raw)
-	
-				if(!this.selectedCate.id || !this.title){
-					if(!this.title)
-						ElMessage.warning('Vui lòng điền tiêu đề cho bài viết.')
-					if(!this.selectedCate.id)
-						ElMessage.warning('Vui lòng chọn thể loại cho bài viết.')
-					if(!this.background)
-						ElMessage.warning('Vui lòng tải ảnh nền cho bài viết.')
-				}
-				else{
-					if(type == 'SAVE'){
-						let res: any = await this.UPDATE_USER_POST({id: this.id, data: formData})
-						status = res.status
-					}
-					else {
-						let res = await this.UPDATE_STATUS_POST({ id: this.id, status: { status: 'PENDING' } })
-						status = res.status
-					}
-				}
-					
-				if(status == 201 || status == 200)
-					this.$router.push("/post/my-posts")
-	
-				this.is_freeze = false
-			},
-			async deletePost() {
-				let res = await this.DELETE_POST(this.id)
-				if (res.status == 204) {
-					ElMessage({
-						message: `Xóa bài viết thành công.`,
-						type: 'success',
-					})
-					this.$router.push('/post/management')
+			formData.append("title", this.title);
+			formData.append("summary", this.summary);
+			formData.append("description", this.content);
+			formData.append("category_ids", this.selectedCate.id);
+			if(this.background)
+				formData.append("thumbnail", this.background?.raw)
+
+			if(!this.selectedCate.id || !this.title){
+				if(!this.title)
+					ElMessage.warning('Vui lòng điền tiêu đề cho bài viết.')
+				if(!this.selectedCate.id)
+					ElMessage.warning('Vui lòng chọn thể loại cho bài viết.')
+				if(!this.background)
+					ElMessage.warning('Vui lòng tải ảnh nền cho bài viết.')
+			}
+			else{
+				if(type == 'SAVE'){
+					let res: any = await this.UPDATE_USER_POST({id: this.id, data: formData})
+					status = res.status
 				}
 				else {
-					ElMessage.error('Đã có lỗi xảy ra.')
+					let res = await this.UPDATE_STATUS_POST({ id: this.id, status: { status: 'PENDING' } })
+					status = res.status
 				}
-			},
+			}
+				
+			if(status == 201 || status == 200)
+				this.$router.push("/post/my-posts")
+
+			this.is_freeze = false
 		},
-	
-		async created() {
-			await this.getCategory()
-			await this.getPostDetail()
-			this.loading = false
+		async deletePost() {
+			let res = await this.DELETE_POST(this.id)
+			if (res.status == 204) {
+				ElMessage({
+					message: `Xóa bài viết thành công.`,
+					type: 'success',
+				})
+				this.$router.push('/post/management')
+			}
+			else {
+				ElMessage.error('Đã có lỗi xảy ra.')
+			}
 		},
-	})
-	
-	export default class EditPost extends Vue {
+	},
+
+	computed: {
+		...mapGetters("user", ["userInfo"]),
+	},
+
+	async created() {
+		await this.getCategory()
+		await this.getPostDetail()
+		this.loading = false
+	},
+})
+
+export default class EditPost extends Vue {
+}
+</script>
+
+<style lang="scss" scoped>
+.input-field {
+	border: none;
+	width: 100%;
+	background-color: transparent;
+	box-shadow: 0px 1px rgba(0, 0, 0, 0.2);
+	&:focus {
+		outline: none;
 	}
-	</script>
-	
-	<style lang="scss" scoped>
-	.input-field {
-		border: none;
-		width: 100%;
-		background-color: transparent;
-		box-shadow: 0px 1px rgba(0, 0, 0, 0.2);
-		&:focus {
-			outline: none;
-		}
-	}
-	
-	.form-layout{
-		padding: 0% 20% 0% 20%;
-	}
-	.expandEditor {
+}
+
+.form-layout{
+	padding: 0% 20% 0% 20%;
+}
+.expandEditor {
+	position: fixed;
+	top: -20px;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	margin: 0;
+	background-color: rgba(0, 0, 0, 0.5);
+	z-index: 1999;
+	transition: 0.3s all linear;
+
+	&__content {
 		position: fixed;
-		top: -20px;
-		left: 0;
-		right: 0;
-		bottom: 0;
-		margin: 0;
-		background-color: rgba(0, 0, 0, 0.5);
-		z-index: 1999;
-		transition: 0.3s all linear;
-	
-		&__content {
-			position: fixed;
-			top: 50%;
-			left: 50%;
-			z-index: 2000;
-			padding: 20px;
-			width: 90%;
-			background-color: white;
-			transform: translate(-50%, -50%);
-			border-radius: 20px;
-		}
+		top: 50%;
+		left: 50%;
+		z-index: 2000;
+		padding: 20px;
+		width: 90%;
+		background-color: white;
+		transform: translate(-50%, -50%);
+		border-radius: 20px;
 	}
-	
-	</style>
+}
+
+</style>

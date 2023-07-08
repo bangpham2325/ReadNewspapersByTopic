@@ -113,30 +113,75 @@
 		</el-timeline-item>
 	</el-timeline>
     
-    <div class="is-flex is-justify-content-space-between">
-      <button
-        class="button is-dark is-rounded"
-        @click.prevent="UserPost('ADD')"
-        :disabled="is_freeze">
-        <el-icon v-if="is_freeze" class="is-loading mr-2">
-          <Loading/>
-        </el-icon>
-        Lưu bài viết
-      </button>
-      <button
-        class="button is-success is-rounded"
-        @click.prevent="UserPost('PUBLISH')"
-        :disabled="is_freeze">
-        Đăng bài viết
-      </button>
-    </div>
+	<div class="is-flex is-justify-content-space-between">
+		<button
+			class="button is-dark is-rounded"
+			@click.prevent="UserPost('ADD')"
+			:disabled="is_freeze">
+			<el-icon v-if="is_freeze" class="is-loading mr-2">
+				<Loading/>
+			</el-icon>
+			Lưu bài viết
+		</button>
+		<button
+			class="button is-success is-rounded"
+			@click.prevent="UserPost('PUBLISH')"
+			:disabled="is_freeze">
+			Đăng bài viết
+		</button>
+	</div>
 </div>
+
+<div v-loading="loading">
+	<el-affix position="bottom" :offset="70">
+		<div class="is-flex is-justify-content-right">
+			<el-tooltip content="Preview" placement="top-start">
+				<el-button :disabled="!title || !selectedCate.id" type="info" icon="Tickets" circle @click="previewPost=true" size="large"/>
+			</el-tooltip>
+		</div>
+	</el-affix>
+
+	<el-dialog v-model="previewPost" width="70%">
+		<div style="margin-bottom:50px;">
+      <p class="title is-5" style="color:#00773e">{{selectedCate.title }}</p>
+			<h1 class="title is-2">{{ title }}</h1>
+			<p class="subtitle is-5 mt-1" style="color:#808080">{{ summary }}</p>
+			<el-row>
+				<el-col :span="12">
+					<el-row>
+						<el-avatar :size="50">
+							<img :src="userInfo.avatar"
+								style="object-fit: contain;">
+						</el-avatar>
+						<el-tooltip content="Bài viết của tác giả" placement="top-start">
+							<a class="title is-6 mt-4 ml-4" style="color:#00773e;">
+							{{ userInfo.full_name }}
+							</a>
+						</el-tooltip>
+					</el-row>
+				</el-col>
+			</el-row>
+		</div>
+
+    <div>
+      <div v-html="content"></div>
+    </div>
+    <div>
+      <el-row>
+				<el-col :span="12">
+					<el-tag class="mr-4" size="large" v-for="tag in hashTag">{{ tag.keyword }}</el-tag>
+				</el-col>
+			</el-row>
+    </div>
+	</el-dialog>
+</div>
+
 </template>
 
 <script lang="ts">
 import {Options, Vue} from "vue-class-component";
 import TextEditor from "@/components/TextEditor.vue";
-import {mapActions, mapMutations} from "vuex";
+import {mapActions, mapMutations, mapGetters} from "vuex";
 import { ActionTypes } from '@/types/store/ActionTypes';
 import CoverImage from "@/components/CoverImage.vue";
 import { ElMessage } from "element-plus";
@@ -144,7 +189,7 @@ import { ElMessage } from "element-plus";
 @Options({
 	components: {
     TextEditor,
-		CoverImage
+		CoverImage,
   },
 
 	data() {
@@ -164,6 +209,7 @@ import { ElMessage } from "element-plus";
 			loading: true,
 			image: "",
       background: null,
+			previewPost: false,
     }
 	},
 
@@ -233,6 +279,9 @@ import { ElMessage } from "element-plus";
 
 			this.is_freeze = false
 		}
+	},
+	computed: {
+		...mapGetters("user", ["userInfo"]),
 	},
 
 	async created() {
