@@ -43,6 +43,76 @@
                     <el-tag v-if="post.status == 'DRAFT'" type="info" effect="dark">{{ post?.status }}</el-tag>
                     <el-tag v-else-if="post.status == 'PENDING'" type="warning" effect="dark">{{ post?.status }}</el-tag>
                     <el-tag v-else type="success" effect="dark">{{ post?.status }}</el-tag>
+
+                    <el-popover :width="1200">
+                      <template #reference>
+                        <el-button icon="Tickets" text circle class="ml-2"></el-button>
+                      </template>
+                      <template #default>
+                        <div style="margin-bottom:50px;">
+                          <el-row>
+                            <el-col :span="12">
+                              <el-tooltip :content=post?.publish_date placement="top-start">
+                                <p class="title is-6" style="color:#808080">{{ post?.publish_date }}</p>
+                              </el-tooltip>
+                            </el-col>
+                            <el-col :span="12">
+                              <el-row class="is-flex is-justify-content-right">
+                                <el-tag v-if="post.status == 'DRAFT'" type="info" effect="dark">{{ post?.status }}</el-tag>
+                                <el-tag v-else-if="post.status == 'PENDING'" type="warning" effect="dark">{{ post?.status }}</el-tag>
+                                <el-tag v-else type="success" effect="dark">{{ post?.status }}</el-tag>
+                              </el-row>
+                            </el-col>
+                          </el-row>
+                          <p class="title is-6" style="color:#00773e">{{ post.category?.title ? post.category.title : "" }}</p>
+                          <h1 class="title is-3">{{ post?.title }}</h1>
+                          <p class="subtitle is-6 mt-1" style="color:#808080">{{ post?.summary }}</p>
+                          <el-row>
+                            <el-col :span="12">
+                              <el-row>
+                                <el-avatar :size="50">
+                                  <img :src="post.user ? post.user.avatar :'https://res.cloudinary.com/ddrpryfpq/image/upload/v1686479489/preview_unebjy.png'">
+                                </el-avatar>
+                                <p class="title is-6 mt-4 ml-4" style="color:#00773e;">{{ post?.author }}</p>
+                              </el-row>
+                            </el-col>
+                          </el-row>
+                        </div>
+                        
+                        <div v-if="!post.description" v-for="content in post.contents">
+                          <h2 class="title is-4">{{ content.title }}</h2>
+                      
+                          <div v-if="content.image && content.paragraph.length == 0">
+                            <figure class="image is-2by1 my-6">
+                              <img :src=content.image>
+                            </figure>
+                            <p class="subtitle is-6 is-flex is-justify-content-center has-text-centered"><b><i>{{ content.description_img }}</i></b></p>
+                          </div>
+                      
+                          <div v-for="line in content.paragraph">
+                            <p class="my-5">{{ line.text }}</p>
+                            <div v-if="line.below_img">
+                              <figure class="image is-2by1 my-6">
+                                <img :src=content.image class="custom-image">
+                              </figure>
+                              <p class="subtitle is-6 is-flex is-justify-content-center has-text-centered"><b><i>{{ content.description_img }}</i></b></p>
+                            </div>
+                            
+                          </div>
+                        </div>
+
+                        <div v-else>
+                          <div v-html="post.description" class="img-content"></div>
+                        </div>
+                        <div>
+                          <el-row>
+                            <el-col :span="12">
+                              <el-tag class="mr-4" size="large" v-for="tag in post.keywords">{{ tag.keyword }}</el-tag>
+                            </el-col>
+                          </el-row>
+                        </div>
+                      </template>
+                    </el-popover>
                   </el-row>
                 </el-col>
                 <el-col :span="12">
@@ -231,5 +301,18 @@ export default class ManagementPage extends Vue {
 
 .clickedPost {
   border: 3px solid #00773e;
+}
+
+:deep(.ql-align-center){
+	text-align: center;
+}
+
+:deep(.ql-align-right){
+	text-align: right;
+}
+
+:deep(.img-content p img){
+  display: block;
+  margin: auto auto;
 }
 </style>
