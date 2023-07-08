@@ -163,7 +163,7 @@
 			</div>
 	
 			<div>
-				<div v-html="content"></div>
+				<div v-html="content" class="img-content"></div>
 			</div>
 			<div>
 				<el-row>
