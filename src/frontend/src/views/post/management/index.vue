@@ -1,5 +1,5 @@
 <template>
-  <el-row>
+  <el-row class="my-5">
     <el-col :span=12>
       <h1 class="title is-3 is-flex">Tất cả bài viết</h1>
     </el-col>

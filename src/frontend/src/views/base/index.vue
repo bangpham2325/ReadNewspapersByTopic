@@ -82,16 +82,15 @@ export default class BasePage extends Vue {
 </script>
 
 <style lang="scss" scoped>
+
 .blog-personal {
   background-image: url('https://res.cloudinary.com/ddrpryfpq/image/upload/v1686509761/evgeni-evgeniev-LPKk3wtkC-g-unsplash_plsmyo.jpg');
   background-size: cover;
   background-repeat: no-repeat;
-  overflow: auto;
 }
 
 .blog-personal .common-layout {
   width: 70%;
-  margin: auto;
 }
 
 .is-loading-bar {
