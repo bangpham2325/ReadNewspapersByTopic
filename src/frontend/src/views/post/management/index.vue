@@ -16,7 +16,7 @@
           bài</button>
         <button v-if="this.selectMuti" class="button is-primary ml-4" style="background-color: #00773e;"
           @click="publishPosts">Đăng bài</button>
-        <button v-if="this.selectMuti" class="button is-dark ml-4" @click="this.selectMuti = false">Hủy chọn
+        <button v-if="this.selectMuti" class="button is-dark ml-4" @click="selectMuti = false; selectedPosts=[]">Hủy chọn
           nhiều</button>
         <button v-if="this.userInfo.role == 'AUTHOR'" class="button is-primary ml-4" style="background-color: #00773e;" @click="addPost">
           Tạo bài viết
@@ -75,7 +75,7 @@
                                     <el-avatar :size="40">
                                       <img :src="post.user ? post.user.avatar :'https://res.cloudinary.com/ddrpryfpq/image/upload/v1686479489/preview_unebjy.png'">
                                     </el-avatar>
-                                    <p class="title is-6 mt-4 ml-4" style="color:#00773e;">{{ post?.author }}</p>
+                                    <p class="title is-6 mt-4 ml-4" style="color:#00773e;">{{ post?.author ? post.author : post.user.full_name }}</p>
                                   </el-row>
                                 </el-col>
                               </el-row>
