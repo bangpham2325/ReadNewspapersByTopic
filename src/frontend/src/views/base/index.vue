@@ -89,6 +89,10 @@ export default class BasePage extends Vue {
   background-repeat: no-repeat;
 }
 
+:deep(.el-main){
+  overflow: 0;
+}
+
 .blog-personal .common-layout {
   width: 70%;
 }
