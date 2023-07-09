@@ -90,7 +90,7 @@ export default class BasePage extends Vue {
 }
 
 :deep(.el-main){
-  padding: auto;
+  overflow: hidden !important;
 }
 
 .blog-personal .common-layout {
