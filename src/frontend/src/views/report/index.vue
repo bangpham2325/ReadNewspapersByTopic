@@ -21,6 +21,7 @@
           @changeYear="year"
           @changeMonth="handleMonth"
           class="mt-5"
+          :bar_loading="bar_loading"
         ></ChartSection>
 
         <div class="list-section">
@@ -125,8 +126,8 @@ import UserSection from "@/views/report/UserSection.vue"
       author_report: [] as any,
       user_report: [] as any,
       post_report: [] as any,
-      category_report: [] as any,
-
+      category_report: [0,0,0,0,0,0,0,0,0,0] as any,
+      bar_loading: true,
       user_query: {
         page: 1,
         page_size: 12,
@@ -178,6 +179,7 @@ import UserSection from "@/views/report/UserSection.vue"
       this.category_report[9] = report_month['Vi tính']
 
       this.post_report = res.posts
+      this.bar_loading= false
     },
 
     async fetchReportUser() {
@@ -202,6 +204,7 @@ import UserSection from "@/views/report/UserSection.vue"
     },
 
     async handleMonth(data:any){
+      this.bar_loading = true
       this.month = data
       await this.fetchReportPost()
     }

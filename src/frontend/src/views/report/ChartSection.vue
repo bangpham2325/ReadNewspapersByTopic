@@ -77,17 +77,8 @@
     v-if="!bar_loading && month"
     :width="width"
     :height="height"
-    :data="{
-      labels: ['Chính Trị Xã Hội', 'Đời Sống', 'Khoa học', 'Kinh doanh', 'Pháp luật', 'Sức khỏe', 'Thế giới', 'Thể thao', 'Văn hóa', 'Vi tính'],
-      datasets: [
-        {
-          label: 'Số bài viết',
-          backgroundColor: '#008394',
-          borderRadius: '4',
-          data: category_report
-        },
-      ]
-    }"
+    :data="dataChart"
+    :key="JSON.stringify(dataChart)"
     />
   </div>
 </template>
@@ -108,7 +99,8 @@ ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale)
     report: {},
     year: 2020,
     title: '',
-    month: ''
+    month: '',
+    bar_loading: true
   },
   data() {
     return {
@@ -118,16 +110,24 @@ ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale)
       width: 400,
       height: 100,
       yearOptions: [],
-      bar_loading: true,
+      dataChart: {
+        labels: ['Chính Trị Xã Hội', 'Đời Sống', 'Khoa học', 'Kinh doanh', 'Pháp luật', 'Sức khỏe', 'Thế giới', 'Thể thao', 'Văn hóa', 'Vi tính'],
+        datasets: [
+          {
+            label: 'Số bài viết',
+            backgroundColor: '#008394',
+            borderRadius: '4',
+            data: [0,0,0,0,0,0,0,0,0,0]
+          },
+        ]
+      }
     }
   },
   watch: {
     category_report: {
-      handler(newValue){
-        if(newValue)
-          this.bar_loading = false
+      handler(){
+        this.dataChart.datasets[0].data = this.category_report
       },
-      immediate: false,
       deep: true
     }
   },
