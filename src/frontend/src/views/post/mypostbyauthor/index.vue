@@ -2,7 +2,7 @@
   <div v-loading="loading">
     <el-row>
       <el-col :span=12>
-        <h1 class="title is-3 is-flex">Tất cả bài viết cuả {{ posts[0].user.full_name }}</h1>
+        <h1 class="title is-3 is-flex">Tất cả bài viết cuả {{ posts[0]?.user.full_name }}</h1>
       </el-col>
     </el-row>
 
@@ -36,9 +36,9 @@
                 <el-col :span="14">
                   <el-row>
                     <el-avatar :size="40" class="mt-1">
-                      <img src="https://res.cloudinary.com/ddrpryfpq/image/upload/v1686416519/anh_ggjqgg.jpg">
+                      <img :src="post.user ? post.user.avatar : 'https://res.cloudinary.com/ddrpryfpq/image/upload/v1686479489/preview_unebjy.png'">
                     </el-avatar>
-                    <p class="title is-6 mt-4 ml-4" style="color:#00773e;">{{ post?.author }}</p>
+                    <p class="title is-6 mt-4 ml-4" style="color:#00773e;">{{ post?.user.full_name }}</p>
                   </el-row>
                 </el-col>
 
