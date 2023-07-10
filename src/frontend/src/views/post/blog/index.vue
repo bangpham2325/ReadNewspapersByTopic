@@ -1,5 +1,5 @@
 <template>
-	<h1 class="title" style="  text-align: center; font-size: 40px; margin-bottom: 50px;">Blog Cá Nhân</h1>
+	<h1 class="title mt-6" style="  text-align: center; font-size: 40px; margin-bottom: 50px;">Blog Cá Nhân</h1>
 	<div class="tile is-ancestor layout-post" v-loading="loading">
 		<div v-for="post in blog_posts">
 			<div class="tile is-parent" @click="detailPost(post.slug)">

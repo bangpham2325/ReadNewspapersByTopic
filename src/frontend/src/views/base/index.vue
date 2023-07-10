@@ -87,14 +87,11 @@ export default class BasePage extends Vue {
   background-image: url('https://res.cloudinary.com/ddrpryfpq/image/upload/v1686509761/evgeni-evgeniev-LPKk3wtkC-g-unsplash_plsmyo.jpg');
   background-size: cover;
   background-repeat: no-repeat;
+  padding: 0 20%;
 }
 
 :deep(.el-main){
   overflow: hidden !important;
-}
-
-.blog-personal .common-layout {
-  width: 70%;
 }
 
 .is-loading-bar {
