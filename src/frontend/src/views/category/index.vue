@@ -15,7 +15,7 @@
 		</div>
 
     <div class="is-flex is-justify-content-center">
-      <button class="button is-rounded is-dark mt-6" style="width: 120px;" @click="addTopicUser">Next</button>
+      <button :disabled="selectedList.length == 0" class="button is-rounded is-dark mt-6" style="width: 120px;" @click="addTopicUser">Next</button>
     </div>
 	</div>
 </template>
